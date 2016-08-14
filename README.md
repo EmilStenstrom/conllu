@@ -7,18 +7,24 @@
 ```python
 >>> from conllu.parser import parse
 >>> text = """
-1	The	the	DET	DT	Definite=Def|PronType=Art	4	det	_	_
-2	quick	quick	ADJ	JJ	Degree=Pos	4	amod	_	_
-3	brown	brown	ADJ	JJ	Degree=Pos	4	amod	_	_
-4	fox	fox	NOUN	NN	Number=Sing	5	nsubj	_	_
-5	jumps	jump	VERB	VBZ	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin	0	root	_	_
-6	over	over	ADP	IN	_	9	case	_	_
-7	the	the	DET	DT	Definite=Def|PronType=Art	9	det	_	_
-8	lazy	lazy	ADJ	JJ	Degree=Pos	9	amod	_	_
-9	dog	dog	NOUN	NN	Number=Sing	5	nmod	_	SpaceAfter=No
-10	.	.	PUNCT	.	_	5	punct	_	_
+1   The the DET DT  Definite=Def|PronType=Art   4   det _   _
+2   quick   quick   ADJ JJ  Degree=Pos  4   amod    _   _
+3   brown   brown   ADJ JJ  Degree=Pos  4   amod    _   _
+4   fox fox NOUN    NN  Number=Sing 5   nsubj   _   _
+5   jumps   jump    VERB    VBZ Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin   0   root    _   _
+6   over    over    ADP IN  _   9   case    _   _
+7   the the DET DT  Definite=Def|PronType=Art   9   det _   _
+8   lazy    lazy    ADJ JJ  Degree=Pos  9   amod    _   _
+9   dog dog NOUN    NN  Number=Sing 5   nmod    _   SpaceAfter=No
+10  .   .   PUNCT   .   _   5   punct   _   _
 
 """
+
+>>> # GitHub replaces tab characters with spaces so for this code to be copy-pastable
+>>> # I've added the following two lines. You don't need them in your code
+>>> import re
+>>> text = re.sub(r" +", r"\t", text)
+
 >>> parse(text)
 [[
     OrderedDict([
@@ -148,8 +154,6 @@
         ('misc', None)
     ])
 ]]
-
-
 ```
 
 You can read about the format at the [Universial Dependencies project](http://universaldependencies.org/format.html).
