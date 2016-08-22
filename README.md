@@ -6,7 +6,7 @@
 
 ```python
 >>> from conllu.parser import parse
->>> text = """
+>>> data = """
 1   The the DET DT  Definite=Def|PronType=Art   4   det _   _
 2   quick   quick   ADJ JJ  Degree=Pos  4   amod    _   _
 3   brown   brown   ADJ JJ  Degree=Pos  4   amod    _   _
@@ -23,9 +23,9 @@
 >>> # GitHub replaces tab characters with spaces so for this code to be copy-pastable
 >>> # I've added the following two lines. You don't need them in your code
 >>> import re
->>> text = re.sub(r" +", r"\t", text)
+>>> data = re.sub(r" +", r"\t", data)
 
->>> parse(text)
+>>> parse(data)
 [[
     OrderedDict([
         ('id', 1),
