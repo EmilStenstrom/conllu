@@ -170,7 +170,9 @@
 
 ```
 
-You can read about the format at the [Universial Dependencies project](http://universaldependencies.org/format.html).
+NOTE: TreeNode is a namedtuple so you can loop over it as a normal tuple.
+
+You can read about the CoNLL-U format at the [Universial Dependencies project](http://universaldependencies.org/format.html).
 
 ## Why should you use conllu?
 
