@@ -1,4 +1,5 @@
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
+from conllu.tree_helpers import create_tree
 
 def parse(text):
     return list(
@@ -10,6 +11,20 @@ def parse(text):
         for sentence in text.split("\n\n")
         if sentence
     )
+
+def parse_tree(text):
+    result = parse(text)
+
+    trees = []
+    for sentence in result:
+
+        head_indexed = defaultdict(list)
+        for token in sentence:
+            head_indexed[token["head"]].append(token)
+
+        trees.append(create_tree(head_indexed))
+
+    return trees
 
 def parse_line(line):
     id_, form, lemma, upostag, xpostag, feats, head, deprel, deps, misc = \
