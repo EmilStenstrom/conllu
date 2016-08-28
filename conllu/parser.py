@@ -22,7 +22,7 @@ def parse_tree(text):
         for token in sentence:
             head_indexed[token["head"]].append(token)
 
-        trees.append(create_tree(head_indexed))
+        trees += create_tree(head_indexed)
 
     return trees
 
