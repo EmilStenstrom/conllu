@@ -1,10 +1,13 @@
 from collections import OrderedDict, defaultdict
 from conllu.tree_helpers import create_tree
 
-def parse(text):
+def parse(text, to_parse):
+    '''
+    to_parse - a list of columns to parse (id, form, lemma, upostag, xpostag, feats, head, deprel, deps or misc).
+    '''
     return list(
         [
-            parse_line(line)
+            parse_line(line, to_parse)
             for line in sentence.split("\n")
             if line and not line.strip().startswith("#")
         ]
@@ -26,22 +29,27 @@ def parse_tree(text):
 
     return trees
 
-def parse_line(line):
-    id_, form, lemma, upostag, xpostag, feats, head, deprel, deps, misc = \
-        line.split("\t")
-
-    return OrderedDict([
-        ("id", parse_int_value(id_)),
-        ("form", form),
-        ("lemma", lemma),
-        ("upostag", upostag),
-        ("xpostag", parse_list_value(xpostag)),
-        ("feats", parse_dict_value(feats)),
-        ("head", parse_int_value(head)),
-        ("deprel", deprel),
-        ("deps", parse_nullable_value(deps)),
-        ("misc", parse_dict_value(misc)),
-    ])
+def parse_line(line, to_parse):
+    spl_line = line.split("\t")
+    d = OrderedDict()
+    if len(spl_line) == len(to_parse):
+        for i in range(len(to_parse)):
+            d[to_parse[i]] = spl_line[i]
+        if "id" in to_parse:
+            d["id"] = parse_int_value(d["id"])
+        if "xpostag" in to_parse:
+            d["xpostag"] = parse_list_value(d["xpostag"])
+        if "feats" in to_parse:
+            d["feats"] = parse_dict_value(d["feats"])
+        if "head" in to_parse:
+            d["head"] = parse_int_value(d["head"])
+        if "deps" in to_parse:
+            d["deps"] = parse_nullable_value(d["deps"])
+        if "misc" in to_parse:
+            d["misc"] = parse_dict_value(d["misc"])
+    else:
+        print('Enter a correct number of columns')
+    return d
 
 def parse_int_value(value):
     if value.isdigit():
