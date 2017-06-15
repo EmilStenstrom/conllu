@@ -1,7 +1,7 @@
 from collections import OrderedDict, defaultdict
 from conllu.tree_helpers import create_tree
 
-def parse(text, to_parse):
+def parse(text, to_parse=['id', 'form', 'lemma', 'upostag', 'xpostag', 'feats', 'head', 'deprel', 'deps', 'misc']):
     '''
     to_parse - a list of columns to parse (id, form, lemma, upostag, xpostag, feats, head, deprel, deps or misc).
     '''
