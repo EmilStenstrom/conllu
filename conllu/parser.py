@@ -1,33 +1,24 @@
 from collections import OrderedDict, defaultdict
 from conllu.tree_helpers import create_tree
 
+
 def parse(text, to_parse=['id', 'form', 'lemma', 'upostag', 'xpostag', 'feats', 'head', 'deprel', 'deps', 'misc']):
     '''
     to_parse - a list of columns to parse (id, form, lemma, upostag, xpostag, feats, head, deprel, deps or misc).
     '''
-    return list(
-        [
-            parse_line(line, to_parse)
-            for line in sentence.split("\n")
-            if line and not line.strip().startswith("#")
-        ]
-        for sentence in text.split("\n\n")
-        if sentence
-    )
+    return ((parse_line(line)
+             for line in sentence.split("\n")
+             if line and not line.strip().startswith("#"))
+            for sentence in text.split("\n\n")
+            if sentence)
 
 def parse_tree(text):
     result = parse(text)
-
-    trees = []
     for sentence in result:
-
         head_indexed = defaultdict(list)
         for token in sentence:
             head_indexed[token["head"]].append(token)
-
-        trees += create_tree(head_indexed)
-
-    return trees
+        yield create_tree(head_indexed)
 
 def parse_line(line, to_parse):
     spl_line = line.split("\t")
