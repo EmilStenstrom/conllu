@@ -1,3 +1,4 @@
+import re
 from collections import OrderedDict, defaultdict
 from conllu.tree_helpers import create_tree
 
@@ -29,7 +30,7 @@ def parse_tree(text):
     return trees
 
 def parse_line(line, fields=DEFAULT_FIELDS):
-    line = line.split("\t")
+    line = re.split(r"\t| {2,}", line)
     data = OrderedDict()
 
     for i, field in enumerate(fields):

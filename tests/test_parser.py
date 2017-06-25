@@ -8,8 +8,8 @@ from conllu.parser import (
     parse_dict_value,
     parse_nullable_value,
 )
-from tests.fixtures.data import data1
-from tests.fixtures.data_flat import data1_flat
+from tests.fixtures.data import data1, data2, data3, data4
+from tests.fixtures.data_flat import data1_flat, data2_flat, data3_flat, data4_flat
 from tests.fixtures.data_tree import data1_tree
 
 class TestParse(unittest.TestCase):
@@ -20,6 +20,15 @@ class TestParse(unittest.TestCase):
         ids = [parsed_line["id"] for parsed_line in parse(data1, fields=["id"])[0]]
         num_lines = len(data1.strip().split("\n"))
         self.assertEqual(ids, list(range(1, num_lines + 1)))
+
+    def test_parse_data2(self):
+        self.assertEqual(parse(data2), data2_flat)
+
+    def test_parse_data3(self):
+        self.assertEqual(parse(data3), data3_flat)
+
+    def test_parse_data4(self):
+        self.assertEqual(parse(data4), data4_flat)
 
 class TestParseTree(unittest.TestCase):
     def test_parse_tree(self):
