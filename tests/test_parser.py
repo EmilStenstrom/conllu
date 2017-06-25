@@ -19,7 +19,7 @@ class TestParse(unittest.TestCase):
     def test_parse_only_id_data1(self):
         ids = [parsed_line["id"] for parsed_line in parse(data1, fields=["id"])[0]]
         num_lines = len(data1.strip().split("\n"))
-        self.assertEqual(ids, range(1, num_lines + 1))
+        self.assertEqual(ids, list(range(1, num_lines + 1)))
 
 class TestParseTree(unittest.TestCase):
     def test_parse_tree(self):
