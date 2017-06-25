@@ -78,7 +78,7 @@ def parse_dict_value(value):
     return parse_nullable_value(value)
 
 def parse_nullable_value(value):
-    if value == "_":
+    if not value or value == "_":
         return None
 
     return value
