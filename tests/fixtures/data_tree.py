@@ -1,7 +1,7 @@
 from collections import OrderedDict
 from conllu.tree_helpers import TreeNode
 
-data1_expected = [
+data1_tree = [
     TreeNode(
         data=OrderedDict([
             ('id', 5),

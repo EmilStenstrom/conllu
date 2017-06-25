@@ -1,3 +1,4 @@
+# encoding: utf-8
 from textwrap import dedent
 
 # The quick brown fox jumps over the lazy dog

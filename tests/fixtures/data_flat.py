@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-data1_expected = [[
+data1_flat = [[
     OrderedDict([
         ('id', 1),
         ('form', 'The'),
