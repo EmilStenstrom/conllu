@@ -68,12 +68,6 @@ def parse_int_value(value):
 
     return None
 
-def parse_list_value(value):
-    if "|" in value:
-        return [parse_nullable_value(part) for part in value.split("|")]
-
-    return parse_nullable_value(value)
-
 def parse_dict_value(value):
     if "=" in value:
         return OrderedDict([
