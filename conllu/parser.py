@@ -32,10 +32,10 @@ def parse_line(line, fields=DEFAULT_FIELDS):
     line = line.split("\t")
     data = OrderedDict()
 
-    if len(fields) > len(line):
-        raise IndexError("You specified more fields ({len(fields)}) that each line contains ({len(fields)})")
-
     for i, field in enumerate(fields):
+        # Allow parsing CoNNL-U files with fewer columns
+        if i >= len(line):
+            break
 
         if field == "id":
             value = parse_int_value(line[i])
