@@ -1,19 +1,18 @@
 from collections import OrderedDict, defaultdict
 from conllu.tree_helpers import create_tree
 
-def parse(text, to_parse=['id', 'form', 'lemma', 'upostag', 'xpostag', 'feats', 'head', 'deprel', 'deps', 'misc']):
-    '''
-    to_parse - a list of columns to parse (id, form, lemma, upostag, xpostag, feats, head, deprel, deps or misc).
-    '''
-    return list(
+DEFAULT_FIELDS = ('id', 'form', 'lemma', 'upostag', 'xpostag', 'feats', 'head', 'deprel', 'deps', 'misc')
+
+def parse(text, fields=DEFAULT_FIELDS):
+    return [
         [
-            parse_line(line, to_parse)
+            parse_line(line, fields)
             for line in sentence.split("\n")
             if line and not line.strip().startswith("#")
         ]
         for sentence in text.split("\n\n")
         if sentence
-    )
+    ]
 
 def parse_tree(text):
     result = parse(text)
@@ -29,27 +28,39 @@ def parse_tree(text):
 
     return trees
 
-def parse_line(line, to_parse):
-    spl_line = line.split("\t")
-    d = OrderedDict()
-    if len(spl_line) == len(to_parse):
-        for i in range(len(to_parse)):
-            d[to_parse[i]] = spl_line[i]
-        if "id" in to_parse:
-            d["id"] = parse_int_value(d["id"])
-        if "xpostag" in to_parse:
-            d["xpostag"] = parse_list_value(d["xpostag"])
-        if "feats" in to_parse:
-            d["feats"] = parse_dict_value(d["feats"])
-        if "head" in to_parse:
-            d["head"] = parse_int_value(d["head"])
-        if "deps" in to_parse:
-            d["deps"] = parse_nullable_value(d["deps"])
-        if "misc" in to_parse:
-            d["misc"] = parse_dict_value(d["misc"])
-    else:
-        print('Enter a correct number of columns')
-    return d
+def parse_line(line, fields=DEFAULT_FIELDS):
+    line = line.split("\t")
+    data = OrderedDict()
+
+    if len(fields) > len(line):
+        raise IndexError("You specified more fields ({len(fields)}) that each line contains ({len(fields)})")
+
+    for i, field in enumerate(fields):
+
+        if field == "id":
+            value = parse_int_value(line[i])
+
+        elif field == "xpostag":
+            value = parse_nullable_value(line[i])
+
+        elif field == "feats":
+            value = parse_dict_value(line[i])
+
+        elif field == "head":
+            value = parse_int_value(line[i])
+
+        elif field == "deps":
+            value = parse_nullable_value(line[i])
+
+        elif field == "misc":
+            value = parse_dict_value(line[i])
+
+        else:
+            value = line[i]
+
+        data[field] = value
+
+    return data
 
 def parse_int_value(value):
     if value.isdigit():
