@@ -7,6 +7,7 @@ from conllu.parser import (
     parse_int_value,
     parse_dict_value,
     parse_nullable_value,
+    serialize_tree
 )
 from tests.fixtures.data import data1, data2, data3, data4
 from tests.fixtures.data_flat import data1_flat, data2_flat, data3_flat, data4_flat
@@ -83,3 +84,7 @@ class TestParseNullableValue(unittest.TestCase):
         self.assertEqual(parse_nullable_value("_"), None)
         self.assertEqual(parse_nullable_value(""), None)
         self.assertEqual(parse_nullable_value("hello"), "hello")
+
+class TestSerialize(unittest.TestCase):
+    def test_identity(self):
+        self.assertEqual(serialize_tree(data1_tree[0]), data1.strip())
