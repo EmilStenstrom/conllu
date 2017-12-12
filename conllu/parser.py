@@ -83,3 +83,36 @@ def parse_nullable_value(value):
         return None
 
     return value
+
+def serialize_field(field):
+    if field is None:
+        return '_'
+
+    if isinstance(field, OrderedDict):
+        serialized_fields = []
+        for key_value in field.items():
+            serialized_fields.append('='.join(key_value))
+
+        return '|'.join(serialized_fields)
+
+    return str(field)
+
+def serialize_tree(root):
+    def add_subtree(root_token, token_list):
+        for child_token in root_token.children:
+            token_list = add_subtree(child_token, token_list)
+
+        token_list.append(root_token.data)
+        return token_list
+
+    tokens = []
+    add_subtree(root, tokens)
+
+    sorted_tokens = sorted(tokens, key=lambda t: t['id'])
+    lines = []
+    for token_data in sorted_tokens:
+        line = '\t'.join(serialize_field(val) for val in token_data.values())
+        lines.append(line)
+
+    text = '\n'.join(lines)
+    return text
