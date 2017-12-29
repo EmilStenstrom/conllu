@@ -15,17 +15,19 @@ def parse(text, fields=DEFAULT_FIELDS):
         if sentence
     ]
 
+def sent_to_tree(sentence):
+    head_indexed = defaultdict(list)
+    for token in sentence:
+        head_indexed[token["head"]].append(token)
+
+    return create_tree(head_indexed)
+
 def parse_tree(text):
     result = parse(text)
 
     trees = []
     for sentence in result:
-
-        head_indexed = defaultdict(list)
-        for token in sentence:
-            head_indexed[token["head"]].append(token)
-
-        trees += create_tree(head_indexed)
+        trees += sent_to_tree(sentence)
 
     return trees
 
