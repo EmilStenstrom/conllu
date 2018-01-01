@@ -190,6 +190,7 @@ You can read about the CoNLL-U format at the [Universial Dependencies project](h
 ## Why should you use conllu?
 
 - It's simple. ~150 lines of code (including whitespace).
+- Works with both Python 2 and Python 3
 - It has no dependencies
 
 ## Installation
