@@ -58,6 +58,13 @@ class TestParseLine(unittest.TestCase):
             ('form', 'The'),
         ]))
 
+    def test_parse_line_two_spaces(self):
+        line = "1  The  the  DET  DT  Definite=Def|PronType=Art  4  det  _  _"
+        self.assertEqual(parse_line(line, fields=["id", "form"]), OrderedDict([
+            ('id', 1),
+            ('form', 'The'),
+        ]))
+
 class TestParseIntValue(unittest.TestCase):
     def test_parse_int_value(self):
         self.assertEqual(parse_int_value("4"), 4)
