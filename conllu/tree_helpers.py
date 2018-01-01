@@ -10,14 +10,20 @@ def create_tree(node_children_mapping, start=0):
     ]
     return subtree
 
-def print_tree(node, depth=0):
+def print_tree(node, depth=0, indent=4, exclude_fields=["id", "deprel", "xpostag", "feats", "head", "deps", "misc"]):
     assert isinstance(node, TreeNode), "node not TreeNode %s" % type(node)
 
-    print("\t" * depth + "(deprel:{deprel}) form:{form}, tag:{tag} [{idx}]".format(
+    relevant_data = node.data.copy()
+    map(lambda x: relevant_data.pop(x, None), exclude_fields)
+    node_repr = " ".join([
+        "{key}:{value}".format(key=key, value=value)
+        for key, value in relevant_data.items()
+    ])
+
+    print(" " * indent * depth + "(deprel:{deprel}) {node_repr} [{idx}]".format(
         deprel=node.data["deprel"],
-        form=node.data["form"],
-        tag=node.data["upostag"],
+        node_repr=node_repr,
         idx=node.data["id"],
     ))
     for child in node.children:
-        print_tree(child, depth + 1)
+        print_tree(child, depth + 1, indent=indent, exclude_fields=exclude_fields)
