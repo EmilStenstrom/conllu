@@ -189,7 +189,7 @@ You can read about the CoNLL-U format at the [Universial Dependencies project](h
 
 ## Why should you use conllu?
 
-- It's simple. ~50 lines of code (including whitespace).
+- It's simple. ~150 lines of code (including whitespace).
 - It has no dependencies
 
 ## Installation
