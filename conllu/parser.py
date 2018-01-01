@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import re
 from collections import OrderedDict, defaultdict
 from conllu.tree_helpers import create_tree
@@ -107,7 +108,7 @@ def serialize_field(field):
 
         return '|'.join(serialized_fields)
 
-    return str(field)
+    return "{}".format(field)
 
 def serialize_tree(root):
     def add_subtree(root_token, token_list):

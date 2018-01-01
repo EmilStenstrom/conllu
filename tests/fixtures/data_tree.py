@@ -1,3 +1,5 @@
+# encoding: utf-8
+from __future__ import unicode_literals
 from collections import OrderedDict
 from conllu.tree_helpers import TreeNode
 
@@ -156,6 +158,49 @@ data1_tree = [
                     ('deps', None),
                     ('misc', None)
                 ]),
+                children=[]
+            )
+        ]
+    )
+]
+
+data5_tree = [
+    TreeNode(
+        data=OrderedDict([
+            ('id', 2),
+            ('form', 'längtar'),
+            ('lemma', 'längta'),
+            ('upostag', 'VERB'),
+            ('xpostag', 'VBP'),
+            ('feats', OrderedDict([
+                ('Mood', 'Ind'),
+                ('Tense', 'Pres'),
+                ('VerbForm', 'Fin'),
+                ('Voice', 'Act')
+            ])),
+            ('head', 0),
+            ('deprel', 'root'),
+            ('deps', None),
+            ('misc', None)]),
+        children=[
+            TreeNode(
+                data=OrderedDict([
+                    ('id', 1),
+                    ('form', 'Jag'),
+                    ('lemma', 'jag'),
+                    ('upostag', 'PRON'),
+                    ('xpostag', 'PRP'),
+                    ('feats', OrderedDict([
+                        ('Case', 'Nom'),
+                        ('Definite', 'Def'),
+                        ('Gender', 'Com'),
+                        ('Number', 'Sing'),
+                        ('PronType', 'Prs')
+                    ])),
+                    ('head', 2),
+                    ('deprel', 'nsubj'),
+                    ('deps', None),
+                    ('misc', None)]),
                 children=[]
             )
         ]

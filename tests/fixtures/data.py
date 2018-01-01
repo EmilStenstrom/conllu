@@ -1,4 +1,5 @@
 # encoding: utf-8
+from __future__ import unicode_literals
 from textwrap import dedent
 
 # The quick brown fox jumps over the lazy dog
@@ -54,5 +55,11 @@ data4 = dedent("""
     3   no      no      DET     DT    PronType=Neg                      4   det     _   _
     4   clue    clue    NOUN    NN    Number=Sing                       2   obj     _   SpaceAfter=No
     5   .       .       PUNCT   .     _                                 2   punct   _   _
+
+""")
+
+data5 = dedent("""
+    1	Jag	jag	PRON	PRP	Case=Nom|Definite=Def|Gender=Com|Number=Sing|PronType=Prs	2	nsubj	_	_
+    2	längtar	längta	VERB	VBP	Mood=Ind|Tense=Pres|VerbForm=Fin|Voice=Act	0	root	_	_
 
 """)

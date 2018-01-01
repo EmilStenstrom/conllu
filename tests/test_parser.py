@@ -10,9 +10,9 @@ from conllu.parser import (
     serialize_tree,
     ParseException,
 )
-from tests.fixtures.data import data1, data2, data3, data4
+from tests.fixtures.data import data1, data2, data3, data4, data5
 from tests.fixtures.data_flat import data1_flat, data2_flat, data3_flat, data4_flat
-from tests.fixtures.data_tree import data1_tree
+from tests.fixtures.data_tree import data1_tree, data5_tree
 
 class TestParse(unittest.TestCase):
     def test_parse_data1(self):
@@ -101,3 +101,6 @@ class TestParseNullableValue(unittest.TestCase):
 class TestSerialize(unittest.TestCase):
     def test_identity(self):
         self.assertEqual(serialize_tree(data1_tree[0]), data1.strip())
+
+    def test_identity_unicode(self):
+        self.assertEqual(serialize_tree(data5_tree[0]), data5.strip())
