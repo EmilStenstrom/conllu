@@ -7,7 +7,8 @@ from conllu.parser import (
     parse_int_value,
     parse_dict_value,
     parse_nullable_value,
-    serialize_tree
+    serialize_tree,
+    ParseException,
 )
 from tests.fixtures.data import data1, data2, data3, data4
 from tests.fixtures.data_flat import data1_flat, data2_flat, data3_flat, data4_flat
@@ -57,6 +58,11 @@ class TestParseLine(unittest.TestCase):
             ('id', 1),
             ('form', 'The'),
         ]))
+
+    def test_parse_line_with_no_tabs(self):
+        line = "1 The the DET DT Definite=Def|PronType=Art 4 det _ _"
+        with self.assertRaises(ParseException):
+            parse_line(line)
 
     def test_parse_line_two_spaces(self):
         line = "1  The  the  DET  DT  Definite=Def|PronType=Art  4  det  _  _"

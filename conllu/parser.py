@@ -4,6 +4,9 @@ from conllu.tree_helpers import create_tree
 
 DEFAULT_FIELDS = ('id', 'form', 'lemma', 'upostag', 'xpostag', 'feats', 'head', 'deprel', 'deps', 'misc')
 
+class ParseException(Exception):
+    pass
+
 def parse(text, fields=DEFAULT_FIELDS):
     return [
         [
@@ -33,6 +36,10 @@ def parse_tree(text):
 
 def parse_line(line, fields=DEFAULT_FIELDS):
     line = re.split(r"\t| {2,}", line)
+
+    if " " in line and len(line) == 1:
+        raise ParseException("Invalid line format, line must contain either tabs or two spaces.")
+
     data = OrderedDict()
 
     for i, field in enumerate(fields):
