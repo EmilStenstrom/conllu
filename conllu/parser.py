@@ -37,7 +37,7 @@ def parse_tree(text):
 def parse_line(line, fields=DEFAULT_FIELDS):
     line = re.split(r"\t| {2,}", line)
 
-    if " " in line and len(line) == 1:
+    if len(line) == 1 and " " in line[0]:
         raise ParseException("Invalid line format, line must contain either tabs or two spaces.")
 
     data = OrderedDict()
