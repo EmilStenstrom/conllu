@@ -5,7 +5,7 @@
 ## Example usage
 
 ```python
->>> from conllu.parser import parse, parse_tree
+>>> from conllu import parse, parse_tree
 >>> data = """
 1   The     the    DET    DT   Definite=Def|PronType=Art   4   det _   _
 2   quick   quick  ADJ    JJ   Degree=Pos                  4   amod    _   _
