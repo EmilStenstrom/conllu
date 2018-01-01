@@ -28,6 +28,9 @@ def sent_to_tree(sentence):
 def parse_tree(text):
     result = parse(text)
 
+    if "head" not in result[0][0]:
+        raise ParseException("Can't parse tree, missing 'head' field.")
+
     trees = []
     for sentence in result:
         trees += sent_to_tree(sentence)
