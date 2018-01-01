@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup
 
-VERSION = '0.6'
+VERSION = '0.6.1'
 
 setup(
     name='conllu',
