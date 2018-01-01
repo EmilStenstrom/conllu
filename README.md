@@ -2,6 +2,18 @@
 
 **CoNLL-U Parser** parses a [CoNLL-U formatted](http://universaldependencies.org/format.html) string into a nested python dictionary. CoNLL-U is often the output of natural language processing tasks.
 
+## Why should you use conllu?
+
+- It's simple. ~150 lines of code (including whitespace).
+- Works with both Python 2 and Python 3
+- It has no dependencies
+
+## Installation
+
+```bash
+pip install conllu
+```
+
 ## Example usage
 
 ```python
@@ -186,18 +198,6 @@
 NOTE: TreeNode is a namedtuple so you can loop over it as a normal tuple.
 
 You can read about the CoNLL-U format at the [Universial Dependencies project](http://universaldependencies.org/format.html).
-
-## Why should you use conllu?
-
-- It's simple. ~150 lines of code (including whitespace).
-- Works with both Python 2 and Python 3
-- It has no dependencies
-
-## Installation
-
-```bash
-pip install conllu
-```
 
 ## Develop locally and run the tests
 
