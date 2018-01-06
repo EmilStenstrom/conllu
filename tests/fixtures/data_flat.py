@@ -375,7 +375,8 @@ data4_flat = [
             ('deprel', 'nsubj'),
             ('deps', None),
             ('misc', None)
-        ]), OrderedDict([
+        ]),
+        OrderedDict([
             ('id', 2),
             ('form', 'have'),
             ('lemma', 'have'),
@@ -390,7 +391,8 @@ data4_flat = [
             ('deprel', 'root'),
             ('deps', None),
             ('misc', None)
-        ]), OrderedDict([
+        ]),
+        OrderedDict([
             ('id', 3),
             ('form', 'no'),
             ('lemma', 'no'),
@@ -403,7 +405,8 @@ data4_flat = [
             ('deprel', 'det'),
             ('deps', None),
             ('misc', None)
-        ]), OrderedDict([
+        ]),
+        OrderedDict([
             ('id', 4),
             ('form', 'clue'),
             ('lemma', 'clue'),
@@ -418,7 +421,8 @@ data4_flat = [
             ('misc', OrderedDict([
                 ('SpaceAfter', 'No')
             ]))
-        ]), OrderedDict([
+        ]),
+        OrderedDict([
             ('id', 5),
             ('form', '.'),
             ('lemma', '.'),
@@ -430,5 +434,5 @@ data4_flat = [
             ('deps', None),
             ('misc', None)
         ])
-    ],
+    ]
 ]
