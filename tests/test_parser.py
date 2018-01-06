@@ -5,6 +5,7 @@ from conllu.parser import (
     parse_tree,
     parse_line,
     parse_int_value,
+    parse_paired_list_value,
     parse_dict_value,
     parse_nullable_value,
     serialize_tree,
@@ -78,6 +79,49 @@ class TestParseIntValue(unittest.TestCase):
         self.assertEqual(parse_int_value("10"), 10)
         self.assertEqual(parse_int_value("-10"), None)
         self.assertEqual(parse_int_value("a"), None)
+
+class TestParsePairedListValue(unittest.TestCase):
+    def test_parse_paired_list(self):
+        self.assertEqual(
+            parse_paired_list_value("4:nsubj"),
+            [("nsubj", 4)]
+        )
+        self.assertEqual(
+            parse_paired_list_value("0:under_case_:under_case_|1:dash-sign-:dash-sign-"),
+            [("under_case_:under_case_", 0), ("dash-sign-:dash-sign-", 1)]
+        )
+        self.assertEqual(
+            parse_paired_list_value("2:nsubj|4:nsubj"),
+            [("nsubj", 2), ("nsubj", 4)]
+        )
+        self.assertEqual(
+            parse_paired_list_value("0:flat:name|1:amod|20:nsubj"),
+            [("flat:name", 0), ("amod", 1), ("nsubj", 20)]
+        )
+
+    def test_parse_empty(self):
+        testcases = [
+            "",
+            "_",
+        ]
+        for testcase in testcases:
+            # Empty strings should return None
+            self.assertEqual(parse_paired_list_value(testcase), None)
+
+    def test_parse_invalid(self):
+        testcases = [
+            "x:nsubj",
+            "0:",
+            "0:_",
+            "0:-",
+            ":",
+            ":nsubj",
+            "1:nsubj|",
+            "1:nsubj||1:nsubj",
+        ]
+        for testcase in testcases:
+            # Invalid strings should be returned untouched
+            self.assertEqual(parse_paired_list_value(testcase), testcase)
 
 class TestParseDictValue(unittest.TestCase):
     def test_parse_dict_value(self):

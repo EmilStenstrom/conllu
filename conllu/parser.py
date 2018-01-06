@@ -5,6 +5,9 @@ from conllu.tree_helpers import create_tree
 
 DEFAULT_FIELDS = ('id', 'form', 'lemma', 'upostag', 'xpostag', 'feats', 'head', 'deprel', 'deps', 'misc')
 
+deps_pattern = r"\d+:[a-z][a-z_-]*(:[a-z][a-z_-]*)?"
+MULTI_DEPS_PATTERN = re.compile(r"^{}(\|{})*$".format(deps_pattern, deps_pattern))
+
 class ParseException(Exception):
     pass
 
@@ -64,7 +67,7 @@ def parse_line(line, fields=DEFAULT_FIELDS):
             value = parse_int_value(line[i])
 
         elif field == "deps":
-            value = parse_nullable_value(line[i])
+            value = parse_paired_list_value(line[i])
 
         elif field == "misc":
             value = parse_dict_value(line[i])
@@ -81,6 +84,15 @@ def parse_int_value(value):
         return int(value)
 
     return None
+
+def parse_paired_list_value(value):
+    if re.match(MULTI_DEPS_PATTERN, value):
+        return [
+            (part.split(":", 1)[1], parse_int_value(part.split(":", 1)[0]))
+            for part in value.split("|")
+        ]
+
+    return parse_nullable_value(value)
 
 def parse_dict_value(value):
     if "=" in value:

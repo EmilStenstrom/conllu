@@ -200,7 +200,10 @@ data3_flat = [[
         ])),
         ('head', 2),
         ('deprel', 'nsubj'),
-        ('deps', '2:nsubj|4:nsubj')
+        ('deps', [
+            ('nsubj', 2),
+            ('nsubj', 4)
+        ])
     ]),
     OrderedDict([
         ('id', 2),
@@ -215,7 +218,9 @@ data3_flat = [[
         ])),
         ('head', 0),
         ('deprel', 'root'),
-        ('deps', '0:root')
+        ('deps', [
+            ('root', 0)
+        ])
     ]),
     OrderedDict([
         ('id', 3),
@@ -226,7 +231,9 @@ data3_flat = [[
         ('feats', None),
         ('head', 4),
         ('deprel', 'cc'),
-        ('deps', '4:cc')
+        ('deps', [
+            ('cc', 4)
+        ])
     ]),
     OrderedDict([
         ('id', 4),
@@ -241,7 +248,10 @@ data3_flat = [[
         ])),
         ('head', 2),
         ('deprel', 'conj'),
-        ('deps', '0:root|2:conj')
+        ('deps', [
+            ('root', 0),
+            ('conj', 2)
+        ])
     ]),
     OrderedDict([
         ('id', 5),
@@ -254,7 +264,10 @@ data3_flat = [[
         ])),
         ('head', 2),
         ('deprel', 'obj'),
-        ('deps', '2:obj|4:obj')
+        ('deps', [
+            ('obj', 2),
+            ('obj', 4)
+        ])
     ]),
     OrderedDict([
         ('id', 6),
@@ -265,7 +278,9 @@ data3_flat = [[
         ('feats', None),
         ('head', 2),
         ('deprel', 'punct'),
-        ('deps', '2:punct')
+        ('deps', [
+            ('punct', 2)
+        ])
     ])
 ]]
 
@@ -283,7 +298,10 @@ data4_flat = [
             ])),
             ('head', 2),
             ('deprel', 'nsubj'),
-            ('deps', '2:nsubj|4:nsubj'),
+            ('deps', [
+                ('nsubj', 2),
+                ('nsubj', 4)
+            ]),
             ('misc', None)
         ]),
         OrderedDict([
@@ -299,7 +317,9 @@ data4_flat = [
             ])),
             ('head', 0),
             ('deprel', 'root'),
-            ('deps', '0:root'),
+            ('deps', [
+                ('root', 0)
+            ]),
             ('misc', None)
         ]),
         OrderedDict([
@@ -311,7 +331,9 @@ data4_flat = [
             ('feats', None),
             ('head', 4),
             ('deprel', 'cc'),
-            ('deps', '4:cc'),
+            ('deps', [
+                ('cc', 4)
+            ]),
             ('misc', None)
         ]),
         OrderedDict([
@@ -327,7 +349,10 @@ data4_flat = [
             ])),
             ('head', 2),
             ('deprel', 'conj'),
-            ('deps', '0:root|2:conj'),
+            ('deps', [
+                ('root', 0),
+                ('conj', 2)
+            ]),
             ('misc', None)
         ]),
         OrderedDict([
@@ -341,7 +366,10 @@ data4_flat = [
             ])),
             ('head', 2),
             ('deprel', 'obj'),
-            ('deps', '2:obj|4:obj'),
+            ('deps', [
+                ('obj', 2),
+                ('obj', 4)
+            ]),
             ('misc', OrderedDict([
                 ('SpaceAfter', 'No')
             ]))
@@ -355,7 +383,9 @@ data4_flat = [
             ('feats', None),
             ('head', 2),
             ('deprel', 'punct'),
-            ('deps', '2:punct'),
+            ('deps', [
+                ('punct', 2)
+            ]),
             ('misc', None)
         ])
     ],
