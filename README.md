@@ -185,12 +185,12 @@ pip install conllu
 ...
 (deprel:root) form:jumps lemma:jump upostag:VERB [5]
     (deprel:nsubj) form:fox lemma:fox upostag:NOUN [4]
-        (deprel:det _) form:The lemma:the upostag:DET [1]
+        (deprel:det) form:The lemma:the upostag:DET [1]
         (deprel:amod) form:quick lemma:quick upostag:ADJ [2]
         (deprel:amod) form:brown lemma:brown upostag:ADJ [3]
     (deprel:nmod) form:dog lemma:dog upostag:NOUN [9]
         (deprel:case) form:over lemma:over upostag:ADP [6]
-        (deprel:det _) form:the lemma:the upostag:DET [7]
+        (deprel:det) form:the lemma:the upostag:DET [7]
         (deprel:amod) form:lazy lemma:lazy upostag:ADJ [8]
     (deprel:punct) form:. lemma:. upostag:PUNCT [10]
 ```
