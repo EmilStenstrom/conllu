@@ -11,9 +11,9 @@ from conllu.parser import (
     serialize_tree,
     ParseException,
 )
-from tests.fixtures.data import data1, data2, data3, data4, data5
-from tests.fixtures.data_flat import data1_flat, data2_flat, data3_flat, data4_flat
-from tests.fixtures.data_tree import data1_tree, data5_tree
+from tests.fixtures.data import data1, data2, data3, data4, data5, data6
+from tests.fixtures.data_flat import data1_flat, data2_flat, data3_flat, data4_flat, data6_flat
+from tests.fixtures.data_tree import data1_tree, data5_tree, data6_tree
 
 class TestParse(unittest.TestCase):
     def test_parse_data1(self):
@@ -33,9 +33,15 @@ class TestParse(unittest.TestCase):
     def test_parse_data4(self):
         self.assertEqual(parse(data4), data4_flat)
 
+    def test_parse_data6(self):
+        self.assertEqual(parse(data6), data6_flat)
+
 class TestParseTree(unittest.TestCase):
     def test_parse_tree(self):
-        self.assertEqual(parse_tree(data1), data1_tree)
+        test_cases = zip([data1, data5, data6],
+                         [data1_tree, data5_tree, data6_tree])
+        for data, data_tree in test_cases:
+            self.assertEqual(parse_tree(data), data_tree)
 
 class TestParseLine(unittest.TestCase):
     def test_parse_line(self):
@@ -77,7 +83,7 @@ class TestParseIntValue(unittest.TestCase):
         self.assertEqual(parse_int_value("4"), 4)
         self.assertEqual(parse_int_value("0"), 0)
         self.assertEqual(parse_int_value("10"), 10)
-        self.assertEqual(parse_int_value("-10"), None)
+        self.assertEqual(parse_int_value("-10"), -10)
         self.assertEqual(parse_int_value("a"), None)
 
 class TestParsePairedListValue(unittest.TestCase):

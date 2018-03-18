@@ -25,7 +25,9 @@ def parse(text, fields=DEFAULT_FIELDS):
 def sent_to_tree(sentence):
     head_indexed = defaultdict(list)
     for token in sentence:
-        head_indexed[token["head"]].append(token)
+        # If HEAD is negative, treat it as child of the root node
+        head = max(token["head"], 0)
+        head_indexed[head].append(token)
 
     return create_tree(head_indexed)
 
@@ -80,10 +82,12 @@ def parse_line(line, fields=DEFAULT_FIELDS):
     return data
 
 def parse_int_value(value):
-    if value.isdigit():
+    if value == '_':
+        return None
+    try:
         return int(value)
-
-    return None
+    except ValueError:
+        return None
 
 def parse_paired_list_value(value):
     if re.match(MULTI_DEPS_PATTERN, value):
