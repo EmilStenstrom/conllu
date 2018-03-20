@@ -208,149 +208,190 @@ data5_tree = [
 ]
 
 data6_tree = [
-    TreeNode(data=OrderedDict([
-        ('id', 1),
-        ('form', 'To'),
-        ('lemma', '_'),
-        ('upostag', 'P'),
-        ('xpostag', 'P'),
-        ('feats', None),
-        ('head', 0),
-        ('deprel', '_'),
-    ]), children=[TreeNode(data=OrderedDict([
-        ('id', 2),
-        ('form', 'appear'),
-        ('lemma', '_'),
-        ('upostag', 'V'),
-        ('xpostag', 'V'),
-        ('feats', None),
-        ('head', 1),
-        ('deprel', '_'),
-    ]), children=[])]),
-    TreeNode(data=OrderedDict([
-        ('id', 3),
-        ('form', '('),
-        ('lemma', '_'),
-        ('upostag', ','),
-        ('xpostag', ','),
-        ('feats', None),
-        ('head', -1),
-        ('deprel', '_'),
-    ]), children=[]),
-    TreeNode(data=OrderedDict([
-        ('id', 4),
-        ('form', 'EMNLP'),
-        ('lemma', '_'),
-        ('upostag', '^'),
-        ('xpostag', '^'),
-        ('feats', None),
-        ('head', 0),
-        ('deprel', '_'),
-    ]), children=[TreeNode(data=OrderedDict([
-        ('id', 5),
-        ('form', '2014'),
-        ('lemma', '_'),
-        ('upostag', '$'),
-        ('xpostag', '$'),
-        ('feats', None),
-        ('head', 4),
-        ('deprel', 'MWE'),
-    ]), children=[])]),
-    TreeNode(data=OrderedDict([
-        ('id', 6),
-        ('form', '):'),
-        ('lemma', '_'),
-        ('upostag', ','),
-        ('xpostag', ','),
-        ('feats', None),
-        ('head', -1),
-        ('deprel', '_'),
-    ]), children=[]),
-    TreeNode(data=OrderedDict([
-        ('id', 11),
-        ('form', 'using'),
-        ('lemma', '_'),
-        ('upostag', 'V'),
-        ('xpostag', 'V'),
-        ('feats', None),
-        ('head', 0),
-        ('deprel', '_'),
-    ]), children=[TreeNode(data=OrderedDict([
-        ('id', 7),
-        ('form', 'Detecting'),
-        ('lemma', '_'),
-        ('upostag', 'V'),
-        ('xpostag', 'V'),
-        ('feats', None),
-        ('head', 11),
-        ('deprel', '_'),
-    ]), children=[]), TreeNode(data=OrderedDict([
-        ('id', 10),
-        ('form', 'Components'),
-        ('lemma', '_'),
-        ('upostag', '^'),
-        ('xpostag', '^'),
-        ('feats', None),
-        ('head', 11),
-        ('deprel', '_'),
-    ]), children=[TreeNode(data=OrderedDict([
-        ('id', 8),
-        ('form', 'Non-compositional'),
-        ('lemma', '_'),
-        ('upostag', '^'),
-        ('xpostag', '^'),
-        ('feats', None),
-        ('head', 10),
-        ('deprel', 'MWE'),
-    ]), children=[]), TreeNode(data=OrderedDict([
-        ('id', 9),
-        ('form', 'MWE'),
-        ('lemma', '_'),
-        ('upostag', '^'),
-        ('xpostag', '^'),
-        ('feats', None),
-        ('head', 10),
-        ('deprel', 'MWE'),
-    ]), children=[])]), TreeNode(data=OrderedDict([
-        ('id', 12),
-        ('form', 'Wiktionary'),
-        ('lemma', '_'),
-        ('upostag', 'N'),
-        ('xpostag', 'N'),
-        ('feats', None),
-        ('head', 11),
-        ('deprel', '_'),
-    ]), children=[])]),
-    TreeNode(data=OrderedDict([
-        ('id', 13),
-        ('form',
-         'http://people.eng.unimelb.edu.au/tbaldwin/pubs/emnlp2014-mwe.pdf'
-         ),
-        ('lemma', '_'),
-        ('upostag', 'U'),
-        ('xpostag', 'U'),
-        ('feats', None),
-        ('head', -1),
-        ('deprel', '_'),
-    ]), children=[]),
-    TreeNode(data=OrderedDict([
-        ('id', 14),
-        ('form', '…'),
-        ('lemma', '_'),
-        ('upostag', ','),
-        ('xpostag', ','),
-        ('feats', None),
-        ('head', -1),
-        ('deprel', '_'),
-    ]), children=[]),
-    TreeNode(data=OrderedDict([
-        ('id', 15),
-        ('form', '#nlproc'),
-        ('lemma', '_'),
-        ('upostag', '#'),
-        ('xpostag', '#'),
-        ('feats', None),
-        ('head', -1),
-        ('deprel', '_'),
-    ]), children=[]),
+    TreeNode(
+        data=OrderedDict([
+            ('id', 1),
+            ('form', 'To'),
+            ('lemma', '_'),
+            ('upostag', 'P'),
+            ('xpostag', 'P'),
+            ('feats', None),
+            ('head', 0),
+            ('deprel', '_')]),
+        children=[
+            TreeNode(
+                data=OrderedDict([
+                    ('id', 2),
+                    ('form', 'appear'),
+                    ('lemma', '_'),
+                    ('upostag', 'V'),
+                    ('xpostag', 'V'),
+                    ('feats', None),
+                    ('head', 1),
+                    ('deprel', '_')]),
+                children=[]
+            )
+        ]
+    ),
+    TreeNode(
+        data=OrderedDict([
+            ('id', 3),
+            ('form', '('),
+            ('lemma', '_'),
+            ('upostag', ','),
+            ('xpostag', ','),
+            ('feats', None),
+            ('head', -1),
+            ('deprel', '_')]),
+        children=[]
+    ),
+    TreeNode(
+        data=OrderedDict([
+            ('id', 4),
+            ('form', 'EMNLP'),
+            ('lemma', '_'),
+            ('upostag', '^'),
+            ('xpostag', '^'),
+            ('feats', None),
+            ('head', 0),
+            ('deprel', '_')]),
+        children=[
+            TreeNode(
+                data=OrderedDict([
+                    ('id', 5),
+                    ('form', '2014'),
+                    ('lemma', '_'),
+                    ('upostag', '$'),
+                    ('xpostag', '$'),
+                    ('feats', None),
+                    ('head', 4),
+                    ('deprel', 'MWE')]),
+                children=[]
+            )
+        ]
+    ),
+    TreeNode(
+        data=OrderedDict([
+            ('id', 6),
+            ('form', '):'),
+            ('lemma', '_'),
+            ('upostag', ','),
+            ('xpostag', ','),
+            ('feats', None),
+            ('head', -1),
+            ('deprel', '_')]),
+        children=[]
+    ),
+    TreeNode(
+        data=OrderedDict([
+            ('id', 11),
+            ('form', 'using'),
+            ('lemma', '_'),
+            ('upostag', 'V'),
+            ('xpostag', 'V'),
+            ('feats', None),
+            ('head', 0),
+            ('deprel', '_')]),
+        children=[
+            TreeNode(
+                data=OrderedDict([
+                    ('id', 7),
+                    ('form', 'Detecting'),
+                    ('lemma', '_'),
+                    ('upostag', 'V'),
+                    ('xpostag', 'V'),
+                    ('feats', None),
+                    ('head', 11),
+                    ('deprel', '_')]),
+                children=[]
+            ),
+            TreeNode(
+                data=OrderedDict([
+                    ('id', 10),
+                    ('form', 'Components'),
+                    ('lemma', '_'),
+                    ('upostag', '^'),
+                    ('xpostag', '^'),
+                    ('feats', None),
+                    ('head', 11),
+                    ('deprel', '_')]),
+                children=[
+                    TreeNode(
+                        data=OrderedDict([
+                            ('id', 8),
+                            ('form', 'Non-compositional'),
+                            ('lemma', '_'),
+                            ('upostag', '^'),
+                            ('xpostag', '^'),
+                            ('feats', None),
+                            ('head', 10),
+                            ('deprel', 'MWE')]),
+                        children=[]
+                    ),
+                    TreeNode(
+                        data=OrderedDict([
+                            ('id', 9),
+                            ('form', 'MWE'),
+                            ('lemma', '_'),
+                            ('upostag', '^'),
+                            ('xpostag', '^'),
+                            ('feats', None),
+                            ('head', 10),
+                            ('deprel', 'MWE')]),
+                        children=[]
+                    )
+                ]
+            ),
+            TreeNode(
+                data=OrderedDict([
+                    ('id', 12),
+                    ('form', 'Wiktionary'),
+                    ('lemma', '_'),
+                    ('upostag', 'N'),
+                    ('xpostag', 'N'),
+                    ('feats', None),
+                    ('head', 11),
+                    ('deprel', '_')]),
+                children=[]
+            )
+        ]
+    ),
+    TreeNode(
+        data=OrderedDict([
+            ('id', 13),
+            ('form',
+            'http://people.eng.unimelb.edu.au/tbaldwin/pubs/emnlp2014-mwe.pdf'
+            ),
+            ('lemma', '_'),
+            ('upostag', 'U'),
+            ('xpostag', 'U'),
+            ('feats', None),
+            ('head', -1),
+            ('deprel', '_')]),
+        children=[]
+    ),
+    TreeNode(
+        data=OrderedDict([
+            ('id', 14),
+            ('form', '…'),
+            ('lemma', '_'),
+            ('upostag', ','),
+            ('xpostag', ','),
+            ('feats', None),
+            ('head', -1),
+            ('deprel', '_')]),
+        children=[]
+    ),
+    TreeNode(
+        data=OrderedDict([
+            ('id', 15),
+            ('form', '#nlproc'),
+            ('lemma', '_'),
+            ('upostag', '#'),
+            ('xpostag', '#'),
+            ('feats', None),
+            ('head', -1),
+            ('deprel', '_')]),
+        children=[]
+    )
 ]
