@@ -102,7 +102,7 @@ def parse_dict_value(value):
     if "=" in value:
         return OrderedDict([
             (part.split("=")[0], parse_nullable_value(part.split("=")[1]))
-            for part in value.split("|")
+            for part in value.split("|") if len(part.split('=')) == 2
         ])
 
     return parse_nullable_value(value)
