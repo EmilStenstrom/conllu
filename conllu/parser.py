@@ -26,7 +26,7 @@ def sent_to_tree(sentence):
     head_indexed = defaultdict(list)
     for token in sentence:
         # If HEAD is negative, treat it as child of the root node
-        head = max(token["head"], 0)
+        head = max(token["head"] or 0, 0)
         head_indexed[head].append(token)
 
     return create_tree(head_indexed)
