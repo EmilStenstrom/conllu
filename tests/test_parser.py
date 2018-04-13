@@ -11,7 +11,7 @@ from conllu.parser import (
     serialize_tree,
     ParseException,
 )
-from tests.fixtures.data import data1, data2, data3, data4, data5, data6
+from tests.fixtures.data import data1, data2, data3, data4, data5, data6, data7, data8
 from tests.fixtures.data_flat import data1_flat, data2_flat, data3_flat, data4_flat, data6_flat
 from tests.fixtures.data_tree import data1_tree, data5_tree, data6_tree
 
@@ -36,12 +36,18 @@ class TestParse(unittest.TestCase):
     def test_parse_data6(self):
         self.assertEqual(parse(data6), data6_flat)
 
+    def test_parse_data7(self):
+        parse(data7)
+
 class TestParseTree(unittest.TestCase):
     def test_parse_tree(self):
         test_cases = zip([data1, data5, data6],
                          [data1_tree, data5_tree, data6_tree])
         for data, data_tree in test_cases:
             self.assertEqual(parse_tree(data), data_tree)
+
+    def test_parse_data8(self):
+        parse_tree(data8)
 
 class TestParseLine(unittest.TestCase):
     def test_parse_line(self):

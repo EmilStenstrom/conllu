@@ -359,9 +359,7 @@ data6_tree = [
     TreeNode(
         data=OrderedDict([
             ('id', 13),
-            ('form',
-            'http://people.eng.unimelb.edu.au/tbaldwin/pubs/emnlp2014-mwe.pdf'
-            ),
+            ('form', 'http://people.eng.unimelb.edu.au/tbaldwin/pubs/emnlp2014-mwe.pdf'),
             ('lemma', '_'),
             ('upostag', 'U'),
             ('xpostag', 'U'),

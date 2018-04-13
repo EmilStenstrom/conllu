@@ -26,7 +26,7 @@ def sent_to_tree(sentence):
     head_indexed = defaultdict(list)
     for token in sentence:
         # If HEAD is negative, treat it as child of the root node
-        head = max(token["head"], 0)
+        head = max(token["head"] or 0, 0)
         head_indexed[head].append(token)
 
     return create_tree(head_indexed)
@@ -102,7 +102,7 @@ def parse_dict_value(value):
     if "=" in value:
         return OrderedDict([
             (part.split("=")[0], parse_nullable_value(part.split("=")[1]))
-            for part in value.split("|")
+            for part in value.split("|") if len(part.split('=')) == 2
         ])
 
     return parse_nullable_value(value)
