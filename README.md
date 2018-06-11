@@ -8,6 +8,7 @@
 - Works with both Python 2 and Python 3
 - It has no dependencies
 - Nice set of tests with CI setup: ![Build status on Travis](https://api.travis-ci.org/EmilStenstrom/conllu.svg?branch=master)
+- It has [lots of downloads](http://pepy.tech/project/conllu)
 
 ## Installation
 
