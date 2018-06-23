@@ -1,10 +1,21 @@
 import unittest
-from contextlib import redirect_stdout
 
 from conllu import print_tree
 from conllu.tree_helpers import TreeNode
 from io import StringIO
 
+try:
+    from contextlib import redirect_stdout
+except ImportError:
+    import sys
+    import contextlib
+
+    @contextlib.contextmanager
+    def redirect_stdout(target):
+        original = sys.stdout
+        sys.stdout = target
+        yield
+        sys.stdout = original
 
 class TestPrintTree(unittest.TestCase):
     def test_print_empty_list(self):
