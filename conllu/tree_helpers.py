@@ -13,7 +13,14 @@ def create_tree(node_children_mapping, start=0):
     ]
     return subtree
 
-def print_tree(node, depth=0, indent=4, exclude_fields=DEFAULT_EXCLUDE_FIELDS):
+def print_tree(node, **kwargs):
+    if isinstance(node, list):
+        for tree in node:
+            _print_one_tree(tree, **kwargs)
+    else:
+        _print_one_tree(node, **kwargs)
+
+def _print_one_tree(node, depth=0, indent=4, exclude_fields=DEFAULT_EXCLUDE_FIELDS):
     assert isinstance(node, TreeNode), "node not TreeNode %s" % type(node)
 
     relevant_data = node.data.copy()
@@ -29,4 +36,4 @@ def print_tree(node, depth=0, indent=4, exclude_fields=DEFAULT_EXCLUDE_FIELDS):
         idx=node.data["id"],
     ))
     for child in node.children:
-        print_tree(child, depth + 1, indent=indent, exclude_fields=exclude_fields)
+        _print_one_tree(child, depth + 1, indent=indent, exclude_fields=exclude_fields)
