@@ -1,19 +1,14 @@
-from collections import OrderedDict
 import unittest
+from collections import OrderedDict
+
 from conllu.parser import (
-    parse,
-    parse_tree,
-    parse_line,
-    parse_int_value,
-    parse_paired_list_value,
-    parse_dict_value,
-    parse_nullable_value,
-    serialize_tree,
-    ParseException,
+    ParseException, parse, parse_dict_value, parse_int_value, parse_line, parse_nullable_value,
+    parse_paired_list_value, parse_tree, serialize_tree,
 )
 from tests.fixtures.data import data1, data2, data3, data4, data5, data6, data7, data8
 from tests.fixtures.data_flat import data1_flat, data2_flat, data3_flat, data4_flat, data6_flat
 from tests.fixtures.data_tree import data1_tree, data5_tree, data6_tree
+
 
 class TestParse(unittest.TestCase):
     def test_parse_data1(self):
