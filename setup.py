@@ -15,7 +15,7 @@ setup(
     install_requires=[],
     tests_require=["nose>=1.3.7", "flake8>=3.0.4"],
     test_suite="nose.collector",
-    keywords=['conllu', 'conll', 'conllu-u', 'parser', 'nlp'],
+    keywords=['conllu', 'conll', 'conll-u', 'parser', 'nlp'],
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 2.7",
