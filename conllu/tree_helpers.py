@@ -1,5 +1,8 @@
 from __future__ import print_function, unicode_literals
+
 from collections import namedtuple
+
+DEFAULT_EXCLUDE_FIELDS = ["id", "deprel", "xpostag", "feats", "head", "deps", "misc"]
 
 TreeNode = namedtuple('TreeNode', ['data', 'children'])
 
@@ -10,7 +13,7 @@ def create_tree(node_children_mapping, start=0):
     ]
     return subtree
 
-def print_tree(node, depth=0, indent=4, exclude_fields=["id", "deprel", "xpostag", "feats", "head", "deps", "misc"]):
+def print_tree(node, depth=0, indent=4, exclude_fields=DEFAULT_EXCLUDE_FIELDS):
     assert isinstance(node, TreeNode), "node not TreeNode %s" % type(node)
 
     relevant_data = node.data.copy()
