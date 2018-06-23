@@ -24,7 +24,10 @@ def _print_one_tree(node, depth=0, indent=4, exclude_fields=DEFAULT_EXCLUDE_FIEL
     assert isinstance(node, TreeNode), "node not TreeNode %s" % type(node)
 
     relevant_data = node.data.copy()
-    map(lambda x: relevant_data.pop(x, None), exclude_fields)
+    for key in exclude_fields:
+        if key in relevant_data:
+            del relevant_data[key]
+
     node_repr = " ".join([
         "{key}:{value}".format(key=key, value=value)
         for key, value in relevant_data.items()
