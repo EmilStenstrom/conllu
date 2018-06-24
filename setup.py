@@ -15,7 +15,6 @@ setup(
     author=u'Emil Stenström',
     author_email='em@kth.se',
     url='https://github.com/EmilStenstrom/conllu/',
-    download_url='https://github.com/EmilStenstrom/conllu/archive/%s.zip' % VERSION,
     install_requires=[],
     keywords=['conllu', 'conll', 'conll-u', 'parser', 'nlp'],
     classifiers=[
