@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import os
+
 from setuptools import setup
 
 VERSION = '0.10.4'
@@ -8,7 +10,7 @@ setup(
     packages=["conllu"],
     version=VERSION,
     description='CoNLL-U Parser parses a CoNLL-U formatted string into a nested python dictionary',
-    long_description=open("README.md").read(),
+    long_description=open(os.path.join(os.path.dirname(__file__), 'README.md')).read(),
     long_description_content_type="text/markdown",
     author=u'Emil Stenström',
     author_email='em@kth.se',
