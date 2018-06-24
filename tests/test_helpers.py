@@ -1,8 +1,8 @@
 import unittest
+from io import StringIO
 
 from conllu import print_tree
 from conllu.tree_helpers import TreeNode
-from io import StringIO
 
 try:
     from contextlib import redirect_stdout

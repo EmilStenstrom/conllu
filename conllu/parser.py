@@ -1,6 +1,8 @@
 from __future__ import unicode_literals
+
 import re
 from collections import OrderedDict, defaultdict
+
 from conllu.tree_helpers import create_tree
 
 DEFAULT_FIELDS = ('id', 'form', 'lemma', 'upostag', 'xpostag', 'feats', 'head', 'deprel', 'deps', 'misc')
