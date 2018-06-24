@@ -206,5 +206,6 @@ You can read about the CoNLL-U format at the [Universial Dependencies project](h
 ```bash
 git clone git@github.com:EmilStenstrom/conllu.git
 cd conllu
-python setup.py test
+pip install tox
+./tox
 ```

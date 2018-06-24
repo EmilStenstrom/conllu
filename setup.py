@@ -15,8 +15,6 @@ setup(
     url='https://github.com/EmilStenstrom/conllu/',
     download_url='https://github.com/EmilStenstrom/conllu/archive/%s.zip' % VERSION,
     install_requires=[],
-    tests_require=["nose>=1.3.7", "flake8>=3.5.0"],
-    test_suite="nose.collector",
     keywords=['conllu', 'conll', 'conll-u', 'parser', 'nlp'],
     classifiers=[
         "Programming Language :: Python",
