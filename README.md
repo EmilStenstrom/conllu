@@ -16,6 +16,12 @@
 pip install conllu
 ```
 
+Or, if you are using [conda](https://conda.io/docs/):
+
+```bash
+conda install -c conda-forge conllu
+```
+
 ## Example usage
 
 ```python
