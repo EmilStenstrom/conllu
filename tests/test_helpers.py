@@ -23,12 +23,12 @@ class TestPrintTree(unittest.TestCase):
         self.assertEqual(result, "")
 
     def test_print_simple_treenode(self):
-        node = TreeNode(data={"id": "X", "deprel": "Y", "test": "data"}, children={})
+        node = TreeNode(data={"id": "X", "deprel": "Y", "test": "data"}, children=[])
         result = self._capture_print(print_tree, node)
         self.assertEqual(result, "(deprel:Y) test:data [X]\n")
 
     def test_print_list_of_nodes(self):
-        node = TreeNode(data={"id": "X", "deprel": "Y", "test": "data"}, children={})
+        node = TreeNode(data={"id": "X", "deprel": "Y", "test": "data"}, children=[])
         nodes = [node, node]
         result = self._capture_print(print_tree, nodes)
         self.assertEqual(result, "(deprel:Y) test:data [X]\n" * 2)
