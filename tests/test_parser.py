@@ -11,7 +11,10 @@ from tests.fixtures.data_flat import data1_flat, data2_flat, data3_flat, data4_f
 from tests.fixtures.data_tree import data1_tree, data5_tree, data6_tree
 
 
-class TestParse(unittest.TestCase):
+class LongDiffTestCase(unittest.TestCase):
+    maxDiff = None
+
+class TestParse(LongDiffTestCase):
     def test_parse_data1(self):
         self.assertEqual(parse(data1), data1_flat)
 
@@ -35,7 +38,7 @@ class TestParse(unittest.TestCase):
     def test_parse_data7(self):
         parse(data7)
 
-class TestParseTree(unittest.TestCase):
+class TestParseTree(LongDiffTestCase):
     def test_parse_tree(self):
         test_cases = zip([data1, data5, data6],
                          [data1_tree, data5_tree, data6_tree])
@@ -45,7 +48,7 @@ class TestParseTree(unittest.TestCase):
     def test_parse_data8(self):
         parse_tree(data8)
 
-class TestParseLine(unittest.TestCase):
+class TestParseLine(LongDiffTestCase):
     def test_parse_line(self):
         line = "1\tThe\tthe\tDET\tDT\tDefinite=Def|PronType=Art\t4\tdet\t_\t_"
         self.assertEqual(parse_line(line), OrderedDict([
@@ -80,7 +83,7 @@ class TestParseLine(unittest.TestCase):
             ('form', 'The'),
         ]))
 
-class TestParseIntValue(unittest.TestCase):
+class TestParseIntValue(LongDiffTestCase):
     def test_parse_int_value(self):
         self.assertEqual(parse_int_value("4"), 4)
         self.assertEqual(parse_int_value("0"), 0)
@@ -88,7 +91,7 @@ class TestParseIntValue(unittest.TestCase):
         self.assertEqual(parse_int_value("-10"), -10)
         self.assertEqual(parse_int_value("a"), None)
 
-class TestParsePairedListValue(unittest.TestCase):
+class TestParsePairedListValue(LongDiffTestCase):
     def test_parse_paired_list(self):
         self.assertEqual(
             parse_paired_list_value("4:nsubj"),
@@ -131,7 +134,7 @@ class TestParsePairedListValue(unittest.TestCase):
             # Invalid strings should be returned untouched
             self.assertEqual(parse_paired_list_value(testcase), testcase)
 
-class TestParseDictValue(unittest.TestCase):
+class TestParseDictValue(LongDiffTestCase):
     def test_parse_dict_value(self):
         self.assertEqual(
             parse_dict_value("key1=val1"),
@@ -144,13 +147,13 @@ class TestParseDictValue(unittest.TestCase):
         self.assertEqual(parse_dict_value(""), None)
         self.assertEqual(parse_dict_value("_"), None)
 
-class TestParseNullableValue(unittest.TestCase):
+class TestParseNullableValue(LongDiffTestCase):
     def test_parse_nullable_value(self):
         self.assertEqual(parse_nullable_value("_"), None)
         self.assertEqual(parse_nullable_value(""), None)
         self.assertEqual(parse_nullable_value("hello"), "hello")
 
-class TestSerialize(unittest.TestCase):
+class TestSerialize(LongDiffTestCase):
     def test_identity(self):
         self.assertEqual(serialize_tree(data1_tree[0]), data1.strip())
 
