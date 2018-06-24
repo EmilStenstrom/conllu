@@ -45,6 +45,11 @@ class TestParseTree(LongDiffTestCase):
         for data, data_tree in test_cases:
             self.assertEqual(parse_tree(data), data_tree)
 
+    def test_exception_on_missing_head(self):
+        data = "1\tThe\tthe\tDET\tDT\tDefinite=Def|PronType=Art"
+        with self.assertRaises(ParseException):
+            parse_tree(data)
+
     def test_parse_data8(self):
         parse_tree(data8)
 

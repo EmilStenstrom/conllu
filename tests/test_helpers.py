@@ -1,5 +1,6 @@
 import unittest
 from io import StringIO
+from textwrap import dedent
 
 from conllu import print_tree
 from conllu.tree_helpers import TreeNode
@@ -26,6 +27,19 @@ class TestPrintTree(unittest.TestCase):
         node = TreeNode(data={"id": "X", "deprel": "Y", "test": "data"}, children=[])
         result = self._capture_print(print_tree, node)
         self.assertEqual(result, "(deprel:Y) test:data [X]\n")
+
+    def test_print_treenode_with_children(self):
+        node = TreeNode(data={"id": "X", "deprel": "Y", "test": "data"}, children=[
+            TreeNode(data={"id": "X", "deprel": "Y", "test": "data"}, children=[]),
+            TreeNode(data={"id": "X", "deprel": "Y", "test": "data"}, children=[]),
+        ])
+        result = self._capture_print(print_tree, node)
+
+        self.assertEqual(result, dedent("""
+            (deprel:Y) test:data [X]
+                (deprel:Y) test:data [X]
+                (deprel:Y) test:data [X]
+        """).lstrip())
 
     def test_print_list_of_nodes(self):
         node = TreeNode(data={"id": "X", "deprel": "Y", "test": "data"}, children=[])
