@@ -8,6 +8,8 @@ setup(
     packages=["conllu"],
     version=VERSION,
     description='CoNLL-U Parser parses a CoNLL-U formatted string into a nested python dictionary',
+    long_description=open("README.md").read(),
+    long_description_content_type="text/markdown",
     author=u'Emil Stenström',
     author_email='em@kth.se',
     url='https://github.com/EmilStenstrom/conllu/',
