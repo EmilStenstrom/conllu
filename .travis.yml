@@ -1,11 +1,10 @@
 language: python
+sudo: false
+cache: pip
 python:
-  - "2.7"
-  - "3.4"
-  - "3.5"
-  - "3.6"
-  - "nightly"
-install:
-  - pip install -q -e .
-script:
-  - python setup.py test
+ - "3.6"
+ - "3.5"
+ - "3.4"
+ - "2.7"
+install: pip install tox-travis
+script: tox
