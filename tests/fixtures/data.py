@@ -61,8 +61,8 @@ data4 = dedent("""
 """)
 
 data5 = dedent("""
-    1	Jag	jag	PRON	PRP	Case=Nom|Definite=Def|Gender=Com|Number=Sing|PronType=Prs	2	nsubj	_	_
-    2	längtar	längta	VERB	VBP	Mood=Ind|Tense=Pres|VerbForm=Fin|Voice=Act	0	root	_	_
+    1\tJag\tjag\tPRON\tPRP\tCase=Nom|Definite=Def|Gender=Com|Number=Sing|PronType=Prs\t2\tnsubj\t_\t_
+    2\tlängtar\tlängta\tVERB\tVBP\tMood=Ind|Tense=Pres|VerbForm=Fin|Voice=Act\t0\troot\t_\t_
 
 """)
 
