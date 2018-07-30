@@ -204,7 +204,7 @@ conda install -c conda-forge conllu
     (deprel:punct) form:. lemma:. upostag:PUNCT [10]
 
 
->>> # Parse CoNLL-U formatted string with variables im comments
+>>> # Parse CoNLL-U formatted string with variables in comments
 >>> from conllu import parse_with_comments
 >>> data = """
 # title = text1
@@ -263,16 +263,8 @@ conda install -c conda-forge conllu
         ])
     ],
     ('variables', OrderedDict([
-        ('id', 1),
-        ('form', 'The'),
-        ('lemma', 'the'),
-        ('upostag', 'DET'),
-        ('xpostag', 'DT'),
-        ('feats', OrderedDict([('Definite', 'Def'), ('PronType', 'Art')])),
-        ('head', 4),
-        ('deprel', 'det'),
-        ('deps', None),
-        ('misc', None)
+        ('title', 'text1'),
+        ('text', 'The quick brown fox jumps over the lazy dog.')
     ]))
 ])]
 
