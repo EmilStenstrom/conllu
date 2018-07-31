@@ -34,7 +34,8 @@ def parse_with_comments(text, fields=DEFAULT_FIELDS):
                 if line:
                     if line.strip().startswith("#"):
                         var_name, var_value = parse_comment_line(line)
-                        variables[var_name] = var_value
+                        if var_name != None:
+                            variables[var_name] = var_value
                     else:
                         lemmas.append(parse_line(line, fields))
             sentences.append(OrderedDict({
@@ -104,8 +105,10 @@ def parse_line(line, fields=DEFAULT_FIELDS):
 
 def parse_comment_line(line):
     line = line.strip()
-    if not ('=' in line and line[0] == '#'):
-        raise ParseException("Invalid comment format, comment must contain '=' and '#' characters.")
+    if line[0] != '#':
+        raise ParseException("Invalid comment format, comment must contain '#' character in begin of line.")
+    if not '=' in line:
+        return None, None
     var_name, var_value = line[1:].split('=', 1)
     var_name = var_name.strip()
     var_value = var_value.strip()
