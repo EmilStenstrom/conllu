@@ -28,18 +28,18 @@ def parse_with_comments(text, fields=DEFAULT_FIELDS):
     sentences = []
     for sentence in text.split("\n\n"):
         lemmas = []
-        variables = OrderedDict()
+        metadata = OrderedDict()
         if sentence:
             for line in sentence.split("\n"):
                 if line:
                     if line.strip().startswith("#"):
                         var_name, var_value = parse_comment_line(line)
                         if var_name != None:
-                            variables[var_name] = var_value
+                            metadata[var_name] = var_value
                     else:
                         lemmas.append(parse_line(line, fields))
             sentences.append(OrderedDict({
-                'variables' : variables,
+                'metadata' : metadata,
                 'lemmas' : lemmas
             }))   
     return sentences

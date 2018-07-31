@@ -204,7 +204,7 @@ conda install -c conda-forge conllu
     (deprel:punct) form:. lemma:. upostag:PUNCT [10]
 
 
->>> # Parse CoNLL-U formatted string with variables in comments
+>>> # Parse CoNLL-U formatted string with metadata in comments
 >>> from conllu import parse_with_comments
 >>> data = """
 # title = text1
@@ -224,7 +224,12 @@ conda install -c conda-forge conllu
 
 >>> parse_with_comments(syntaxnet_text.decode('utf-8'))
 [OrderedDict([
-    ('lemmas', [([
+    ('metadata', OrderedDict([
+        ('sent_id', '1'),
+        ('text', 'The quick brown fox jumps over the lazy dog.')
+    ])),
+    ('lemmas', [
+        OrderedDict([
             ('id', 1),
             ('form', 'The'),
             ('lemma', 'the'),
@@ -261,11 +266,8 @@ conda install -c conda-forge conllu
             ('deps', None),
             ('misc', None)
         ])
-    ],
-    ('variables', OrderedDict([
-        ('title', 'text1'),
-        ('text', 'The quick brown fox jumps over the lazy dog.')
-    ]))
+    ]),
+    
 ])]
 
 ```
