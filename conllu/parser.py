@@ -38,10 +38,10 @@ def parse_with_comments(text, fields=DEFAULT_FIELDS):
                             metadata[var_name] = var_value
                     else:
                         lemmas.append(parse_line(line, fields))
-            sentences.append(OrderedDict({
-                'metadata' : metadata,
-                'lemmas' : lemmas
-            }))   
+            sentences.append(OrderedDict([
+                ('metadata', metadata),
+                ('lemmas', lemmas)
+            ]))   
     return sentences
 
 def sent_to_tree(sentence):
