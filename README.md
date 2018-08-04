@@ -208,7 +208,7 @@ conda install -c conda-forge conllu
 >>> from conllu import parse_with_comments
 >>> data = """
 # title = text1
-# text = The quick brown fox jumps over the lazy 
+# text = The quick brown fox jumps over the lazy dog.
 1   The     the    DET    DT   Definite=Def|PronType=Art   4   det     _   _
 2   quick   quick  ADJ    JJ   Degree=Pos                  4   amod    _   _
 3   brown   brown  ADJ    JJ   Degree=Pos                  4   amod    _   _
@@ -222,10 +222,15 @@ conda install -c conda-forge conllu
 
 """ 
 
->>> parse_with_comments(syntaxnet_text.decode('utf-8'))
+>>> # GitHub replaces tab characters with spaces so for this code to be copy-pastable
+>>> # I've added the following two lines. You don't need them in your code
+>>> import re
+>>> data = re.sub(r" +", r"\t", data)
+
+>>> parse_with_comments(data)
 [OrderedDict([
     ('metadata', OrderedDict([
-        ('sent_id', '1'),
+        ('title', 'text1'),
         ('text', 'The quick brown fox jumps over the lazy dog.')
     ])),
     ('lemmas', [
