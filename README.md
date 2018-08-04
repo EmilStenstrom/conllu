@@ -202,6 +202,74 @@ conda install -c conda-forge conllu
         (deprel:det) form:the lemma:the upostag:DET [7]
         (deprel:amod) form:lazy lemma:lazy upostag:ADJ [8]
     (deprel:punct) form:. lemma:. upostag:PUNCT [10]
+
+
+>>> # Parse CoNLL-U formatted string with metadata in comments
+>>> from conllu import parse_with_comments
+>>> data = """
+# title = text1
+# text = The quick brown fox jumps over the lazy 
+1   The     the    DET    DT   Definite=Def|PronType=Art   4   det     _   _
+2   quick   quick  ADJ    JJ   Degree=Pos                  4   amod    _   _
+3   brown   brown  ADJ    JJ   Degree=Pos                  4   amod    _   _
+4   fox     fox    NOUN   NN   Number=Sing                 5   nsubj   _   _
+5   jumps   jump   VERB   VBZ  Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin   0   root    _   _
+6   over    over   ADP    IN   _                           9   case    _   _
+7   the     the    DET    DT   Definite=Def|PronType=Art   9   det     _   _
+8   lazy    lazy   ADJ    JJ   Degree=Pos                  9   amod    _   _
+9   dog     dog    NOUN   NN   Number=Sing                 5   nmod    _   SpaceAfter=No
+10  .       .      PUNCT  .    _                           5   punct   _   _
+
+""" 
+
+>>> parse_with_comments(syntaxnet_text.decode('utf-8'))
+[OrderedDict([
+    ('metadata', OrderedDict([
+        ('sent_id', '1'),
+        ('text', 'The quick brown fox jumps over the lazy dog.')
+    ])),
+    ('lemmas', [
+        OrderedDict([
+            ('id', 1),
+            ('form', 'The'),
+            ('lemma', 'the'),
+            ('upostag', 'DET'),
+            ('xpostag', 'DT'),
+            ('feats', OrderedDict([('Definite', 'Def'), ('PronType', 'Art')])),
+            ('head', 4),
+            ('deprel', 'det'),
+            ('deps', None),
+            ('misc', None)
+        ]),
+        OrderedDict([
+            ('id', 2),
+            ('form', 'quick'),
+            ('lemma', 'quick'),
+            ('upostag', 'ADJ'),
+            ('xpostag', 'JJ'),
+            ('feats', OrderedDict([('Degree', 'Pos')])),
+            ('head', 4),
+            ('deprel', 'amod'),
+            ('deps', None),
+            ('misc', None)
+        ]),
+        ...
+        OrderedDict([
+            ('id', 10),
+            ('form', '.'),
+            ('lemma', '.'),
+            ('upostag', 'PUNCT'),
+            ('xpostag', '.'),
+            ('feats', None),
+            ('head', 5),
+            ('deprel', 'punct'),
+            ('deps', None),
+            ('misc', None)
+        ])
+    ]),
+    
+])]
+
 ```
 
 NOTE: TreeNode is a namedtuple so you can loop over it as a normal tuple.

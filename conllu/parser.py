@@ -24,6 +24,26 @@ def parse(text, fields=DEFAULT_FIELDS):
         if sentence
     ]
 
+def parse_with_comments(text, fields=DEFAULT_FIELDS):
+    sentences = []
+    for sentence in text.split("\n\n"):
+        lemmas = []
+        metadata = OrderedDict()
+        if sentence:
+            for line in sentence.split("\n"):
+                if line:
+                    if line.strip().startswith("#"):
+                        var_name, var_value = parse_comment_line(line)
+                        if var_name:
+                            metadata[var_name] = var_value
+                    else:
+                        lemmas.append(parse_line(line, fields))
+            sentences.append(OrderedDict([
+                ('metadata', metadata),
+                ('lemmas', lemmas)
+            ]))
+    return sentences
+
 def sent_to_tree(sentence):
     head_indexed = defaultdict(list)
     for token in sentence:
@@ -82,6 +102,17 @@ def parse_line(line, fields=DEFAULT_FIELDS):
         data[field] = value
 
     return data
+
+def parse_comment_line(line):
+    line = line.strip()
+    if line[0] != '#':
+        raise ParseException("Invalid comment format, comment must start with '#'")
+    if '=' not in line:
+        return None, None
+    var_name, var_value = line[1:].split('=', 1)
+    var_name = var_name.strip()
+    var_value = var_value.strip()
+    return var_name, var_value
 
 def parse_int_value(value):
     if value == '_':

@@ -1,11 +1,11 @@
 import unittest
 from collections import OrderedDict
+from textwrap import dedent
 
 from conllu.parser import (
-    ParseException, parse, parse_dict_value, parse_int_value, parse_line, parse_nullable_value,
-    parse_paired_list_value, parse_tree, serialize_tree,
+    ParseException, parse, parse_comment_line, parse_dict_value, parse_int_value, parse_line, parse_nullable_value,
+    parse_paired_list_value, parse_tree, parse_with_comments, serialize_tree,
 )
-
 from tests.fixtures.data import data1, data2, data3, data4, data5, data6, data7, data8
 from tests.fixtures.data_flat import data1_flat, data2_flat, data3_flat, data4_flat, data6_flat
 from tests.fixtures.data_tree import data1_tree, data5_tree, data6_tree
@@ -37,6 +37,42 @@ class TestParse(LongDiffTestCase):
 
     def test_parse_data7(self):
         parse(data7)
+
+class TestParseWithComments(LongDiffTestCase):
+    def test_parse_with_comments(self):
+        data = dedent("""\
+            # sent_id = 1
+            # text = The lazy dog
+            1\tThe\tthe\tDET\tDT\tDefinite=Def|PronType=Art
+        """)
+        self.assertEqual(
+            parse_with_comments(data)[0]["metadata"],
+            OrderedDict([('sent_id', '1'), ('text', 'The lazy dog')])
+        )
+
+    def test_parse_spaces_before_square(self):
+        data = dedent("""\
+            # a = 1
+             # b = 2
+            \t# c = 3
+        """)
+        self.assertEqual(
+            parse_with_comments(data)[0]["metadata"],
+            OrderedDict([('a', '1'), ('b', '2'), ('c', '3')])
+        )
+
+    def test_parse_comment_line(self):
+        data = "# sent_id = 1"
+        self.assertEqual(parse_comment_line(data), ("sent_id", "1"))
+
+    def test_parse_comment_line_without_square(self):
+        data = "sent_id = 1"
+        with self.assertRaises(ParseException):
+            parse_comment_line(data)
+
+    def test_parse_comment_line_without_equals(self):
+        data = "# sent_id: 1"
+        self.assertEqual(parse_comment_line(data), (None, None))
 
 class TestParseTree(LongDiffTestCase):
     def test_parse_tree(self):
