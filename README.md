@@ -85,7 +85,7 @@ Each sentence can also have metadata in the form of comments before the sentence
 OrderedDict([
     ("text", "The quick brown fox jumps over the lazy dog."),
     ...
-}
+])
 ```
 
 That's it!
@@ -156,7 +156,7 @@ Just like with `parse()`, if a sentence has metadata it is available in a proper
 OrderedDict([
     ("text", "The quick brown fox jumps over the lazy dog."),
     ...
-}
+])
 ```
 
 If you ever want to get your CoNLL-U formated text back (maybe after changing something?), use the `serialize()` method:
