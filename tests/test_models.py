@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import unittest
+from collections import OrderedDict
 from textwrap import dedent
 
 from conllu.compat import capture_print
@@ -33,7 +34,13 @@ class TestSerializeTree(unittest.TestCase):
             tree.serialize()
 
     def test_flatten(self):
-        tree = TokenTree({"id": 2, "form": "dog"}, [TokenTree({"id": 1, "form": "a"}, [])])
+        tree = TokenTree(
+            token=OrderedDict([("id", 2), ("form", "dog")]),
+            children=[TokenTree(
+                token=OrderedDict([("id", 1), ("form", "a")]),
+                children=[]
+            )]
+        )
         self.assertEqual(
             tree.serialize(),
             dedent("""\
@@ -42,7 +49,13 @@ class TestSerializeTree(unittest.TestCase):
 
             """)
         )
-        tree = TokenTree({"id": 1, "form": "dog"}, [TokenTree({"id": 2, "form": "a"}, [])])
+        tree = TokenTree(
+            token=OrderedDict([("id", 1), ("form", "dog")]),
+            children=[TokenTree(
+                token=OrderedDict([("id", 2), ("form", "a")]),
+                children=[]
+            )]
+        )
         self.assertEqual(
             tree.serialize(),
             dedent("""\
