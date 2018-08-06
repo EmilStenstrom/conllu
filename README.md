@@ -178,29 +178,31 @@ You can read about the CoNLL-U format at the [Universial Dependencies project](h
 
 ## Develop locally and run the tests
 
-```bash
-git clone git@github.com:EmilStenstrom/conllu.git
-cd conllu
-```
+1. Make a fork of the repository to your own GitHub account.
 
-Now you can run the tests:
+2. Clone the repository locally on your computer:
+    ```bash
+    git clone git@github.com:YOURUSERNAME/conllu.git conllu
+    cd conllu
+    ```
 
-```python
-python runtests.py
-```
+3. Install the library used for running the tests:
+    ```bash
+    pip install tox
+    ```
 
-To check that all code really has test, I use a library called coverage. It runs through all code and checks for things that does NOT have tests. This project requires 100% test coverage, and you can easily check if you missed something using this command:
+4. Now you can run the tests:
+    ```bash
+    tox
+    ```
+    This runs tox across all supported versions of Python, and also runs checks for code-coverage, syntax errors, and how imports are sorted.
 
-```python
-coverage run --source conllu runtests.py; coverage report -m
-```
+4. (Alternative) If you just have one version of python installed, and don't want to go through the hassle of installing multiple version of python (hint: Install pyenv and pyenv-tox), **it's fine to run tox with just one version of python**:
 
-Finally, make sure you follow this project's coding standard by running flake8 on all code.
+    ```bash
+    tox -e py36
+    ```
 
-```python
-flake8 conllu tests
-```
-
-All these three tests will be run on your finished pull request, and tell you if something went wrong.
+5. Make a pull request. Here's a [good guide on PRs from GitHub](https://help.github.com/articles/creating-a-pull-request-from-a-fork/).
 
 Thanks for helping conllu become a better library!
