@@ -23,6 +23,10 @@ Or, if you are using [conda](https://conda.io/docs/):
 conda install -c conda-forge conllu
 ```
 
+## Notes on updating from 0.1 to 0.2
+
+I don't like breaking backwards compatibility, but to be able to add new features I felt I had to. This means that updating from 0.1 to 0.2 *might* require code changes. Here's a guide on [how to upgrade to 0.2](https://github.com/EmilStenstrom/conllu/wiki/Migrating-from-0.1-to-0.2).
+
 ## Example usage
 
 At the top level, conllu provides two methods, `parse` and `parse_tree`. The first one parses sentences and returns a flat list. The other returns a nested tree structure. Let's go through them one by one.
