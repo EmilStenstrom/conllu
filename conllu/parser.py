@@ -3,69 +3,35 @@ from __future__ import unicode_literals
 import re
 from collections import OrderedDict, defaultdict
 
-from conllu.tree_helpers import create_tree
+from conllu.compat import text
 
 DEFAULT_FIELDS = ('id', 'form', 'lemma', 'upostag', 'xpostag', 'feats', 'head', 'deprel', 'deps', 'misc')
 
-deps_pattern = r"\d+:[a-z][a-z_-]*(:[a-z][a-z_-]*)?"
-MULTI_DEPS_PATTERN = re.compile(r"^{}(\|{})*$".format(deps_pattern, deps_pattern))
+def parse_token_and_metadata(data, fields=None):
+    if not data:
+        raise ParseException("Can't create TokenList, no data sent to constructor.")
 
-class ParseException(Exception):
-    pass
+    fields = fields or DEFAULT_FIELDS
 
-def parse(text, fields=DEFAULT_FIELDS):
-    return [
-        [
-            parse_line(line, fields)
-            for line in sentence.split("\n")
-            if line and not line.strip().startswith("#")
-        ]
-        for sentence in text.split("\n\n")
-        if sentence
-    ]
+    tokens = []
+    metadata = OrderedDict()
 
-def parse_with_comments(text, fields=DEFAULT_FIELDS):
-    sentences = []
-    for sentence in text.split("\n\n"):
-        lemmas = []
-        metadata = OrderedDict()
-        if sentence:
-            for line in sentence.split("\n"):
-                if line:
-                    if line.strip().startswith("#"):
-                        var_name, var_value = parse_comment_line(line)
-                        if var_name:
-                            metadata[var_name] = var_value
-                    else:
-                        lemmas.append(parse_line(line, fields))
-            sentences.append(OrderedDict([
-                ('metadata', metadata),
-                ('lemmas', lemmas)
-            ]))
-    return sentences
+    for line in data.split('\n'):
+        line = line.strip()
 
-def sent_to_tree(sentence):
-    head_indexed = defaultdict(list)
-    for token in sentence:
-        # If HEAD is negative, treat it as child of the root node
-        head = max(token["head"] or 0, 0)
-        head_indexed[head].append(token)
+        if not line:
+            continue
 
-    return create_tree(head_indexed)
+        if line.startswith('#'):
+            var_name, var_value = parse_comment_line(line)
+            if var_name:
+                metadata[var_name] = var_value
+        else:
+            tokens.append(parse_line(line, fields=fields))
 
-def parse_tree(text):
-    result = parse(text)
+    return tokens, metadata
 
-    if "head" not in result[0][0]:
-        raise ParseException("Can't parse tree, missing 'head' field.")
-
-    trees = []
-    for sentence in result:
-        trees += sent_to_tree(sentence)
-
-    return trees
-
-def parse_line(line, fields=DEFAULT_FIELDS):
+def parse_line(line, fields):
     line = re.split(r"\t| {2,}", line)
 
     if len(line) == 1 and " " in line[0]:
@@ -79,7 +45,7 @@ def parse_line(line, fields=DEFAULT_FIELDS):
             break
 
         if field == "id":
-            value = parse_int_value(line[i])
+            value = parse_id_value(line[i])
 
         elif field == "xpostag":
             value = parse_nullable_value(line[i])
@@ -105,22 +71,57 @@ def parse_line(line, fields=DEFAULT_FIELDS):
 
 def parse_comment_line(line):
     line = line.strip()
+
     if line[0] != '#':
         raise ParseException("Invalid comment format, comment must start with '#'")
+
     if '=' not in line:
         return None, None
+
     var_name, var_value = line[1:].split('=', 1)
     var_name = var_name.strip()
     var_value = var_value.strip()
+
     return var_name, var_value
+
+
+INTEGER = re.compile(r"^0|(\-?[1-9][0-9]*)$")
 
 def parse_int_value(value):
     if value == '_':
         return None
-    try:
+
+    if re.match(INTEGER, value):
         return int(value)
-    except ValueError:
+    else:
+        raise ParseException("'{}' is not a valid value for parse_int_value.".format(value))
+
+
+ID_SINGLE = re.compile(r"^[1-9][0-9]*$")
+ID_RANGE = re.compile(r"^[1-9][0-9]*\-[1-9][0-9]*$")
+ID_DOT_ID = re.compile(r"^[1-9][0-9]*\.[1-9][0-9]*$")
+
+def parse_id_value(value):
+    if not value or value == '_':
         return None
+
+    if re.match(ID_SINGLE, value):
+        return int(value)
+
+    elif re.match(ID_RANGE, value):
+        from_, to = value.split("-")
+        from_, to = int(from_), int(to)
+        if to > from_:
+            return (int(from_), "-", int(to))
+
+    elif re.match(ID_DOT_ID, value):
+        return (int(value.split(".")[0]), ".", int(value.split(".")[1]))
+
+    raise ParseException("'{}' is not a valid ID.".format(value))
+
+
+deps_pattern = r"\d+:[a-z][a-z_-]*(:[a-z][a-z_-]*)?"
+MULTI_DEPS_PATTERN = re.compile(r"^{}(\|{})*$".format(deps_pattern, deps_pattern))
 
 def parse_paired_list_value(value):
     if re.match(MULTI_DEPS_PATTERN, value):
@@ -146,35 +147,58 @@ def parse_nullable_value(value):
 
     return value
 
+def head_to_token(sentence):
+    if not sentence:
+        raise ParseException("Can't parse tree, need a tokenlist as input.")
+
+    if "head" not in sentence[0]:
+        raise ParseException("Can't parse tree, missing 'head' field.")
+
+    head_indexed = defaultdict(list)
+    for token in sentence:
+        # If HEAD is negative, treat it as child of the root node
+        head = max(token["head"] or 0, 0)
+        head_indexed[head].append(token)
+
+    return head_indexed
+
 def serialize_field(field):
     if field is None:
         return '_'
 
     if isinstance(field, OrderedDict):
-        serialized_fields = []
-        for key_value in field.items():
-            serialized_fields.append('='.join(key_value))
+        fields = []
+        for key, value in field.items():
+            if value is None:
+                value = "_"
 
-        return '|'.join(serialized_fields)
+            fields.append('='.join((key, value)))
+
+        return '|'.join(fields)
+
+    if isinstance(field, tuple):
+        return "".join([text(item) for item in field])
+
+    if isinstance(field, list):
+        if len(field[0]) != 2:
+            raise ParseException("Can't serialize '{}', invalid format".format(field))
+        return "|".join([text(value) + ":" + text(key) for key, value in field])
 
     return "{}".format(field)
 
-def serialize_tree(root):
-    def add_subtree(root_token, token_list):
-        for child_token in root_token.children:
-            token_list = add_subtree(child_token, token_list)
-
-        token_list.append(root_token.data)
-        return token_list
-
-    tokens = []
-    add_subtree(root, tokens)
-
-    sorted_tokens = sorted(tokens, key=lambda t: t['id'])
+def serialize(tokenlist):
     lines = []
-    for token_data in sorted_tokens:
+
+    if tokenlist.metadata:
+        for key, value in tokenlist.metadata.items():
+            line = "# " + key + " = " + value
+            lines.append(line)
+
+    for token_data in tokenlist:
         line = '\t'.join(serialize_field(val) for val in token_data.values())
         lines.append(line)
 
-    text = '\n'.join(lines)
-    return text
+    return '\n'.join(lines) + "\n\n"
+
+class ParseException(Exception):
+    pass
