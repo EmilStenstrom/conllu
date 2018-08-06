@@ -62,11 +62,12 @@ class MyTestRunner(unittest.runner.TextTestRunner):
             suite.addTest(test)
 
         # Resume normal TextTestRunner function with the new test suite
-        super(MyTestRunner, self).run(suite)
+        return super(MyTestRunner, self).run(suite)
 
 
 if __name__ == '__main__':
     import argparse
+    import sys
 
     # ---- create commandline parser
     parser = argparse.ArgumentParser(description='Find and run cqparts tests.')
@@ -96,4 +97,5 @@ if __name__ == '__main__':
         verbosity=2,
     )
 
-    testRunner.run(tests)
+    result = testRunner.run(tests)
+    sys.exit(not result.wasSuccessful())
