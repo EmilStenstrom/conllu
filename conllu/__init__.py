@@ -6,7 +6,7 @@ from conllu.parser import head_to_token, parse_token_and_metadata
 
 def parse(data, fields=None):
     return [
-        TokenList(*parse_token_and_metadata(data, fields=fields))
+        TokenList(*parse_token_and_metadata(sentence, fields=fields))
         for sentence in data.split("\n\n")
         if sentence
     ]
