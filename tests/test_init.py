@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import unittest
 from textwrap import dedent
 
-from conllu import parse, parse_tree
+from conllu import parse
 from conllu.compat import text
 
 
