@@ -124,10 +124,10 @@ Since one CoNLL-U file usually contains multiple sentences, `parse_tree()` alway
 TokenTree<token={id=5, form=jumps, ...}, children=...>
 ```
 
-The quickly see the tree structure you can call `print` on a TokenTree.
+The quickly see the tree structure you can call `print_tree` on a TokenTree.
 
 ```python
->>> root.print()
+>>> root.print_tree()
 (deprel:root) form:jumps lemma:jump upostag:VERB [5]
     (deprel:nsubj) form:fox lemma:fox upostag:NOUN [4]
         (deprel:det) form:The lemma:the upostag:DET [1]
