@@ -93,6 +93,16 @@ OrderedDict([
 ])
 ```
 
+If you ever want to get your CoNLL-U formated text back (maybe after changing something?), use the `serialize()` method:
+
+```python
+>>> sentence.serialize()
+# text = The quick brown fox jumps over the lazy dog.
+1   The     the    DET    DT   Definite=Def|PronType=Art   4   det     _   _
+2   quick   quick  ADJ    JJ   Degree=Pos                  4   amod    _   _
+...
+```
+
 That's it!
 
 ## Use parse_tree() to parse into a list of dependency trees
@@ -117,7 +127,7 @@ TokenTree<token={id=5, form=jumps, ...}, children=...>
 The quickly see the tree structure you can call `print` on a TokenTree.
 
 ```python
->>> root.print_tree()
+>>> root.print()
 (deprel:root) form:jumps lemma:jump upostag:VERB [5]
     (deprel:nsubj) form:fox lemma:fox upostag:NOUN [4]
         (deprel:det) form:The lemma:the upostag:DET [1]
