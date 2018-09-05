@@ -1,7 +1,7 @@
 from __future__ import print_function, unicode_literals
 
 from conllu.compat import text
-from conllu.parser import ParseException, serialize
+from conllu.parser import ParseException, head_to_token, serialize
 
 DEFAULT_EXCLUDE_FIELDS = ('id', 'deprel', 'xpostag', 'feats', 'head', 'deps', 'misc')
 
@@ -24,6 +24,17 @@ class TokenList(object):
 
     def serialize(self):
         return serialize(self)
+
+    def to_tree(self):
+        def _create_tree(head_to_token_mapping, id_=0):
+            return [
+                TokenTree(child, _create_tree(head_to_token_mapping, child["id"]))
+                for child in head_to_token_mapping[id_]
+            ]
+
+        root = _create_tree(head_to_token(self))[0]
+        root.set_metadata(self.metadata)
+        return root
 
 class TokenTree(object):
     token = None
