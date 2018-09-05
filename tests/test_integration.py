@@ -4,9 +4,10 @@ from __future__ import unicode_literals
 import re
 import unittest
 from collections import OrderedDict
+from io import StringIO
 from textwrap import dedent
 
-from conllu import parse, parse_tree
+from conllu import parse, parse_incr, parse_tree, parse_tree_incr
 from conllu.compat import capture_print, text
 from tests.helpers import testlabel
 
@@ -143,6 +144,12 @@ class TestParse(unittest.TestCase):
         toklists = parse(data)
         tree = parse_tree(data)
         self.assertEqual([toklist.to_tree() for toklist in toklists], tree)
+
+    def test_parse_incr(self):
+        self.assertEqual(parse(data), list(parse_incr(StringIO(data))))
+
+    def test_parse_tree_incr(self):
+        self.assertEqual(parse_tree(data), list(parse_tree_incr(StringIO(data))))
 
 
 @testlabel("integration")
