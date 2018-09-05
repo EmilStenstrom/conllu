@@ -139,6 +139,12 @@ class TestParse(unittest.TestCase):
             """)
         )
 
+    def test_to_tree(self):
+        toklists = parse(data)
+        tree = parse_tree(data)
+        self.assertEqual([toklist.to_tree() for toklist in toklists], tree)
+
+
 @testlabel("integration")
 class TestTrickyCases(unittest.TestCase):
     maxDiff = None
