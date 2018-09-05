@@ -22,6 +22,9 @@ class TokenList(object):
     def __repr__(self):
         return 'TokenList<' + ', '.join([token['form'] for token in self.tokens]) + '>'
 
+    def __eq__(self, other):
+        return self.tokens == other.tokens and self.metadata == other.metadata
+
     def serialize(self):
         return serialize(self)
 
@@ -54,6 +57,10 @@ class TokenTree(object):
             'token={id=' + text(self.token['id']) + ', form=' + self.token['form'] + '}, ' + \
             'children=' + ('[...]' if self.children else 'None') + \
             '>'
+
+    def __eq__(self, other):
+        return self.token == other.token and self.children == other.children \
+            and self.metadata == other.metadata
 
     def serialize(self):
         if not self.token or "id" not in self.token:
