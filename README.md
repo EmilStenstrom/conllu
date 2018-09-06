@@ -61,6 +61,19 @@ Now you have the data in a variable called `data`. Let's parse it:
 [TokenList<The, quick, brown, fox, ...>]
 ```
 
+**Advanced usage**: If you have many sentences (say over a megabyte) to parse at once, you can avoid loading them into memory at once by using `parse_incr()` instead of `parse`. It takes an opened file, and returns a generator instead of the list directly, so you need to either iterate over it, or call list() to get the TokenLists out. Here's how you would use it:
+
+```python
+from io import open
+from conllu import parse_incr
+
+data_file = open("huge_file.conllu", "r", encoding="utf-8")
+for tokenlist in parse_incr(data_file):
+    print(tokenlist)
+```
+
+For most files, `parse` works fine.
+
 Since one CoNLL-U file usually contains multiple sentences, `parse()` always returns a list of sentences. Each sentence is represented by a TokenList.
 
 ```python
@@ -103,6 +116,13 @@ If you ever want to get your CoNLL-U formated text back (maybe after changing so
 ...
 ```
 
+You can also convert a TokenList to a TokenTree by using `to_tree`:
+
+```python
+>>> sentence.to_tree()
+TokenTree<token={id=5, form=jumps}, children=[...]>
+```
+
 That's it!
 
 ## Use parse_tree() to parse into a list of dependency trees
@@ -114,6 +134,17 @@ Sometimes you're interested in the tree structure that hides in the `head` colum
 >>> sentences = parse_tree(data)
 >>> sentences
 [TokenTree<...>]
+```
+
+**Advanced usage**: If you have many sentences (say over a megabyte) to parse at once, you can avoid loading them into memory at once by using `parse_tree_incr()` instead of `parse_tree`. It takes an opened file, and returns a generator instead of the list directly, so you need to either iterate over it, or call list() to get the TokenTrees out. Here's how you would use it:
+
+```python
+from io import open
+from conllu import parse_tree_incr
+
+data_file = open("huge_file.conllu", "r", encoding="utf-8")
+for tokentree in parse_tree_incr(data_file):
+    print(tokentree)
 ```
 
 Since one CoNLL-U file usually contains multiple sentences, `parse_tree()` always returns a list of sentences. Each sentence is represented by a TokenTree.
