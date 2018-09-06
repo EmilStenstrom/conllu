@@ -11,6 +11,22 @@ def parse(data, fields=None):
         if sentence
     ]
 
+def parse_incr(in_file, fields=None):
+    for sentence in _iter_sents(in_file):
+        yield TokenList(*parse_token_and_metadata(sentence, fields=fields))
+
+def parse_tree(data):
+    tokenlists = parse(data)
+
+    sentences = []
+    for tokenlist in tokenlists:
+        sentences.append(tokenlist.to_tree())
+
+    return sentences
+
+def parse_tree_incr(in_file):
+    for tokenlist in parse_incr(in_file):
+        yield tokenlist.to_tree()
 
 def _iter_sents(in_file):
     buf = []
@@ -22,23 +38,3 @@ def _iter_sents(in_file):
             buf.append(line)
     if buf:
         yield "".join(buf)
-
-
-def parse_incr(in_file, fields=None):
-    for sentence in _iter_sents(in_file):
-        yield TokenList(*parse_token_and_metadata(sentence, fields=fields))
-
-
-def parse_tree(data):
-    tokenlists = parse(data)
-
-    sentences = []
-    for tokenlist in tokenlists:
-        sentences.append(tokenlist.to_tree())
-
-    return sentences
-
-
-def parse_tree_incr(in_file):
-    for tokenlist in parse_incr(in_file):
-        yield tokenlist.to_tree()
