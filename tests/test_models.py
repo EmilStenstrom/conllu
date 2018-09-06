@@ -26,6 +26,20 @@ class TestTokenList(unittest.TestCase):
         tokenlist2.metadata = metadata
         self.assertEqual(tokenlist1, tokenlist2)
 
+    def test_to_tree(self):
+        tokenlist = TokenList([
+            OrderedDict([("id", 2), ("form", "dog"), ("head", 0)]),
+            OrderedDict([("id", 1), ("form", "a"), ("head", 2)]),
+        ])
+        tree = TokenTree(
+            token=OrderedDict([("id", 2), ("form", "dog"), ("head", 0)]),
+            children=[TokenTree(
+                token=OrderedDict([("id", 1), ("form", "a"), ("head", 2)]),
+                children=[]
+            )]
+        )
+        self.assertEqual(tokenlist.to_tree(), tree)
+
 class TestSerialize(unittest.TestCase):
     def test_serialize_on_tokenlist(self):
         tokenlist = TokenList([{"id": 1}])

@@ -140,11 +140,6 @@ class TestParse(unittest.TestCase):
             """)
         )
 
-    def test_to_tree(self):
-        toklists = parse(data)
-        tree = parse_tree(data)
-        self.assertEqual([toklist.to_tree() for toklist in toklists], tree)
-
     def test_parse_incr(self):
         self.assertEqual(parse(data), list(parse_incr(StringIO(data))))
 
