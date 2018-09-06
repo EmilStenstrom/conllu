@@ -15,12 +15,52 @@ class TestTokenList(unittest.TestCase):
         with self.assertRaises(ParseException):
             TokenList({"id": 1})
 
+    def test_eq(self):
+        metadata = {"meta": "data"}
+
+        tokenlist1 = TokenList([{"id": 1}])
+        tokenlist1.metadata = metadata
+        tokenlist2 = TokenList([{"id": 1}])
+        self.assertNotEqual(tokenlist1, tokenlist2)
+
+        tokenlist2.metadata = metadata
+        self.assertEqual(tokenlist1, tokenlist2)
+
+    def test_to_tree(self):
+        tokenlist = TokenList([
+            OrderedDict([("id", 2), ("form", "dog"), ("head", 0)]),
+            OrderedDict([("id", 1), ("form", "a"), ("head", 2)]),
+        ])
+        tree = TokenTree(
+            token=OrderedDict([("id", 2), ("form", "dog"), ("head", 0)]),
+            children=[TokenTree(
+                token=OrderedDict([("id", 1), ("form", "a"), ("head", 2)]),
+                children=[]
+            )]
+        )
+        self.assertEqual(tokenlist.to_tree(), tree)
+
 class TestSerialize(unittest.TestCase):
     def test_serialize_on_tokenlist(self):
         tokenlist = TokenList([{"id": 1}])
         self.assertEqual(tokenlist.serialize(), serialize(tokenlist))
 
 class TestTokenTree(unittest.TestCase):
+    def test_eq(self):
+        metadata = {"meta": "data"}
+
+        tokentree1 = TokenTree(token={"id": 1}, children=[TokenTree(token={"id": 2}, children=[])])
+        tokentree1.metadata = metadata
+
+        tokentree2 = TokenTree(token={"id": 1}, children=[])
+        self.assertNotEqual(tokentree1, tokentree2)
+
+        tokentree2.metadata = metadata
+        self.assertNotEqual(tokentree1, tokentree2)
+
+        tokentree2.children = [TokenTree(token={"id": 2}, children=[])]
+        self.assertEqual(tokentree1, tokentree2)
+
     def test_metadata(self):
         tree = TokenTree(token={"id": 1, "form": "hej"}, children=[])
         metadata = {"meta": "data"}

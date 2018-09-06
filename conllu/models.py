@@ -1,7 +1,7 @@
 from __future__ import print_function, unicode_literals
 
 from conllu.compat import text
-from conllu.parser import ParseException, serialize
+from conllu.parser import ParseException, head_to_token, serialize
 
 DEFAULT_EXCLUDE_FIELDS = ('id', 'deprel', 'xpostag', 'feats', 'head', 'deps', 'misc')
 
@@ -22,8 +22,22 @@ class TokenList(object):
     def __repr__(self):
         return 'TokenList<' + ', '.join([token['form'] for token in self.tokens]) + '>'
 
+    def __eq__(self, other):
+        return self.tokens == other.tokens and self.metadata == other.metadata
+
     def serialize(self):
         return serialize(self)
+
+    def to_tree(self):
+        def _create_tree(head_to_token_mapping, id_=0):
+            return [
+                TokenTree(child, _create_tree(head_to_token_mapping, child["id"]))
+                for child in head_to_token_mapping[id_]
+            ]
+
+        root = _create_tree(head_to_token(self))[0]
+        root.set_metadata(self.metadata)
+        return root
 
 class TokenTree(object):
     token = None
@@ -43,6 +57,10 @@ class TokenTree(object):
             'token={id=' + text(self.token['id']) + ', form=' + self.token['form'] + '}, ' + \
             'children=' + ('[...]' if self.children else 'None') + \
             '>'
+
+    def __eq__(self, other):
+        return self.token == other.token and self.children == other.children \
+            and self.metadata == other.metadata
 
     def serialize(self):
         if not self.token or "id" not in self.token:
