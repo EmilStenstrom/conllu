@@ -26,9 +26,6 @@ class TokenList(list):
     def __ne__(self, other):
         return not self == other
 
-    def __sizeof__(self):
-        return super(TokenList, self).__sizeof__() + getattr(self.metadata, '__sizeof__', lambda: 0)()
-
     def clear(self):
         self[:] = []  # Supported in Python 2 and 3, unlike clear()
         self.metadata = None

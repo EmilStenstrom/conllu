@@ -1,7 +1,6 @@
 # coding: utf-8
 from __future__ import unicode_literals
 
-import sys
 import unittest
 from collections import OrderedDict
 from textwrap import dedent
@@ -30,13 +29,6 @@ class TestTokenList(unittest.TestCase):
     def test_len(self):
         tokenlist = TokenList([{"id": 1}, {"id": 2}, {"id": 3}])
         self.assertEqual(3, len(tokenlist))
-
-    def test_sizeof(self):
-        tokenlist1 = TokenList([{"id": 1}, {"id": 2}, {"id": 3}])
-        self.assertGreater(sys.getsizeof(tokenlist1), sys.getsizeof([{"id": 1}, {"id": 2}, {"id": 3}]))
-
-        tokenlist2 = TokenList([{"id": 1}, {"id": 2}, {"id": 3}], {"meta": "data"})
-        self.assertLess(sys.getsizeof(tokenlist1), sys.getsizeof(tokenlist2))
 
     def test_clear(self):
         tokenlist = TokenList([{"id": 1}, {"id": 2}, {"id": 3}], {"meta": "data"})
