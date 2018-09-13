@@ -21,7 +21,7 @@ class TokenList(list):
 
     def __eq__(self, other):
         return super(TokenList, self).__eq__(other) \
-               and (not hasattr(other, 'metadata') or self.metadata == other.metadata)
+            and (not hasattr(other, 'metadata') or self.metadata == other.metadata)
 
     def __ne__(self, other):
         return not self == other
