@@ -1,6 +1,7 @@
 # coding: utf-8
 from __future__ import unicode_literals
 
+import sys
 import unittest
 from collections import OrderedDict
 from textwrap import dedent
@@ -26,6 +27,62 @@ class TestTokenList(unittest.TestCase):
         tokenlist2.metadata = metadata
         self.assertEqual(tokenlist1, tokenlist2)
 
+    def test_len(self):
+        tokenlist = TokenList([{"id": 1}, {"id": 2}, {"id": 3}])
+        self.assertEqual(3, len(tokenlist))
+
+    def test_sizeof(self):
+        tokenlist1 = TokenList([{"id": 1}, {"id": 2}, {"id": 3}])
+        self.assertGreater(sys.getsizeof(tokenlist1), sys.getsizeof([{"id": 1}, {"id": 2}, {"id": 3}]))
+
+        tokenlist2 = TokenList([{"id": 1}, {"id": 2}, {"id": 3}], {"meta": "data"})
+        self.assertLess(sys.getsizeof(tokenlist1), sys.getsizeof(tokenlist2))
+
+    def test_clear(self):
+        tokenlist = TokenList([{"id": 1}, {"id": 2}, {"id": 3}], {"meta": "data"})
+        tokenlist.clear()
+        self.assertEqual(len(tokenlist.tokens), 0)
+        self.assertEqual(tokenlist.metadata, None)
+
+    def test_copy(self):
+        tokenlist1 = TokenList([{"id": 1}, {"id": 2}, {"id": 3}], {"meta": "data"})
+        tokenlist2 = tokenlist1.copy()
+        self.assertIsNot(tokenlist1, tokenlist2)
+        self.assertEqual(tokenlist1, tokenlist2)
+
+    def test_extend(self):
+        tokenlist1 = TokenList([{"id": 1}, {"id": 2}, {"id": 3}])
+        tokenlist2 = [{"id": 4}, {"id": 5}, {"id": 6}]
+        tokenlist1.extend(tokenlist2)
+        tokenlist3 = TokenList([{"id": 1}, {"id": 2}, {"id": 3}, {"id": 4}, {"id": 5}, {"id": 6}])
+        self.assertEqual(tokenlist1, tokenlist3)
+
+        tokenlist4 = TokenList([{"id": 1}, {"id": 2}, {"id": 3}], {"meta1": "data1"})
+        tokenlist5 = TokenList([{"id": 4}, {"id": 5}, {"id": 6}], {"meta2": "data2"})
+        tokenlist4.extend(tokenlist5)
+        tokenlist6 = TokenList([{"id": 1}, {"id": 2}, {"id": 3}, {"id": 4}, {"id": 5}, {"id": 6}],
+                               {"meta1": "data1", "meta2": "data2"})
+        self.assertEqual(tokenlist4, tokenlist6)
+
+        tokenlist7 = TokenList([{"id": 1}, {"id": 2}, {"id": 3}], "abc")
+        tokenlist8 = TokenList([{"id": 4}, {"id": 5}, {"id": 6}], "de")
+        tokenlist7.extend(tokenlist8)
+        tokenlist9 = TokenList([{"id": 1}, {"id": 2}, {"id": 3}, {"id": 4}, {"id": 5}, {"id": 6}], "abcde")
+        self.assertEqual(tokenlist7, tokenlist9)
+
+        tokenlist7 = TokenList([{"id": 1}, {"id": 2}, {"id": 3}], "abc")
+        tokenlist8 = TokenList([{"id": 4}, {"id": 5}, {"id": 6}], {"meta2": "data2"})
+        tokenlist7.extend(tokenlist8)
+        tokenlist9 = TokenList([{"id": 1}, {"id": 2}, {"id": 3}, {"id": 4}, {"id": 5}, {"id": 6}],
+                               ["abc", {"meta2": "data2"}])
+        self.assertEqual(tokenlist7, tokenlist9)
+
+    def test_tokens(self):
+        tokenlist = TokenList([{"id": 1}, {"id": 2}, {"id": 3}])
+        self.assertEqual(tokenlist.tokens, [{"id": 1}, {"id": 2}, {"id": 3}])
+        tokenlist.tokens = [{"id": 4}, {"id": 5}]
+        self.assertEqual(tokenlist.tokens, [{"id": 4}, {"id": 5}])
+
     def test_to_tree(self):
         tokenlist = TokenList([
             OrderedDict([("id", 2), ("form", "dog"), ("head", 0)]),
@@ -40,10 +97,12 @@ class TestTokenList(unittest.TestCase):
         )
         self.assertEqual(tokenlist.to_tree(), tree)
 
+
 class TestSerialize(unittest.TestCase):
     def test_serialize_on_tokenlist(self):
         tokenlist = TokenList([{"id": 1}])
         self.assertEqual(tokenlist.serialize(), serialize(tokenlist))
+
 
 class TestTokenTree(unittest.TestCase):
     def test_eq(self):
@@ -66,6 +125,7 @@ class TestTokenTree(unittest.TestCase):
         metadata = {"meta": "data"}
         tree.set_metadata(metadata)
         self.assertEqual(tree.metadata, metadata)
+
 
 class TestSerializeTree(unittest.TestCase):
     def test_missing_id(self):
@@ -104,6 +164,7 @@ class TestSerializeTree(unittest.TestCase):
 
             """)
         )
+
 
 class TestPrintTree(unittest.TestCase):
     def test_print_empty_list(self):
