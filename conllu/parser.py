@@ -99,7 +99,7 @@ def parse_int_value(value):
 
 ID_SINGLE = re.compile(r"^[1-9][0-9]*$")
 ID_RANGE = re.compile(r"^[1-9][0-9]*\-[1-9][0-9]*$")
-ID_DOT_ID = re.compile(r"^[1-9][0-9]*\.[1-9][0-9]*$")
+ID_DOT_ID = re.compile(r"^[0-9][0-9]*\.[1-9][0-9]*$")
 
 def parse_id_value(value):
     if not value or value == '_':

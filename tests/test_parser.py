@@ -154,12 +154,12 @@ class TestParseIDValue(unittest.TestCase):
 
     def test_decimal(self):
         self._run_valid_invalid_tests([
+            ("0.1", (0, ".", 1)),
             ("1.1", (1, ".", 1)),
             ("1.10", (1, ".", 10)),
             ("10.1", (10, ".", 1)),
         ], [
             "1.0",
-            "0.1",
             "a.0",
             "0.a",
         ])
