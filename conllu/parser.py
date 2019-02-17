@@ -156,8 +156,13 @@ def head_to_token(sentence):
 
     head_indexed = defaultdict(list)
     for token in sentence:
+        # Filter out range and decimal ID:s before building tree
+        if "id" in token and not isinstance(token["id"], int):
+            continue
+
         # If HEAD is negative, treat it as child of the root node
         head = max(token["head"] or 0, 0)
+
         head_indexed[head].append(token)
 
     return head_indexed

@@ -265,6 +265,40 @@ class TestHeadToToken(unittest.TestCase):
             }
         )
 
+    def test_range_ids_ignored(self):
+        self.assertEqual(
+            dict(head_to_token([
+                {"data": "a", "head": 0},
+                {"data": "dog", "head": 1},
+                {"data": "a dog", "head": 0, "id": (1, "-", 2)},  # Range node
+                {"data": "wags", "head": 2},
+                {"data": "tail", "head": 1},
+            ])),
+            {
+                0: [{"data": "a", "head": 0}],
+                1: [{"data": "dog", "head": 1}, {"data": "tail", "head": 1}],
+                2: [{"data": "wags", "head": 2}],
+            }
+        )
+
+    def test_decimal_ids_ignored(self):
+        self.assertEqual(
+            dict(head_to_token([
+                {"data": "a", "head": 0},
+                {"data": "dog", "head": 1},
+                {"data": "that", "head": 1, "id": (1, ".", 1)},
+                {"data": "wags", "head": 2},
+                {"data": "its", "head": 2, "id": (2, ".", 1)},  # Empty node
+                {"data": "tail", "head": 1},
+            ])),
+            {
+                0: [{"data": "a", "head": 0}],
+                1: [{"data": "dog", "head": 1}, {"data": "tail", "head": 1}],
+                2: [{"data": "wags", "head": 2}],
+            }
+        )
+
+
 class TestSerializeField(unittest.TestCase):
     def test_ordered_dict(self):
         data = OrderedDict()
