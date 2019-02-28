@@ -40,11 +40,13 @@ class TestParse(unittest.TestCase):
         data = dedent("""\
             # meta = data2
             # meta = data
+            # newdoc
+            # newpar
             # meta
             # = data
         """)
         _, metadata = parse_token_and_metadata(data)
-        self.assertEqual(metadata, OrderedDict([("meta", "data")]))
+        self.assertEqual(metadata, OrderedDict([("meta", "data"), ("newdoc", None), ("newpar", None)]))
 
 class TestParseLine(unittest.TestCase):
     def test_parse_line(self):
@@ -102,6 +104,15 @@ class TestParseCommentLine(unittest.TestCase):
     def test_parse_comment_line_without_equals(self):
         data = "# sent_id: 1"
         self.assertEqual(parse_comment_line(data), (None, None))
+
+    def test_parse_comment_line_optional_value(self):
+        data = '# newdoc'
+        self.assertEqual(parse_comment_line(data), ("newdoc", None))
+        data = '# newpar'
+        self.assertEqual(parse_comment_line(data), ("newpar", None))
+        data = '# invalid'
+        self.assertEqual(parse_comment_line(data), (None, None))
+
 
 class TestParseIntValue(unittest.TestCase):
     def test_parse_int_value(self):

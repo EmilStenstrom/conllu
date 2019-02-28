@@ -75,12 +75,13 @@ def parse_comment_line(line):
     if line[0] != '#':
         raise ParseException("Invalid comment format, comment must start with '#'")
 
-    if '=' not in line:
+    stripped = line[1:].strip()
+    if '=' not in line and stripped != 'newdoc' and stripped != 'newpar':
         return None, None
 
-    var_name, var_value = line[1:].split('=', 1)
-    var_name = var_name.strip()
-    var_value = var_value.strip()
+    name_value = line[1:].split('=', 1)
+    var_name = name_value[0].strip()
+    var_value = None if len(name_value) == 1 else name_value[1].strip()
 
     return var_name, var_value
 
