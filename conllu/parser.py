@@ -6,12 +6,17 @@ from collections import OrderedDict, defaultdict
 from conllu.compat import text
 
 DEFAULT_FIELDS = ('id', 'form', 'lemma', 'upostag', 'xpostag', 'feats', 'head', 'deprel', 'deps', 'misc')
+FIELDS_2009 = ('id', 'form', 'lemma', 'plemma', 'pos', 'ppos', 'feats', 'pfeats', 'head', 'phead', 'deprel', 'pdeprel,',
+                'fillpred', 'pred', 'apreds')
 
-def parse_token_and_metadata(data, fields=None):
+def parse_token_and_metadata(data, fields=None, CoNLL2009=False):
     if not data:
         raise ParseException("Can't create TokenList, no data sent to constructor.")
 
-    fields = fields or DEFAULT_FIELDS
+    if CoNLL2009:
+        fields = FIELDS_2009
+    else:
+        fields = fields or DEFAULT_FIELDS
 
     tokens = []
     metadata = OrderedDict()
@@ -28,6 +33,9 @@ def parse_token_and_metadata(data, fields=None):
                 metadata[var_name] = var_value
         else:
             tokens.append(parse_line(line, fields=fields))
+
+    if CoNLL2009:
+        point_arguments_to_token(tokens)
 
     return tokens, metadata
 
@@ -50,10 +58,10 @@ def parse_line(line, fields):
         elif field == "xpostag":
             value = parse_nullable_value(line[i])
 
-        elif field == "feats":
+        elif field == "feats" or field == "pfeats":
             value = parse_dict_value(line[i])
 
-        elif field == "head":
+        elif field == "head" or field == "phead":
             value = parse_int_value(line[i])
 
         elif field == "deps":
@@ -61,6 +69,9 @@ def parse_line(line, fields):
 
         elif field == "misc":
             value = parse_dict_value(line[i])
+
+        elif field == "apreds":
+            value = parse_apreds(line[i:len(line)])
 
         else:
             value = line[i]
@@ -147,6 +158,15 @@ def parse_nullable_value(value):
 
     return value
 
+def parse_apreds(value):
+    args = []
+    for arg in value:
+        if arg != "_":
+            args.append(arg)
+        else:
+            args.append(None)
+    return args
+
 def head_to_token(sentence):
     if not sentence:
         raise ParseException("Can't parse tree, need a tokenlist as input.")
@@ -204,6 +224,22 @@ def serialize(tokenlist):
         lines.append(line)
 
     return '\n'.join(lines) + "\n\n"
+
+def point_arguments_to_token(tokens):
+    predicate_to_token_nb = {}
+    predicate_number = 0
+    for i, token in enumerate(tokens):
+        if (token['fillpred'] == 'Y'):
+            predicate_to_token_nb[predicate_number] = i + 1
+            # conllu IDs are 1 indexed, not 0
+            predicate_number += 1
+
+    for token in tokens:
+        new_apreds = {}
+        for i, apred in enumerate(token['apreds']):
+            if apred:
+                new_apreds[predicate_to_token_nb[i]] = apred
+        token['apreds'] = new_apreds
 
 class ParseException(Exception):
     pass

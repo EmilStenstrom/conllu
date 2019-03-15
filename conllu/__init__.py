@@ -4,9 +4,9 @@ from conllu.models import TokenList
 from conllu.parser import parse_token_and_metadata
 
 
-def parse(data, fields=None):
+def parse(data, fields=None, CoNLL2009=False):
     return [
-        TokenList(*parse_token_and_metadata(sentence, fields=fields))
+        TokenList(*parse_token_and_metadata(sentence, fields=fields, CoNLL2009=CoNLL2009))
         for sentence in data.split("\n\n")
         if sentence
     ]
