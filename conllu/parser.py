@@ -44,26 +44,30 @@ def parse_line(line, fields):
         if i >= len(line):
             break
 
-        if field == "id":
-            value = parse_id_value(line[i])
+        try:
+            if field == "id":
+                value = parse_id_value(line[i])
 
-        elif field == "xpostag":
-            value = parse_nullable_value(line[i])
+            elif field == "xpostag":
+                value = parse_nullable_value(line[i])
 
-        elif field == "feats":
-            value = parse_dict_value(line[i])
+            elif field == "feats":
+                value = parse_dict_value(line[i])
 
-        elif field == "head":
-            value = parse_int_value(line[i])
+            elif field == "head":
+                value = parse_int_value(line[i])
 
-        elif field == "deps":
-            value = parse_paired_list_value(line[i])
+            elif field == "deps":
+                value = parse_paired_list_value(line[i])
 
-        elif field == "misc":
-            value = parse_dict_value(line[i])
+            elif field == "misc":
+                value = parse_dict_value(line[i])
 
-        else:
-            value = line[i]
+            else:
+                value = line[i]
+
+        except ParseException as e:
+            raise ParseException("Failed parsing field '{}': ".format(field) + str(e))
 
         data[field] = value
 

@@ -49,6 +49,11 @@ class TestParse(unittest.TestCase):
         self.assertEqual(metadata, OrderedDict([("meta", "data"), ("newdoc", None), ("newpar", None)]))
 
 class TestParseLine(unittest.TestCase):
+    def test_empty(self):
+        with self.assertRaises(ParseException):
+            line = "invalid_id\t_\t_\t_\t_\t_\t_\t_\t_\t"
+            parse_line(line, fields=DEFAULT_FIELDS)
+
     def test_parse_line(self):
         line = "1\tThe\tthe\tDET\tDT\tDefinite=Def|PronType=Art\t4\tdet\t_\t_"
         self.assertEqual(
