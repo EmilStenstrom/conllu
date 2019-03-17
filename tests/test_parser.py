@@ -59,6 +59,29 @@ class TestParse(unittest.TestCase):
             OrderedDict([("id", 2), ("id", 2), ("id", 2)]),
         ])
 
+    def test_custom_field_parsers(self):
+        data = dedent("""\
+            1\tbackwards\tline
+            2\tparis\tsirap
+        """)
+        fields = ("id", "backwards")
+
+        # A field parser that takes all remaining field, reverses their letters and joins them
+        def parse_backwards(value):
+            return " ".join([part[::-1] for part in value])
+
+        # This overrides the default parsers, so the id is parsed as a string
+        field_parsers = {
+            "backwards": lambda line, i: parse_backwards(line[i:len(line)])
+        }
+
+        tokens, _ = parse_token_and_metadata(data, fields=fields, field_parsers=field_parsers)
+        self.assertEqual(tokens, [
+            OrderedDict([("id", '1'), ("backwards", "sdrawkcab enil")]),
+            OrderedDict([("id", '2'), ("backwards", "sirap paris")]),
+        ])
+
+
 class TestParseLine(unittest.TestCase):
     def test_empty(self):
         with self.assertRaises(ParseException):

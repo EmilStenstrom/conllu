@@ -4,16 +4,16 @@ from conllu.models import TokenList
 from conllu.parser import parse_token_and_metadata
 
 
-def parse(data, fields=None):
+def parse(data, fields=None, field_parsers=None):
     return [
-        TokenList(*parse_token_and_metadata(sentence, fields=fields))
+        TokenList(*parse_token_and_metadata(sentence, fields=fields, field_parsers=field_parsers))
         for sentence in data.split("\n\n")
         if sentence
     ]
 
-def parse_incr(in_file, fields=None):
+def parse_incr(in_file, fields=None, field_parsers=None):
     for sentence in _iter_sents(in_file):
-        yield TokenList(*parse_token_and_metadata(sentence, fields=fields))
+        yield TokenList(*parse_token_and_metadata(sentence, fields=fields, field_parsers=field_parsers))
 
 def parse_tree(data):
     tokenlists = parse(data)

@@ -6,12 +6,21 @@ from collections import OrderedDict, defaultdict
 from conllu.compat import text
 
 DEFAULT_FIELDS = ('id', 'form', 'lemma', 'upostag', 'xpostag', 'feats', 'head', 'deprel', 'deps', 'misc')
+DEFAULT_FIELD_PARSERS = {
+    "id": lambda line, i: parse_id_value(line[i]),
+    "xpostag": lambda line, i: parse_nullable_value(line[i]),
+    "feats": lambda line, i: parse_dict_value(line[i]),
+    "head": lambda line, i: parse_int_value(line[i]),
+    "deps": lambda line, i: parse_paired_list_value(line[i]),
+    "misc": lambda line, i: parse_dict_value(line[i]),
+}
 
-def parse_token_and_metadata(data, fields=None):
+def parse_token_and_metadata(data, fields=None, field_parsers=None):
     if not data:
         raise ParseException("Can't create TokenList, no data sent to constructor.")
 
     fields = fields or DEFAULT_FIELDS
+    field_parsers = field_parsers or DEFAULT_FIELD_PARSERS
 
     tokens = []
     metadata = OrderedDict()
@@ -27,11 +36,14 @@ def parse_token_and_metadata(data, fields=None):
             if var_name:
                 metadata[var_name] = var_value
         else:
-            tokens.append(parse_line(line, fields=fields))
+            tokens.append(parse_line(line, fields, field_parsers))
 
     return tokens, metadata
 
-def parse_line(line, fields):
+def parse_line(line, fields, field_parsers=None):
+    # Be backwards compatible if people called parse_line without field_parsers before
+    field_parsers = field_parsers or DEFAULT_FIELD_PARSERS
+
     line = re.split(r"\t| {2,}", line)
 
     if len(line) == 1 and " " in line[0]:
@@ -44,30 +56,14 @@ def parse_line(line, fields):
         if i >= len(line):
             break
 
-        try:
-            if field == "id":
-                value = parse_id_value(line[i])
+        if field in field_parsers:
+            try:
+                value = field_parsers[field](line, i)
+            except ParseException as e:
+                raise ParseException("Failed parsing field '{}': ".format(field) + str(e))
 
-            elif field == "xpostag":
-                value = parse_nullable_value(line[i])
-
-            elif field == "feats":
-                value = parse_dict_value(line[i])
-
-            elif field == "head":
-                value = parse_int_value(line[i])
-
-            elif field == "deps":
-                value = parse_paired_list_value(line[i])
-
-            elif field == "misc":
-                value = parse_dict_value(line[i])
-
-            else:
-                value = line[i]
-
-        except ParseException as e:
-            raise ParseException("Failed parsing field '{}': ".format(field) + str(e))
+        else:
+            value = line[i]
 
         data[field] = value
 
