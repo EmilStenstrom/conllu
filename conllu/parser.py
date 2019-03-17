@@ -134,13 +134,13 @@ def parse_paired_list_value(value):
     return parse_nullable_value(value)
 
 def parse_dict_value(value):
-    if "=" in value:
-        return OrderedDict([
-            (part.split("=")[0], parse_nullable_value(part.split("=")[1]))
-            for part in value.split("|") if len(part.split('=')) == 2
-        ])
+    if parse_nullable_value(value) is None:
+        return None
 
-    return parse_nullable_value(value)
+    return OrderedDict([
+        (part.split("=")[0], parse_nullable_value(part.split("=")[1]) if "=" in part else "")
+        for part in value.split("|") if parse_nullable_value(part.split("=")[0]) is not None
+    ])
 
 def parse_nullable_value(value):
     if not value or value == "_":

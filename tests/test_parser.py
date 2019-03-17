@@ -260,12 +260,28 @@ class TestParsePairedListValue(unittest.TestCase):
 class TestParseDictValue(unittest.TestCase):
     def test_parse_dict_value(self):
         self.assertEqual(
+            parse_dict_value("key1"),
+            OrderedDict([("key1", "")])
+        )
+        self.assertEqual(
             parse_dict_value("key1=val1"),
             OrderedDict([("key1", "val1")])
         )
         self.assertEqual(
             parse_dict_value("key1=val1|key2=val2"),
             OrderedDict([("key1", "val1"), ("key2", "val2")])
+        )
+        self.assertEqual(
+            parse_dict_value("key1=val1|key2|key3=val3"),
+            OrderedDict([("key1", "val1"), ("key2", ""), ("key3", "val3")])
+        )
+        self.assertEqual(
+            parse_dict_value("key1=val1|key1=val2"),
+            OrderedDict([("key1", "val2")])
+        )
+        self.assertEqual(
+            parse_dict_value("key1=_|_|_=val1"),
+            OrderedDict([("key1", None)])
         )
         self.assertEqual(parse_dict_value(""), None)
         self.assertEqual(parse_dict_value("_"), None)
