@@ -48,6 +48,17 @@ class TestParse(unittest.TestCase):
         _, metadata = parse_token_and_metadata(data)
         self.assertEqual(metadata, OrderedDict([("meta", "data"), ("newdoc", None), ("newpar", None)]))
 
+    def test_custom_fields(self):
+        data = dedent("""\
+            1\t1\t1
+            2\t2\t2
+        """)
+        tokens, _ = parse_token_and_metadata(data, fields=("id", "id", "id"))
+        self.assertEqual(tokens, [
+            OrderedDict([("id", 1), ("id", 1), ("id", 1)]),
+            OrderedDict([("id", 2), ("id", 2), ("id", 2)]),
+        ])
+
 class TestParseLine(unittest.TestCase):
     def test_empty(self):
         with self.assertRaises(ParseException):
