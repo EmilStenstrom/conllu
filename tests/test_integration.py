@@ -9,6 +9,7 @@ from textwrap import dedent
 
 from conllu import parse, parse_incr, parse_tree, parse_tree_incr
 from conllu.compat import capture_print, text
+from conllu.parser import DEFAULT_FIELD_PARSERS, parse_dict_value, parse_int_value
 from tests.helpers import testlabel
 
 data = dedent("""\
@@ -156,3 +157,67 @@ class TestTrickyCases(unittest.TestCase):
 
         for testcase in TESTCASES:
             self.assertEqual(parse(testcase)[0].serialize(), testcase)
+
+
+@testlabel("integration")
+class TestParseCoNLL2009(unittest.TestCase):
+    @staticmethod
+    def parse_apreds(value):
+        return [
+            apred_field if apred_field != "_" else None
+            for apred_field in value
+        ]
+
+    def test_parse_CoNLL2009(self):
+        field_parsers = DEFAULT_FIELD_PARSERS.copy()
+        field_parsers.update({
+            "pfeats": lambda line, i: parse_dict_value(line[i]),
+            "phead": lambda line, i: parse_int_value(line[i]),
+            "apreds": lambda line, i: TestParseCoNLL2009.parse_apreds(line[i:len(line)]),
+        })
+
+        from tests.fixtures import TESTCASES_CONLL2009
+
+        sentences = parse(
+            TESTCASES_CONLL2009[0],
+            fields=(
+                'id', 'form', 'lemma', 'plemma', 'pos', 'ppos', 'feats', 'pfeats',
+                'head', 'phead', 'deprel', 'pdeprel', 'fillpred', 'pred', 'apreds'
+            ),
+            field_parsers=field_parsers,
+        )
+        self.assertEqual(
+            sentences[0][2],
+            OrderedDict([
+                ('id', 3),
+                ('form', 'knihy'),
+                ('lemma', 'kniha'),
+                ('plemma', 'kniha'),
+                ('pos', 'N'),
+                ('ppos', 'N'),
+                ('feats', OrderedDict([
+                    ('SubPOS', 'N'),
+                    ('Gen', 'F'),
+                    ('Num', 'S'),
+                    ('Cas', '2'),
+                    ('Neg', 'A')
+                ])),
+                ('pfeats', OrderedDict([
+                    ('SubPOS', 'N'),
+                    ('Gen', 'F'),
+                    ('Num', 'S'),
+                    ('Cas', '2'),
+                    ('Neg', 'A')
+                ])),
+                ('head', 1),
+                ('phead', 1),
+                ('deprel', 'Adv'),
+                ('pdeprel', 'Adv'),
+                ('fillpred', 'Y'),
+                ('pred', 'kniha'),
+                ('apreds', [
+                    None, None, None, None, None, None, None, 'DIR1',
+                    None, None, None, None, None, None, None, None
+                ])
+            ])
+        )
