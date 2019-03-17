@@ -4,7 +4,7 @@
 
 ## Why should you use conllu?
 
-- It's simple. ~150 lines of code (including whitespace).
+- It's simple. ~300 lines of code.
 - Works with both Python 2 and Python 3
 - It has no dependencies
 - Nice set of tests with CI setup: ![Build status on Travis](https://api.travis-ci.org/EmilStenstrom/conllu.svg?branch=master)
