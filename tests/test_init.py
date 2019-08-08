@@ -22,17 +22,17 @@ class TestParse(unittest.TestCase):
             3  .       .      PUNCT  .    _                           5   punct   _   _
 
         """)
-        with self.subTest("parse"):
-            self.assertEqual(
-                text(parse(data)),
-                "[TokenList<The, dog, .>, TokenList<The, dog, .>]"
-            )
+        # with self.subTest("parse"):
+        self.assertEqual(
+            text(parse(data)),
+            "[TokenList<The, dog, .>, TokenList<The, dog, .>]"
+        )
 
-        with self.subTest("parse_incr"):
-            self.assertEqual(
-                text([item for item in parse_incr(io.StringIO(data))]),
-                "[TokenList<The, dog, .>, TokenList<The, dog, .>]"
-            )
+        # with self.subTest("parse_incr"):
+        self.assertEqual(
+            text([item for item in parse_incr(io.StringIO(data))]),
+            "[TokenList<The, dog, .>, TokenList<The, dog, .>]"
+        )
 
     def test_multi_empty_line_end(self):
         data = dedent("""\
@@ -49,14 +49,14 @@ class TestParse(unittest.TestCase):
 
 
         """)
-        with self.subTest("parse"):
-            self.assertEqual(
-                text(parse(data)),
-                "[TokenList<The, dog, .>, TokenList<The, dog, .>]"
-            )
+        # with self.subTest("parse"):
+        self.assertEqual(
+            text(parse(data)),
+            "[TokenList<The, dog, .>, TokenList<The, dog, .>]"
+        )
 
-        with self.subTest("parse_incr"):
-            self.assertEqual(
-                text([item for item in parse_incr(io.StringIO(data))]),
-                "[TokenList<The, dog, .>, TokenList<The, dog, .>]"
-            )
+        # with self.subTest("parse_incr"):
+        self.assertEqual(
+            text([item for item in parse_incr(io.StringIO(data))]),
+            "[TokenList<The, dog, .>, TokenList<The, dog, .>]"
+        )
