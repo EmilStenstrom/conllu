@@ -32,6 +32,8 @@ def _iter_sents(in_file):
     buf = []
     for line in in_file:
         if line == "\n":
+            if not buf:
+                continue
             yield "".join(buf)[:-1]
             buf = []
         else:
