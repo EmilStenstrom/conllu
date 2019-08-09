@@ -15,6 +15,10 @@ from conllu.parser import (
 
 
 class TestParseSentencesGenerator(unittest.TestCase):
+    def test_empty(self):
+        self.assertEqual(list(parse_sentences(string_to_file(""))), [])
+        self.assertEqual(list(parse_sentences(string_to_file(None))), [])
+
     def test_simple(self):
         data = dedent("""\
             1\thej
@@ -49,6 +53,13 @@ class TestParseSentencesGenerator(unittest.TestCase):
         self.assertEqual(sentences, [
             '1\thej\n2\tdå',
             '1\thej\n2\tdå',
+            '1\thej\n2\tdå',
+        ])
+
+    def test_ends_without_newline(self):
+        data = "1\thej\n2\tdå"
+        sentences = list(parse_sentences(string_to_file(data)))
+        self.assertEqual(sentences, [
             '1\thej\n2\tdå',
         ])
 
