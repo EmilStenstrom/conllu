@@ -16,6 +16,9 @@ except ImportError:
         yield
         sys.stdout = original
 
+def string_to_file(string):
+    return StringIO(string)
+
 def capture_print(func, args=None):
     f = StringIO()
     with redirect_stdout(f):
