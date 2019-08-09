@@ -13,7 +13,7 @@ from conllu.parser import (
 )
 
 
-class TestParse(unittest.TestCase):
+class TestParseTokenAndMetadata(unittest.TestCase):
     def test_empty(self):
         with self.assertRaises(ParseException):
             parse_token_and_metadata(None)
