@@ -5,13 +5,31 @@ import unittest
 from collections import OrderedDict
 from textwrap import dedent
 
+from conllu.compat import string_to_file
 from conllu.models import TokenList
 from conllu.parser import (
     DEFAULT_FIELDS, ParseException, head_to_token, parse_comment_line, parse_dict_value, parse_id_value,
-    parse_int_value, parse_line, parse_nullable_value, parse_paired_list_value, parse_token_and_metadata, serialize,
-    serialize_field,
+    parse_int_value, parse_line, parse_nullable_value, parse_paired_list_value, parse_sentences,
+    parse_token_and_metadata, serialize, serialize_field,
 )
 
+
+class TestParseSentencesGenerator(unittest.TestCase):
+    def test_simple(self):
+        data = dedent("""\
+            1\thej
+            2\tdå
+            3\thej
+
+            1\thej
+            2\tdå
+            3\thej
+        """)
+        sentences = list(parse_sentences(string_to_file(data)))
+        self.assertEqual(sentences, [
+            '1\thej\n2\tdå\n3\thej',
+            '1\thej\n2\tdå\n3\thej',
+        ])
 
 class TestParseTokenAndMetadata(unittest.TestCase):
     def test_empty(self):

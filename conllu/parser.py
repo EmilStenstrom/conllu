@@ -15,6 +15,17 @@ DEFAULT_FIELD_PARSERS = {
     "misc": lambda line, i: parse_dict_value(line[i]),
 }
 
+def parse_sentences(in_file):
+    buf = []
+    for line in in_file:
+        if line == "\n":
+            yield "".join(buf).rstrip()
+            buf = []
+        else:
+            buf.append(line)
+    if buf:
+        yield "".join(buf).rstrip()
+
 def parse_token_and_metadata(data, fields=None, field_parsers=None):
     if not data:
         raise ParseException("Can't create TokenList, no data sent to constructor.")
