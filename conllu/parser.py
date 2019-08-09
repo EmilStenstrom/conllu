@@ -19,6 +19,8 @@ def parse_sentences(in_file):
     buf = []
     for line in in_file:
         if line == "\n":
+            if not buf:
+                continue
             yield "".join(buf).rstrip()
             buf = []
         else:

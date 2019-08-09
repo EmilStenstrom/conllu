@@ -31,6 +31,27 @@ class TestParseSentencesGenerator(unittest.TestCase):
             '1\thej\n2\tdå\n3\thej',
         ])
 
+    def test_multiple_newlines(self):
+        data = dedent("""\
+            1\thej
+            2\tdå
+
+
+            1\thej
+            2\tdå
+
+
+
+            1\thej
+            2\tdå
+        """)
+        sentences = list(parse_sentences(string_to_file(data)))
+        self.assertEqual(sentences, [
+            '1\thej\n2\tdå',
+            '1\thej\n2\tdå',
+            '1\thej\n2\tdå',
+        ])
+
 class TestParseTokenAndMetadata(unittest.TestCase):
     def test_empty(self):
         with self.assertRaises(ParseException):
