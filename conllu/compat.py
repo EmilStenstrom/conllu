@@ -34,10 +34,12 @@ try:
     from re import fullmatch
 except ImportError:
     from re import match
-    def fullmatch(pattern, *args):
-        if not pattern.endswith("$"):
-            pattern += "$"
-        return match(pattern, *args)
+
+    def fullmatch(regex, *args):
+        if not regex.pattern.endswith("$"):
+            return match(regex.pattern + "$", *args)
+
+        return match(regex.pattern, *args)
 
 try:
     unicode('')
