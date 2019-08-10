@@ -197,12 +197,12 @@ def serialize_field(field):
         return '|'.join(fields)
 
     if isinstance(field, tuple):
-        return "".join([text(item) for item in field])
+        return "".join([serialize_field(item) for item in field])
 
     if isinstance(field, list):
         if len(field[0]) != 2:
             raise ParseException("Can't serialize '{}', invalid format".format(field))
-        return "|".join([text(value) + ":" + text(key) for key, value in field])
+        return "|".join([serialize_field(value) + ":" + text(key) for key, value in field])
 
     return "{}".format(field)
 
