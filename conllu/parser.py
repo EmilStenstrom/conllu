@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 import re
 from collections import OrderedDict, defaultdict
 
-from conllu.compat import text, fullmatch
+from conllu.compat import fullmatch, text
 
 DEFAULT_FIELDS = ('id', 'form', 'lemma', 'upostag', 'xpostag', 'feats', 'head', 'deprel', 'deps', 'misc')
 DEFAULT_FIELD_PARSERS = {
