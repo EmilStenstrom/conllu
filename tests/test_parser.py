@@ -271,16 +271,20 @@ class TestParsePairedListValue(unittest.TestCase):
             [("nsubj", 4)]
         )
         self.assertEqual(
-            parse_paired_list_value("0:under_case_:under_case_|1:dash-sign-:dash-sign-"),
-            [("under_case_:under_case_", 0), ("dash-sign-:dash-sign-", 1)]
+            parse_paired_list_value("1:under_case_:under_case_|2:dash-sign-:dash-sign-"),
+            [("under_case_:under_case_", 1), ("dash-sign-:dash-sign-", 2)]
         )
         self.assertEqual(
             parse_paired_list_value("2:nsubj|4:nsubj"),
             [("nsubj", 2), ("nsubj", 4)]
         )
         self.assertEqual(
-            parse_paired_list_value("0:flat:name|1:amod|20:nsubj"),
-            [("flat:name", 0), ("amod", 1), ("nsubj", 20)]
+            parse_paired_list_value("1:flat:name|2:amod|20:nsubj"),
+            [("flat:name", 1), ("amod", 2), ("nsubj", 20)]
+        )
+        self.assertEqual(
+            parse_paired_list_value("5:conj:and|8.1:nsubj:pass|9:nsubj:xsubj"),
+            [("conj:and", 5), ("nsubj:pass", (8, ".", 1)), ("nsubj:xsubj", 9)]
         )
 
     def test_parse_empty(self):
