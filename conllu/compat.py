@@ -31,6 +31,15 @@ def capture_print(func, args=None):
 
 
 try:
+    from re import fullmatch
+except ImportError:
+    from re import match
+    def fullmatch(pattern, *args):
+        if not pattern.endswith("$"):
+            pattern += "$"
+        return match(pattern, *args)
+
+try:
     unicode('')
 except NameError:
     unicode = str

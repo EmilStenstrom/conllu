@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 import re
 from collections import OrderedDict, defaultdict
 
-from conllu.compat import text
+from conllu.compat import text, fullmatch
 
 DEFAULT_FIELDS = ('id', 'form', 'lemma', 'upostag', 'xpostag', 'feats', 'head', 'deprel', 'deps', 'misc')
 DEFAULT_FIELD_PARSERS = {
@@ -99,36 +99,36 @@ def parse_comment_line(line):
     return var_name, var_value
 
 
-INTEGER = re.compile(r"^0|(\-?[1-9][0-9]*)$")
+INTEGER = re.compile(r"0|(\-?[1-9][0-9]*)")
 
 def parse_int_value(value):
     if value == '_':
         return None
 
-    if re.match(INTEGER, value):
+    if fullmatch(INTEGER, value):
         return int(value)
     else:
         raise ParseException("'{}' is not a valid value for parse_int_value.".format(value))
 
 
-ID_SINGLE = re.compile(r"^[1-9][0-9]*$")
-ID_RANGE = re.compile(r"^[1-9][0-9]*\-[1-9][0-9]*$")
-ID_DOT_ID = re.compile(r"^[0-9][0-9]*\.[1-9][0-9]*$")
+ID_SINGLE = re.compile(r"[1-9][0-9]*")
+ID_RANGE = re.compile(r"[1-9][0-9]*\-[1-9][0-9]*")
+ID_DOT_ID = re.compile(r"[0-9][0-9]*\.[1-9][0-9]*")
 
 def parse_id_value(value):
     if not value or value == '_':
         return None
 
-    if re.match(ID_SINGLE, value):
+    if fullmatch(ID_SINGLE, value):
         return int(value)
 
-    elif re.match(ID_RANGE, value):
+    elif fullmatch(ID_RANGE, value):
         from_, to = value.split("-")
         from_, to = int(from_), int(to)
         if to > from_:
             return (int(from_), "-", int(to))
 
-    elif re.match(ID_DOT_ID, value):
+    elif fullmatch(ID_DOT_ID, value):
         return (int(value.split(".")[0]), ".", int(value.split(".")[1]))
 
     raise ParseException("'{}' is not a valid ID.".format(value))
@@ -139,9 +139,9 @@ DEPS_RE = re.compile("(" + ANY_ID.pattern + r"):[a-z][a-z_-]*(\:[a-z][a-z_-]*)?"
 MULTI_DEPS_PATTERN = re.compile(r"{}(\|{})*".format(DEPS_RE.pattern, DEPS_RE.pattern))
 
 def parse_paired_list_value(value):
-    if re.match(MULTI_DEPS_PATTERN, value):
+    if fullmatch(MULTI_DEPS_PATTERN, value):
         return [
-            (part.split(":", 1)[1], parse_int_value(part.split(":", 1)[0]))
+            (part.split(":", 1)[1], parse_id_value(part.split(":", 1)[0]))
             for part in value.split("|")
         ]
 
