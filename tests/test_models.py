@@ -75,7 +75,14 @@ class TestTokenList(unittest.TestCase):
         tokenlist.tokens = [{"id": 4}, {"id": 5}]
         self.assertEqual(tokenlist.tokens, [{"id": 4}, {"id": 5}])
 
-    def test_to_tree(self):
+class TestParsinigTrickyTrees(unittest.TestCase):
+    def assertTreeEqual(self, tree, other):
+        self.assertEqual(tree.token, other.token)
+        self.assertEqual(len(tree.children), len(other.children))
+        for i, child in enumerate(tree.children):
+            self.assertTreeEqual(child, other.children[i])
+
+    def test_simple_tree(self):
         tokenlist = TokenList([
             OrderedDict([("id", 2), ("form", "dog"), ("head", 0)]),
             OrderedDict([("id", 1), ("form", "a"), ("head", 2)]),
@@ -87,8 +94,40 @@ class TestTokenList(unittest.TestCase):
                 children=[]
             )]
         )
-        self.assertEqual(tokenlist.to_tree(), tree)
+        self.assertTreeEqual(tokenlist.to_tree(), tree)
 
+    def test_removes_negative_nodes(self):
+        tokenlist = TokenList([
+            OrderedDict([("id", 2), ("form", "dog"), ("head", 0)]),
+            OrderedDict([("id", 1), ("form", "a"), ("head", 2)]),
+            OrderedDict([("id", 3), ("form", "😍"), ("head", -1)]),
+        ])
+        tree = TokenTree(
+            token=OrderedDict([("id", 2), ("form", "dog"), ("head", 0)]),
+            children=[TokenTree(
+                token=OrderedDict([("id", 1), ("form", "a"), ("head", 2)]),
+                children=[]
+            )]
+        )
+        self.assertTreeEqual(tokenlist.to_tree(), tree)
+
+    def test_multiple_root_nodes(self):
+        tokenlist = TokenList([
+            OrderedDict([('id', 1), ('form', 'To'), ('head', 0)]),
+            OrderedDict([('id', 2), ('form', 'appear'), ('head', 1)]),
+            OrderedDict([('id', 4), ('form', 'EMNLP'), ('head', 0)]),
+            OrderedDict([('id', 5), ('form', '2014'), ('head', 4)]),
+        ])
+        with self.assertRaises(ParseException):
+            tokenlist.to_tree()
+
+    def test_no_root_nodes(self):
+        tokenlist = TokenList([
+            OrderedDict([('id', 1), ('form', 'To'), ('head', 1)]),
+            OrderedDict([('id', 2), ('form', 'appear'), ('head', 2)]),
+        ])
+        with self.assertRaises(ParseException):
+            tokenlist.to_tree()
 
 class TestSerialize(unittest.TestCase):
     def test_serialize_on_tokenlist(self):

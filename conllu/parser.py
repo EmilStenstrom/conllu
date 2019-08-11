@@ -180,7 +180,13 @@ def head_to_token(sentence):
         if token["head"] < 0:
             continue
 
-        head_indexed[head].append(token)
+        head_indexed[token["head"]].append(token)
+
+    if len(head_indexed[0]) == 0:
+        raise ParseException("Found no head node, can't build tree")
+
+    if len(head_indexed[0]) > 1:
+        raise ParseException("Can't parse tree, found multiple root nodes.")
 
     return head_indexed
 
