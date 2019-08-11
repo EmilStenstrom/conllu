@@ -8,6 +8,7 @@ from textwrap import dedent
 
 from conllu import parse, parse_incr, parse_tree, parse_tree_incr
 from conllu.compat import capture_print, string_to_file, text
+from conllu.models import TokenList
 from conllu.parser import DEFAULT_FIELD_PARSERS, parse_dict_value, parse_int_value
 from tests.helpers import testlabel
 
@@ -151,11 +152,23 @@ class TestParse(unittest.TestCase):
 class TestTrickyCases(unittest.TestCase):
     maxDiff = None
 
-    def test_fixtures(self):
+    def test_parse_and_serialize(self):
         from tests.fixtures import TESTCASES
 
         for testcase in TESTCASES:
             self.assertEqual(parse(testcase)[0].serialize(), testcase)
+
+    def test_parse_tree_and_serialize(self):
+        from tests.fixtures import TESTCASES
+
+        for testcase in TESTCASES:
+            data = parse(testcase)
+            testcase_without_range_and_elided = TokenList([
+                token
+                for token in data[0]
+                if isinstance(token["id"], int)
+            ])
+            self.assertEqual(parse_tree(testcase)[0].serialize(), testcase_without_range_and_elided)
 
 
 @testlabel("integration")
