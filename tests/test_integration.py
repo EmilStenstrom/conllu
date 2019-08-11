@@ -4,11 +4,10 @@ from __future__ import unicode_literals
 import re
 import unittest
 from collections import OrderedDict
-from io import StringIO
 from textwrap import dedent
 
 from conllu import parse, parse_incr, parse_tree, parse_tree_incr
-from conllu.compat import capture_print, text
+from conllu.compat import capture_print, string_to_file, text
 from conllu.parser import DEFAULT_FIELD_PARSERS, parse_dict_value, parse_int_value
 from tests.helpers import testlabel
 
@@ -142,10 +141,10 @@ class TestParse(unittest.TestCase):
         )
 
     def test_parse_incr(self):
-        self.assertEqual(parse(data), list(parse_incr(StringIO(data))))
+        self.assertEqual(parse(data), list(parse_incr(string_to_file(data))))
 
     def test_parse_tree_incr(self):
-        self.assertEqual(parse_tree(data), list(parse_tree_incr(StringIO(data))))
+        self.assertEqual(parse_tree(data), list(parse_tree_incr(string_to_file(data))))
 
 
 @testlabel("integration")
