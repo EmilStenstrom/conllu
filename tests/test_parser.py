@@ -380,7 +380,7 @@ class TestHeadToToken(unittest.TestCase):
                 {"data": "tail", "head": -2},
             ]),
             {
-                0: [{"data": "a", "head": 0}, {"data": "wags", "head": -1}, {"data": "tail", "head": -2}],
+                0: [{"data": "a", "head": 0}],
                 1: [{"data": "dog", "head": 1}],
             }
         )

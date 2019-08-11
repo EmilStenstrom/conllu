@@ -175,8 +175,10 @@ def head_to_token(sentence):
         if "id" in token and not isinstance(token["id"], int):
             continue
 
-        # If HEAD is negative, treat it as child of the root node
-        head = max(token["head"] or 0, 0)
+        # Filter out tokens with negative head, they are sometimes used to
+        # specify tokens which should not be included in tree
+        if token["head"] < 0:
+            continue
 
         head_indexed[head].append(token)
 
