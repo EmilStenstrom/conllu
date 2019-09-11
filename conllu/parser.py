@@ -59,7 +59,7 @@ def parse_line(line, fields, field_parsers=None):
 
     line = re.split(r"\t| {2,}", line)
 
-    if len(line) == 1 and " " in line[0]:
+    if len(line) == 1:
         raise ParseException("Invalid line format, line must contain either tabs or two spaces.")
 
     data = OrderedDict()
@@ -141,7 +141,7 @@ MULTI_DEPS_PATTERN = re.compile(r"{}(\|{})*".format(DEPS_RE.pattern, DEPS_RE.pat
 def parse_paired_list_value(value):
     if fullmatch(MULTI_DEPS_PATTERN, value):
         return [
-            (part.split(":", 1)[1], parse_id_value(part.split(":", 1)[0]))
+            (part.split(":", 1)[1], parse_id_value(part.split(":")[0]))
             for part in value.split("|")
         ]
 

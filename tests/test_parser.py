@@ -134,9 +134,12 @@ class TestParseTokenAndMetadata(unittest.TestCase):
 
 class TestParseLine(unittest.TestCase):
     def test_empty(self):
-        with self.assertRaises(ParseException):
+        with self.assertRaises(ParseException) as assert_context:
             line = "invalid_id\t_\t_\t_\t_\t_\t_\t_\t_\t"
             parse_line(line, fields=DEFAULT_FIELDS)
+
+        expected = "Failed parsing field 'id'"
+        self.assertEqual(str(assert_context.exception)[:len(expected)], expected)
 
     def test_parse_line(self):
         line = "1\tThe\tthe\tDET\tDT\tDefinite=Def|PronType=Art\t4\tdet\t_\t_"
@@ -156,6 +159,24 @@ class TestParseLine(unittest.TestCase):
             ])
         )
 
+    def test_parse_line_nullable_fields(self):
+        line = "_\t_\t_\t_\t_\t_\t_\t_\t_\t_"
+        self.assertEqual(
+            dict(parse_line(line, fields=DEFAULT_FIELDS)),
+            dict([
+                ('id', None),
+                ('form', '_'),
+                ('lemma', '_'),
+                ('upostag', '_'),
+                ('xpostag', None),
+                ('feats', None),
+                ('head', None),
+                ('deprel', '_'),
+                ('deps', None),
+                ('misc', None)
+            ])
+        )
+
     def test_parse_line_only_id_head(self):
         line = "1\tThe\tthe\tDET\tDT\tDefinite=Def|PronType=Art\t4\tdet\t_\t_"
         self.assertEqual(parse_line(line, fields=["id", "form"]), OrderedDict([
@@ -163,10 +184,31 @@ class TestParseLine(unittest.TestCase):
             ('form', 'The'),
         ]))
 
+    def test_parse_line_fewer_columns(self):
+        line = "1\tThe\tthe\tDET\tDT"
+        self.assertEqual(parse_line(line, fields=DEFAULT_FIELDS), OrderedDict([
+            ('id', 1),
+            ('form', 'The'),
+            ('lemma', 'the'),
+            ('upostag', 'DET'),
+            ('xpostag', 'DT'),
+        ]))
+
+    def test_parse_line_without_spacing(self):
+        line = "1ThetheDETDTDefinite=Def|PronType=Art4det__"
+        with self.assertRaises(ParseException) as assert_context:
+            parse_line(line, fields=DEFAULT_FIELDS)
+
+        expected = "Invalid line format"
+        self.assertEqual(str(assert_context.exception)[:len(expected)], expected)
+
     def test_parse_line_with_spaces(self):
         line = "1 The the DET DT Definite=Def|PronType=Art 4 det _ _"
-        with self.assertRaises(ParseException):
+        with self.assertRaises(ParseException) as assert_context:
             parse_line(line, fields=DEFAULT_FIELDS)
+
+        expected = "Invalid line format"
+        self.assertEqual(str(assert_context.exception)[:len(expected)], expected)
 
     def test_parse_line_two_spaces(self):
         line = "1  The  the  DET  DT  Definite=Def|PronType=Art  4  det  _  _"
@@ -185,6 +227,10 @@ class TestParseCommentLine(unittest.TestCase):
         data = "# sent_id = 1"
         self.assertEqual(parse_comment_line(data), ("sent_id", "1"))
 
+    def test_parse_comment_line_multiple_equals(self):
+        data = "# text = five plus three = eight"
+        self.assertEqual(parse_comment_line(data), ("text", "five plus three = eight"))
+
     def test_parse_comment_line_without_square(self):
         data = "sent_id = 1"
         with self.assertRaises(ParseException):
@@ -194,12 +240,24 @@ class TestParseCommentLine(unittest.TestCase):
         data = "# sent_id: 1"
         self.assertEqual(parse_comment_line(data), (None, None))
 
+    def test_parse_comment_line_without_space(self):
+        data = "#sent_id = 1"
+        self.assertEqual(parse_comment_line(data), ("sent_id", "1"))
+
     def test_parse_comment_line_optional_value(self):
         data = '# newdoc'
         self.assertEqual(parse_comment_line(data), ("newdoc", None))
         data = '# newpar'
         self.assertEqual(parse_comment_line(data), ("newpar", None))
         data = '# invalid'
+        self.assertEqual(parse_comment_line(data), (None, None))
+
+    def test_parse_comment_line_optional_value_no_space(self):
+        data = '#newdoc'
+        self.assertEqual(parse_comment_line(data), ("newdoc", None))
+        data = '#newpar'
+        self.assertEqual(parse_comment_line(data), ("newpar", None))
+        data = '#invalid'
         self.assertEqual(parse_comment_line(data), (None, None))
 
 

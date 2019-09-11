@@ -157,6 +157,9 @@ class TestTokenTree(unittest.TestCase):
         tree.set_metadata(metadata)
         self.assertEqual(tree.metadata, metadata)
 
+        tree = TokenTree(token={"id": 1, "form": "hej"}, children=[], metadata={"meta": "data"})
+        self.assertEqual(tree.metadata, metadata)
+
 
 class TestSerializeTree(unittest.TestCase):
     def test_missing_id(self):
