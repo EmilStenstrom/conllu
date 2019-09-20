@@ -33,7 +33,13 @@ def parse_token_and_metadata(data, fields=None, field_parsers=None):
         raise ParseException("Can't create TokenList, no data sent to constructor.")
 
     fields = fields or DEFAULT_FIELDS
-    field_parsers = field_parsers or DEFAULT_FIELD_PARSERS
+
+    if not field_parsers:
+        field_parsers = DEFAULT_FIELD_PARSERS.copy()
+    elif sorted(field_parsers.keys()) != sorted(fields):
+        new_field_parsers = DEFAULT_FIELD_PARSERS.copy()
+        new_field_parsers.update(field_parsers)
+        field_parsers = new_field_parsers
 
     tokens = []
     metadata = OrderedDict()
