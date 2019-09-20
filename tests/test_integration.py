@@ -232,3 +232,45 @@ class TestParseCoNLL2009(unittest.TestCase):
                 ])
             ])
         )
+
+    def test_parse_CoNLL2009_2(self):
+        data = dedent("""\
+            #\tid='1'-document_id='36:1047'-span='1'
+            1\t+\t+\tPunc\tPunc\t_\t0\tROOT\t_\t_
+            2\tIn\tin\tr\tr\tr|-|-|-|-|-|-|-|-\t5\tAuxP\t_\t_
+            3\tDei\tDeus\tn\tPropn\tn|-|s|-|-|-|m|g|-\t4\tATR\t_\t_
+            4\tnomine\tnomen\tn\tn\tn|-|s|-|-|-|n|b|-\t2\tADV\t_\t_
+            5\tregnante\tregno\tt\tt\tt|-|s|p|p|a|m|b|-\t0\tADV\t_\t_
+
+        """)
+
+        sentences = parse(
+            data,
+            fields=(
+                'id', 'form', 'lemma', 'upostag', 'xpostag', 'feats', 'head', 'deprel', 'deps', 'misc'
+            ),
+            field_parsers={
+                "feats": lambda line, i: [feat for feat in line[i].split("|")]
+            }
+        )
+        self.assertEqual(
+            sentences[0][4],
+            OrderedDict([
+                ('id', 5),
+                ('form', 'regnante'),
+                ('lemma', 'regno'),
+                ('upostag', 't'),
+                ('xpostag', 't'),
+                ('feats', ['t', '-', 's', 'p', 'p', 'a', 'm', 'b', '-']),
+                ('head', 0),
+                ('deprel', 'ADV'),
+                ('deps', None),
+                ('misc', None),
+            ])
+        )
+        self.assertEqual(
+            sentences[0].metadata,
+            OrderedDict([
+                ('id', "'1'-document_id='36:1047'-span='1'")
+            ])
+        )
