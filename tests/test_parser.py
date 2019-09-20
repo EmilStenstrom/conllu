@@ -122,6 +122,7 @@ class TestParseTokenAndMetadata(unittest.TestCase):
 
         # This overrides the default parsers, so the id is parsed as a string
         field_parsers = {
+            "id": lambda line, i: line[i],
             "backwards": lambda line, i: parse_backwards(line[i:len(line)])
         }
 
