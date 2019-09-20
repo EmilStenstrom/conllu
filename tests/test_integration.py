@@ -173,30 +173,29 @@ class TestTrickyCases(unittest.TestCase):
 
 @testlabel("integration")
 class TestParseCoNLL2009(unittest.TestCase):
-    @staticmethod
-    def parse_apreds(value):
-        return [
-            apred_field if apred_field != "_" else None
-            for apred_field in value
-        ]
+    def test_parse_CoNLL2009_1(self):
+        data = dedent("""\
+            #\tid\tform\tlemma\tplemma\tpos\tppos\tfeats\tpfeats\thead\tphead\tdeprel\tpdeprel\tfillpred\tpred\tapreds
+            1\tZ\tz\tz\tR\tR\tSubPOS=R|Cas=2\tSubPOS=R|Cas=2\t10\t10\tAuxP\tAuxP\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_
+            2\ttéto\ttento\ttento\tP\tP\tSubPOS=D|Gen=F|Num=S|Cas=2\tSubPOS=D|Gen=F|Num=S|Cas=2\t3\t3\tAtr\tAtr\tY\ttento\t_\tRSTR\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_
+            3\tknihy\tkniha\tkniha\tN\tN\tSubPOS=N|Gen=F|Num=S|Cas=2|Neg=A\tSubPOS=N|Gen=F|Num=S|Cas=2|Neg=A\t1\t1\tAdv\tAdv\tY\tkniha\t_\t_\t_\t_\t_\t_\t_\tDIR1\t_\t_\t_\t_\t_\t_\t_\t_
 
-    def test_parse_CoNLL2009(self):
-        field_parsers = DEFAULT_FIELD_PARSERS.copy()
-        field_parsers.update({
-            "pfeats": lambda line, i: parse_dict_value(line[i]),
-            "phead": lambda line, i: parse_int_value(line[i]),
-            "apreds": lambda line, i: TestParseCoNLL2009.parse_apreds(line[i:len(line)]),
-        })
-
-        from tests.fixtures import TESTCASES_CONLL2009
+        """)
 
         sentences = parse(
-            TESTCASES_CONLL2009[0],
+            data,
             fields=(
                 'id', 'form', 'lemma', 'plemma', 'pos', 'ppos', 'feats', 'pfeats',
                 'head', 'phead', 'deprel', 'pdeprel', 'fillpred', 'pred', 'apreds'
             ),
-            field_parsers=field_parsers,
+            field_parsers={
+                "pfeats": lambda line, i: parse_dict_value(line[i]),
+                "phead": lambda line, i: parse_int_value(line[i]),
+                "apreds": lambda line, i: [
+                    apred_field if apred_field != "_" else None
+                    for apred_field in line[i:len(line)]
+                ],
+            },
         )
         self.assertEqual(
             sentences[0][2],

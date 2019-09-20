@@ -46,13 +46,3 @@ TESTCASES = [
 
     """)
 ]
-
-TESTCASES_CONLL2009 = [
-    dedent("""\
-        #\tid\tform\tlemma\tplemma\tpos\tppos\tfeats\tpfeats\thead\tphead\tdeprel\tpdeprel\tfillpred\tpred\tapreds
-        1\tZ\tz\tz\tR\tR\tSubPOS=R|Cas=2\tSubPOS=R|Cas=2\t10\t10\tAuxP\tAuxP\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_
-        2\ttéto\ttento\ttento\tP\tP\tSubPOS=D|Gen=F|Num=S|Cas=2\tSubPOS=D|Gen=F|Num=S|Cas=2\t3\t3\tAtr\tAtr\tY\ttento\t_\tRSTR\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_\t_
-        3\tknihy\tkniha\tkniha\tN\tN\tSubPOS=N|Gen=F|Num=S|Cas=2|Neg=A\tSubPOS=N|Gen=F|Num=S|Cas=2|Neg=A\t1\t1\tAdv\tAdv\tY\tkniha\t_\t_\t_\t_\t_\t_\t_\tDIR1\t_\t_\t_\t_\t_\t_\t_\t_
-
-    """)
-]
