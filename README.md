@@ -97,7 +97,7 @@ OrderedDict([
 'The'
 ```
 
-**New in conllu 2.0**: TokenList now also supports the `filter()` method on TokenList.
+### New in conllu 2.0: `filter()` a TokenList
 
 ```python
 >>> sentence = sentences[0]
@@ -107,13 +107,16 @@ TokenList<The, quick, brown, fox, jumps, over, the, lazy, dog, .>
 TokenList<quick>
 ```
 
-By using `field1__field2` you can filter based on subelements further down in a parsed token.
+By using `filter(field1__field2=value)` you can filter based on subelements further down in a parsed token.
 
 ```python
 >>> sentence.filter(feats__Degree="Pos")
 TokenList<quick, brown, lazy>
 ```
 
+Filters can also be chained (meaning you can do `sentence.filter(...).filter(...)`), and filtering on multiple properties at the same time (`sentence.filter(field1=value1, field2=value2)`) means that ALL properties must match.
+
+### Parse metadata from a CoNLL-U file
 
 Each sentence can also have metadata in the form of comments before the sentence starts. This is available in a property on the TokenList called `metadata`.
 
@@ -123,6 +126,8 @@ OrderedDict([
     ('text', 'The quick brown fox jumps over the lazy dog.')
 ])
 ```
+
+### Turn a TokenList back into CoNLL-U
 
 If you ever want to get your CoNLL-U formated text back (maybe after changing something?), use the `serialize()` method:
 
@@ -140,6 +145,8 @@ If you ever want to get your CoNLL-U formated text back (maybe after changing so
 9   dog     dog     NOUN   NN   Number=Sing                 5   nmod   _   SpaceAfter=No
 10  .       .       PUNCT  .    _                           5   punct  _   _
 ```
+
+### Turn a TokenList into a TokenTree (see below)
 
 You can also convert a TokenList to a TokenTree by using `to_tree`:
 
