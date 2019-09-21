@@ -96,7 +96,7 @@ OrderedDict([
 'The'
 ```
 
-*New in conllu 2.0*: TokenList now also supports the `filter()` method on TokenList.
+**New in conllu 2.0**: TokenList now also supports the `filter()` method on TokenList.
 
 ```python
 >>> sentence = sentences[0]
