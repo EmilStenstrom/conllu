@@ -134,6 +134,109 @@ class TestSerialize(unittest.TestCase):
         tokenlist = TokenList([{"id": 1}])
         self.assertEqual(tokenlist.serialize(), serialize(tokenlist))
 
+class TestFilter(unittest.TestCase):
+    def test_basic_filtering(self):
+        tokenlist = TokenList([
+            {"id": 1, "form": "a", "field": "x"},
+            {"id": 2, "form": "dog", "field": "x"},
+        ])
+        self.assertEqual(
+            tokenlist.filter(id=0),
+            TokenList([])
+        )
+        self.assertEqual(
+            tokenlist.filter(id=1),
+            TokenList([{"id": 1, "form": "a", "field": "x"}])
+        )
+        self.assertEqual(
+            tokenlist.filter(),
+            tokenlist
+        )
+        self.assertEqual(
+            tokenlist.filter(field="x"),
+            tokenlist
+        )
+
+    def test_and_filtering(self):
+        tokenlist = TokenList([
+            {"id": 1, "form": "a", "field": "x"},
+            {"id": 2, "form": "dog", "field": "x"},
+            {"id": 3, "form": "dog", "field": "y"},
+        ])
+        self.assertEqual(
+            tokenlist.filter(field="x", id=2),
+            TokenList([
+                {"id": 2, "form": "dog", "field": "x"},
+            ])
+        )
+        self.assertEqual(
+            tokenlist.filter(field="x", id=3),
+            TokenList([])
+        )
+
+    def test_deep_filtering(self):
+        tokenlist = TokenList([
+            {"form": "The", "feats": OrderedDict([('Definite', 'Def'), ('PronType', 'Art')])},
+            {"form": "quick", "feats": OrderedDict([('Degree', 'Pos')])},
+            {"form": "brown", "feats": OrderedDict([('Degree', 'Pos')])},
+            {"form": "fox", "feats": OrderedDict([('Number', 'Sing')])},
+        ])
+        self.assertEqual(
+            tokenlist.filter(feats__Degree="Pos"),
+            TokenList([
+                {"form": "quick", "feats": OrderedDict([('Degree', 'Pos')])},
+                {"form": "brown", "feats": OrderedDict([('Degree', 'Pos')])},
+            ])
+        )
+        self.assertEqual(
+            tokenlist.filter(form="brown", feats__Degree="Pos"),
+            TokenList([
+                {"form": "brown", "feats": OrderedDict([('Degree', 'Pos')])},
+            ])
+        )
+        self.assertEqual(
+            tokenlist.filter(form="brown", feats__Degree="Pos", id=1),
+            TokenList([])
+        )
+        self.assertEqual(
+            tokenlist.filter(unknown__property__value="undefined"),
+            TokenList([])
+        )
+        self.assertEqual(
+            tokenlist.filter(unknown___property____value="undefined"),
+            TokenList([])
+        )
+
+    def test_nested_filtering(self):
+        tokenlist = TokenList([
+            {"form": "The", "feats": OrderedDict([('Definite', 'Def'), ('PronType', 'Art')])},
+            {"form": "quick", "feats": OrderedDict([('Degree', 'Pos')])},
+            {"form": "brown", "feats": OrderedDict([('Degree', 'Pos')])},
+            {"form": "fox", "feats": OrderedDict([('Number', 'Sing')])},
+        ])
+        self.assertEqual(
+            tokenlist.filter(feats__Degree="Pos").filter(form="brown"),
+            TokenList([
+                {"form": "brown", "feats": OrderedDict([('Degree', 'Pos')])},
+            ])
+        )
+        self.assertEqual(
+            tokenlist.filter(form="brown").filter(feats__Degree="Pos"),
+            TokenList([
+                {"form": "brown", "feats": OrderedDict([('Degree', 'Pos')])},
+            ])
+        )
+        self.assertEqual(
+            tokenlist.filter(form="brown").filter(feats__Degree="Pos").filter(),
+            TokenList([
+                {"form": "brown", "feats": OrderedDict([('Degree', 'Pos')])},
+            ])
+        )
+        self.assertEqual(
+            tokenlist.filter(form="brown").filter(feats__Degree="Pos").filter(id=0),
+            TokenList([])
+        )
+
 
 class TestTokenTree(unittest.TestCase):
     def test_eq(self):

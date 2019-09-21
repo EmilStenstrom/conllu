@@ -83,7 +83,7 @@ TokenList<The, quick, brown, fox, ...>
 
 The TokenList supports indexing, so you can get the first token, represented by an ordered dictionary, like this:
 
-```
+```python
 >>> token = sentence[0]
 >>> token
 OrderedDict([
@@ -95,6 +95,28 @@ OrderedDict([
 >>> token["form"]
 'The'
 ```
+
+*New in conllu 2.0*: TokenList now also supports the `filter()` method on TokenList.
+
+```python
+>>> sentence = sentences[0]
+TokenList<The, quick, brown, fox, ...>
+>>> sentence.filter(form="quick")
+OrderedDict([
+    ('id', 2),
+    ('form', 'quick'),
+    ('lemma', 'quick'),
+    ...
+])
+```
+
+By using `field1__field2` you can filter based on subelements further down in a parsed token.
+
+```python
+>>> sentence.filter(feats__Degree="Pos")
+TokenList<quick, brown>
+```
+
 
 Each sentence can also have metadata in the form of comments before the sentence starts. This is available in a property on the TokenList called `metadata`.
 
