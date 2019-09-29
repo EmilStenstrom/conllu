@@ -9,7 +9,7 @@ from textwrap import dedent
 from conllu import parse, parse_incr, parse_tree, parse_tree_incr
 from conllu.compat import capture_print, string_to_file, text
 from conllu.models import TokenList
-from conllu.parser import DEFAULT_FIELD_PARSERS, parse_dict_value, parse_int_value
+from conllu.parser import parse_dict_value, parse_int_value
 from tests.helpers import testlabel
 
 data = dedent("""\

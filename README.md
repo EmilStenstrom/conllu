@@ -58,7 +58,7 @@ Now you have the data in a variable called `data`. Let's parse it:
 ```python
 >>> sentences = parse(data)
 >>> sentences
-[TokenList<The, quick, brown, fox, ...>]
+[TokenList<The, quick, brown, fox, jumps, over, the, lazy, dog, .>]
 ```
 
 **Advanced usage**: If you have many sentences (say over a megabyte) to parse at once, you can avoid loading them into memory at once by using `parse_incr()` instead of `parse`. It takes an opened file, and returns a generator instead of the list directly, so you need to either iterate over it, or call list() to get the TokenLists out. Here's how you would use it:
@@ -78,12 +78,13 @@ Since one CoNLL-U file usually contains multiple sentences, `parse()` always ret
 
 ```python
 >>> sentence = sentences[0]
-TokenList<The, quick, brown, fox, ...>
+>>> sentence
+TokenList<The, quick, brown, fox, jumps, over, the, lazy, dog, .>
 ```
 
 The TokenList supports indexing, so you can get the first token, represented by an ordered dictionary, like this:
 
-```
+```python
 >>> token = sentence[0]
 >>> token
 OrderedDict([
@@ -96,25 +97,56 @@ OrderedDict([
 'The'
 ```
 
+### New in conllu 2.0: `filter()` a TokenList
+
+```python
+>>> sentence = sentences[0]
+>>> sentence
+TokenList<The, quick, brown, fox, jumps, over, the, lazy, dog, .>
+>>> sentence.filter(form="quick")
+TokenList<quick>
+```
+
+By using `filter(field1__field2=value)` you can filter based on subelements further down in a parsed token.
+
+```python
+>>> sentence.filter(feats__Degree="Pos")
+TokenList<quick, brown, lazy>
+```
+
+Filters can also be chained (meaning you can do `sentence.filter(...).filter(...)`), and filtering on multiple properties at the same time (`sentence.filter(field1=value1, field2=value2)`) means that ALL properties must match.
+
+### Parse metadata from a CoNLL-U file
+
 Each sentence can also have metadata in the form of comments before the sentence starts. This is available in a property on the TokenList called `metadata`.
 
 ```python
 >>> sentence.metadata
 OrderedDict([
-    ("text", "The quick brown fox jumps over the lazy dog."),
-    ...
+    ('text', 'The quick brown fox jumps over the lazy dog.')
 ])
 ```
+
+### Turn a TokenList back into CoNLL-U
 
 If you ever want to get your CoNLL-U formated text back (maybe after changing something?), use the `serialize()` method:
 
 ```python
 >>> sentence.serialize()
 # text = The quick brown fox jumps over the lazy dog.
-1   The     the    DET    DT   Definite=Def|PronType=Art   4   det     _   _
-2   quick   quick  ADJ    JJ   Degree=Pos                  4   amod    _   _
-...
+1   The     the     DET    DT   Definite=Def|PronType=Art   4   det    _   _
+2   quick   quick   ADJ    JJ   Degree=Pos                  4   amod   _   _
+3   brown   brown   ADJ    JJ   Degree=Pos                  4   amod   _   _
+4   fox     fox     NOUN   NN   Number=Sing                 5   nsubj  _   _
+5   jumps   jump    VERB   VBZ  Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin   0   root   _   _
+6   over    over    ADP    IN   _                           9   case   _   _
+7   the     the     DET    DT   Definite=Def|PronType=Art   9   det    _   _
+8   lazy    lazy    ADJ    JJ   Degree=Pos                  9   amod   _   _
+9   dog     dog     NOUN   NN   Number=Sing                 5   nmod   _   SpaceAfter=No
+10  .       .       PUNCT  .    _                           5   punct  _   _
 ```
+
+### Turn a TokenList into a TokenTree (see below)
 
 You can also convert a TokenList to a TokenTree by using `to_tree`:
 
@@ -152,7 +184,7 @@ Since one CoNLL-U file usually contains multiple sentences, `parse_tree()` alway
 ```python
 >>> root = sentences[0]
 >>> root
-TokenTree<token={id=5, form=jumps, ...}, children=...>
+TokenTree<token={id=5, form=jumps}, children=[...]>
 ```
 
 To quickly visualize the tree structure you can call `print_tree` on a TokenTree.
@@ -189,9 +221,9 @@ To start walking down the children of the current node, use the children attribu
 >>> children = root.children
 >>> children
 [
-    TokenTree<token={id=4, form=fox, ...}, children=...>,
-    TokenTree<token={id=9, form=dog, ...}, children=...>,
-    TokenTree<token={id=10, form=., ...}, children=...>,
+    TokenTree<token={id=4, form=fox}, children=[...]>,
+    TokenTree<token={id=9, form=dog}, children=[...]>,
+    TokenTree<token={id=10, form=.}, children=None>
 ]
 ```
 
@@ -200,8 +232,7 @@ Just like with `parse()`, if a sentence has metadata it is available in a proper
 ```python
 >>> root.metadata
 OrderedDict([
-    ("text", "The quick brown fox jumps over the lazy dog."),
-    ...
+    ('text', 'The quick brown fox jumps over the lazy dog.')
 ])
 ```
 

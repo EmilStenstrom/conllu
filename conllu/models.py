@@ -67,6 +67,32 @@ class TokenList(list):
         root.set_metadata(self.metadata)
         return root
 
+    def filter(self, **kwargs):
+        tokens = self.tokens.copy()
+
+        for query, value in kwargs.items():
+            filtered_tokens = []
+            for token in tokens:
+                if traverse_dict(token, query) == value:
+                    filtered_tokens.append(token)
+
+            tokens = filtered_tokens
+
+        return TokenList(tokens)
+
+def traverse_dict(obj, query):
+    """
+        Get elements inside a nested dict, based on a dict query. The query is defined by a
+        string separated by '__'. traverse_dict(foo, 'a__b__c') is roughly equivalent to foo[a][b][c] but
+        will short circuit to return None if something on the query is None.
+    """
+    query = query.split('__')
+    for name in query:
+        obj = obj.get(name, None)
+        if obj is None:
+            return None
+    return obj
+
 
 class TokenTree(object):
     token = None

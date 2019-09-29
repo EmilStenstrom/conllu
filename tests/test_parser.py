@@ -132,6 +132,22 @@ class TestParseTokenAndMetadata(unittest.TestCase):
             OrderedDict([("id", '2'), ("backwards", "sirap paris")]),
         ])
 
+    def test_default_field_parsers_when_undefined(self):
+        data = dedent("""\
+            1\tfrom
+            2\tparis
+        """)
+        fields = ("id", "form")
+        field_parsers = {
+            # Rely on default 'id' field parser
+            "form": lambda line, i: line[i].upper()
+        }
+        tokens, _ = parse_token_and_metadata(data, fields=fields, field_parsers=field_parsers)
+        self.assertEqual(tokens, [
+            OrderedDict([("id", 1), ("form", "FROM")]),
+            OrderedDict([("id", 2), ("form", "PARIS")]),
+        ])
+
 
 class TestParseLine(unittest.TestCase):
     def test_empty(self):
