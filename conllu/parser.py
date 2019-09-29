@@ -141,7 +141,7 @@ def parse_id_value(value):
 
 
 ANY_ID = re.compile(ID_SINGLE.pattern + "|" + ID_RANGE.pattern + "|" + ID_DOT_ID.pattern)
-DEPS_RE = re.compile("(" + ANY_ID.pattern + r"):[a-z][a-z_-]*(\:[a-z][a-z_-]*)?")
+DEPS_RE = re.compile("(" + ANY_ID.pattern + r"):[a-zA-Z][a-zA-Z0-9_-]*(\:[a-zA-Z][a-zA-Z0-9_-]*)?")
 MULTI_DEPS_PATTERN = re.compile(r"{}(\|{})*".format(DEPS_RE.pattern, DEPS_RE.pattern))
 
 def parse_paired_list_value(value):
