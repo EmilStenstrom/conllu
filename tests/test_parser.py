@@ -345,6 +345,14 @@ class TestParsePairedListValue(unittest.TestCase):
             parse_paired_list_value("5:conj:and|8.1:nsubj:pass|9:nsubj:xsubj"),
             [("conj:and", 5), ("nsubj:pass", (8, ".", 1)), ("nsubj:xsubj", 9)]
         )
+        self.assertEqual(
+            parse_paired_list_value("1:compound|6:ARG|9:ARG1|10:ARG2"),
+            [('compound', 1), ('ARG', 6), ('ARG1', 9), ('ARG2', 10)]
+        )
+        self.assertNotEqual(
+            parse_paired_list_value("1:compound|6:ARG|9:ARG1|10:2ARG"),
+            [('compound', 1), ('ARG', 6), ('ARG1', 9), ('2ARG', 10)]
+        )
 
     def test_parse_empty(self):
         testcases = [
