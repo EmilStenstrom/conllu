@@ -14,6 +14,10 @@ DEFAULT_FIELD_PARSERS = {
     "deps": lambda line, i: parse_paired_list_value(line[i]),
     "misc": lambda line, i: parse_dict_value(line[i]),
 }
+DEFAULT_METADATA_PARSERS = {
+    "newpar": lambda key, value: (key, value),
+    "newdoc": lambda key, value: (key, value),
+}
 
 def parse_sentences(in_file):
     buf = []
@@ -28,7 +32,7 @@ def parse_sentences(in_file):
     if buf:
         yield "".join(buf).rstrip()
 
-def parse_token_and_metadata(data, fields=None, field_parsers=None):
+def parse_token_and_metadata(data, fields=None, field_parsers=None, metadata_parsers=None):
     if not data:
         raise ParseException("Can't create TokenList, no data sent to constructor.")
 
@@ -51,7 +55,7 @@ def parse_token_and_metadata(data, fields=None, field_parsers=None):
             continue
 
         if line.startswith('#'):
-            var_name, var_value = parse_comment_line(line)
+            var_name, var_value = parse_comment_line(line, metadata_parsers=metadata_parsers)
             if var_name:
                 metadata[var_name] = var_value
         else:
@@ -88,21 +92,35 @@ def parse_line(line, fields, field_parsers=None):
 
     return data
 
-def parse_comment_line(line):
+def parse_comment_line(line, metadata_parsers=None):
     line = line.strip()
 
     if line[0] != '#':
         raise ParseException("Invalid comment format, comment must start with '#'")
 
-    stripped = line[1:].strip()
-    if '=' not in line and stripped != 'newdoc' and stripped != 'newpar':
+    key, value = parse_pair_value(line[1:])
+
+    if not metadata_parsers:
+        metadata_parsers = DEFAULT_METADATA_PARSERS.copy()
+    else:
+        new_metadata_parsers = DEFAULT_METADATA_PARSERS.copy()
+        new_metadata_parsers.update(metadata_parsers)
+        metadata_parsers = new_metadata_parsers
+
+    if key in metadata_parsers:
+        return metadata_parsers[key](key, value)
+    elif not value:
+        # Lines without value are invalid by default
         return None, None
 
-    name_value = line[1:].split('=', 1)
-    var_name = name_value[0].strip()
-    var_value = None if len(name_value) == 1 else name_value[1].strip()
+    return (key, value)
 
-    return var_name, var_value
+def parse_pair_value(value):
+    key_maybe_value = value.split('=', 1)
+    key = key_maybe_value[0].strip()
+    value = None if len(key_maybe_value) == 1 else key_maybe_value[1].strip()
+
+    return key, value
 
 
 INTEGER = re.compile(r"0|(\-?[1-9][0-9]*)")

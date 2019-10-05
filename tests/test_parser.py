@@ -96,7 +96,43 @@ class TestParseTokenAndMetadata(unittest.TestCase):
             # = data
         """)
         _, metadata = parse_token_and_metadata(data)
-        self.assertEqual(metadata, OrderedDict([("meta", "data"), ("newdoc", None), ("newpar", None)]))
+        self.assertEqual(metadata, OrderedDict([
+            ("meta", "data"),
+            ("newdoc", None),
+            ("newpar", None),
+        ]))
+
+    def test_custom_metadata_parsers(self):
+        data = dedent("""\
+            # global.columns = ID FORM LEMMA UPOS XPOS FEATS HEAD DEPREL DEPS MISC
+            # newdoc id = mf920901-001
+            # newpar id = mf920901-001-p1
+            # sent_id = mf920901-001-p1s1A
+            # text = Slovenská ústava: pro i proti
+            # text_en = Slovak constitution: pros and cons
+        """)
+        _, metadata = parse_token_and_metadata(data)
+        self.assertEqual(metadata, OrderedDict([
+            ("global.columns", "ID FORM LEMMA UPOS XPOS FEATS HEAD DEPREL DEPS MISC"),
+            ("newdoc id", "mf920901-001"),
+            ("newpar id", "mf920901-001-p1"),
+            ("sent_id", "mf920901-001-p1s1A"),
+            ("text", "Slovenská ústava: pro i proti"),
+            ("text_en", "Slovak constitution: pros and cons"),
+        ]))
+
+        _, metadata = parse_token_and_metadata(
+            data,
+            metadata_parsers={"global.columns": lambda key, value: (key, value.split())}
+        )
+        self.assertEqual(metadata, OrderedDict([
+            ("global.columns", ["ID", "FORM", "LEMMA", "UPOS", "XPOS", "FEATS", "HEAD", "DEPREL", "DEPS", "MISC"]),
+            ("newdoc id", "mf920901-001"),
+            ("newpar id", "mf920901-001-p1"),
+            ("sent_id", "mf920901-001-p1s1A"),
+            ("text", "Slovenská ústava: pro i proti"),
+            ("text_en", "Slovak constitution: pros and cons"),
+        ]))
 
     def test_custom_fields(self):
         data = dedent("""\
