@@ -107,12 +107,17 @@ def parse_comment_line(line, metadata_parsers=None):
         new_metadata_parsers.update(metadata_parsers)
         metadata_parsers = new_metadata_parsers
 
+    custom_result = None
     if key in metadata_parsers:
-        result = metadata_parsers[key](key, value)
-        # Allow returning pair from metadata parsers
-        if isinstance(result, tuple):
-            return [result]
-        return result
+        custom_result = metadata_parsers[key](key, value)
+    elif "__fallback__" in metadata_parsers:
+        custom_result = metadata_parsers["__fallback__"](key, value)
+
+    # Allow returning pair instead of list of pairs from metadata parsers
+    if custom_result:
+        if isinstance(custom_result, tuple):
+            return [custom_result]
+        return custom_result
 
     if not key or not value:
         # Lines without value are invalid by default

@@ -154,6 +154,21 @@ class TestParseTokenAndMetadata(unittest.TestCase):
             ("span", "1"),
         ]))
 
+    def test_fallback_metadata_parser(self):
+        data = dedent("""\
+            #20191005
+        """)
+
+        _, metadata = parse_token_and_metadata(
+            data,
+            metadata_parsers={
+                "__fallback__": lambda key, value: ("sentence-id", key),
+            },
+        )
+        self.assertEqual(metadata, OrderedDict([
+            ("sentence-id", "20191005"),
+        ]))
+
     def test_custom_fields(self):
         data = dedent("""\
             1\t1\t1
