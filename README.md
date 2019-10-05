@@ -246,7 +246,128 @@ If you ever want to get your CoNLL-U formated text back (maybe after changing so
 ...
 ```
 
-You can read about the CoNLL-U format at the [Universial Dependencies project](http://universaldependencies.org/format.html).
+## Customizing parsing to handle strange variations of CoNLL-U
+
+Far from all CoNLL-U files found in the wild follow the CoNLL-U format specification. CoNLL-U tries to parse even files that are malformed according to the specification, but sometimes that doesn't work. For those situations you can change how conllu parses your files.
+
+A normal CoNLL-U file consists of a specific set of fields (id, form, lemma, and so on...). Let's walk through how to parse a custom format using the three options `fields`, `field_parsers`, `metadata_parsers`. Here's the custom format we'll use.
+
+```python
+>>> data = """
+# tagset = TAG1|TAG2|TAG3|TAG4
+# sentence-123
+1   My       TAG1|TAG2
+2   custom   TAG3
+3   format   TAG4
+
+"""
+```
+
+Now, let's parse this with the the default settings, and looks specifically at the first token to see how it was parsed.
+
+```python
+>>> sentences = parse(data)
+>>> sentences[0][0]
+OrderedDict([('id', 1), ('form', 'My'), ('lemma', 'TAG1|TAG2')])
+```
+
+The parser has assumed (incorrectly) that the third field must the the default ´lemma´ field and parsed it as such. Let's customize this so the parser gets the name right, by setting the `fields` parameter when calling parse.
+
+```python
+>>> sentences = parse(data, fields=["id", "form", "tag"])
+>>> sentences[0][0]
+OrderedDict([('id', 1), ('form', 'My'), ('tag', 'TAG1|TAG2')])
+```
+
+The only difference is that you now get the correct field name back when parsing. How let's say you want those two tags returned as a list instead of as a string you have to split. This can be done using `field_parsers`.
+
+```python
+>>> split_func = lambda line, i: line[i].split("|")
+>>> sentences = parse(data, fields=["id", "form", "tag"], field_parsers={"tag": split_func})
+>>> sentences[0][0]
+OrderedDict([('id', 1), ('form', 'My'), ('tag', ['TAG1', 'TAG2'])])
+```
+
+That's much better! `field_parsers` specifies a mapping from a field name, to a function that can parse that field. In our case, we specify that the field with custom logic is `"tag"` and that the function to handle it is `split_func`. Each field_parser gets sent two parameters:
+
+* `line`: The whole list of values from this line, split on whitespace. The reason you get the full line is so you can merge several tokens into one using a field_parser if you wanted.
+* `i`: The current location in the line where you currently are. Most often, you'll use `line[i]` to get the current value.
+
+In our case, we return `line[i].split("|")`, which returns a list, just like we want.
+
+Let's look at the metadata in this example.
+
+```python
+"""
+# tagset = TAG1|TAG2|TAG3|TAG4
+# sentence-123
+"""
+
+```
+
+None of these values are valid in CoNLL-U, but since the first line follows the key-value format of other (valid) fields, conllu will parse it anyway:
+
+```python
+>>> sentences = parse(data)
+>>> sentences[0].metadata
+OrderedDict([('tagset', 'TAG1|TAG2|TAG3|TAG4')])
+```
+
+Let's return this as a list using the metadata_parsers parameter.
+
+```python
+>>> sentences = parse(data, metadata_parsers={"tagset": lambda key, value: (key, value.split("|"))})
+>>> sentences[0].metadata
+OrderedDict([('tagset', ['TAG1', 'TAG2', 'TAG3', 'TAG4'])])
+```
+
+A metadata parser behaves similarily as a field parser, but since most comments you'll see will be of the form "key = value" these values will be parsed and cleaned first, and then sent to your custom metadata_parser. Here we just take the value, and split it on "|", and return a list back. And lo and behold, we get what we wanted!
+
+Now, let's deal with the "sentence-123" comment. Specifying another metadata_parser won't work, because this is an ID that will be different for each sentence. Instead, let's use a special metadata parser, called `__fallback__`.
+
+```python
+>>> sentences = parse(data, metadata_parsers={
+...    "tagset": lambda key, value: (key, value.split("|")),
+...    "__fallback__": lambda key, value: ("sentence-id", key)
+... })
+>>> sentences[0].metadata
+OrderedDict([
+    ('tagset', ['TAG1', 'TAG2', 'TAG3', 'TAG4']),
+    ('sentence-id', 'sentence-123')
+])
+```
+
+Just what we wanted! `__fallback__` gets called any time none of the other metadata_parsers match, and just like the others, it gets sent the key and value of the current line. In our case, the line contains no "=" to split on, so key will be "sentence-123" and value will be empty. We can return whatever we want here, but let's just say we want to call this field "sentence-id" so we return that as the key, and "sentence-123" as our value.
+
+Finally, consider an even trickier case.
+
+```python
+>>> data = """
+# id=1-document_id=36:1047-span=1
+1   My       TAG1|TAG2
+2   custom   TAG3
+3   format   TAG4
+
+"""
+```
+
+This is actually three different comments, but somehow they are separated by "-" instead of on their own lines. To handle this, we get to use the ability of a metadata_parser to return multiple matches from a single line.
+
+```python
+>>> sentences = parse(data, metadata_parsers={
+...    "__fallback__": lambda key, value: [pair.split("=") for pair in (key + "=" + value).split("-")]
+... })
+>>> sentences[0].metadata
+OrderedDict([
+    ('id', '1'),
+    ('document_id', '36:1047'),
+    ('span', '1')
+])
+```
+
+Our fallback parser returns a **list** of matches, one per pair of metadata comments we find. The `key + "=" + value` trick is needed since by default conllu assumes that this is a valid comment, so `key` is "id" and `value` is everything after the first "=", `1-document_id=36:1047-span=1` (note the missing "id=" in the beginning). We need to add it back before splitting on "-".
+
+And that's it! Using these tricks you should be able to parse all the strange files you stumble into.
 
 ## Develop locally and run the tests
 
