@@ -134,6 +134,26 @@ class TestParseTokenAndMetadata(unittest.TestCase):
             ("text_en", "Slovak constitution: pros and cons"),
         ]))
 
+    def test_one_to_many_custom_metadata_parser(self):
+        data = dedent("""\
+            #\tid='1'-document_id='36:1047'-span='1'
+        """)
+
+        _, metadata = parse_token_and_metadata(
+            data,
+            metadata_parsers={
+                "id": lambda key, value: [
+                    (pair.split("=", 1)[0], pair.split("=", 1)[1].strip("'"))
+                    for pair in (key + "=" + value).split("-")
+                ]
+            },
+        )
+        self.assertEqual(metadata, OrderedDict([
+            ("id", "1"),
+            ("document_id", "36:1047"),
+            ("span", "1"),
+        ]))
+
     def test_custom_fields(self):
         data = dedent("""\
             1\t1\t1
@@ -274,15 +294,15 @@ class TestParseCommentLine(unittest.TestCase):
     def test_parse_spaces_before_square(self):
         data = ["# a = 1", "  # a = 1", "\t# a = 1"]
         for item in data:
-            self.assertEqual(parse_comment_line(item), ("a", "1"))
+            self.assertEqual(parse_comment_line(item), [("a", "1")])
 
     def test_parse_comment_line(self):
         data = "# sent_id = 1"
-        self.assertEqual(parse_comment_line(data), ("sent_id", "1"))
+        self.assertEqual(parse_comment_line(data), [("sent_id", "1")])
 
     def test_parse_comment_line_multiple_equals(self):
         data = "# text = five plus three = eight"
-        self.assertEqual(parse_comment_line(data), ("text", "five plus three = eight"))
+        self.assertEqual(parse_comment_line(data), [("text", "five plus three = eight")])
 
     def test_parse_comment_line_without_square(self):
         data = "sent_id = 1"
@@ -291,27 +311,27 @@ class TestParseCommentLine(unittest.TestCase):
 
     def test_parse_comment_line_without_equals(self):
         data = "# sent_id: 1"
-        self.assertEqual(parse_comment_line(data), (None, None))
+        self.assertEqual(parse_comment_line(data), [])
 
     def test_parse_comment_line_without_space(self):
         data = "#sent_id = 1"
-        self.assertEqual(parse_comment_line(data), ("sent_id", "1"))
+        self.assertEqual(parse_comment_line(data), [("sent_id", "1")])
 
     def test_parse_comment_line_optional_value(self):
         data = '# newdoc'
-        self.assertEqual(parse_comment_line(data), ("newdoc", None))
+        self.assertEqual(parse_comment_line(data), [("newdoc", None)])
         data = '# newpar'
-        self.assertEqual(parse_comment_line(data), ("newpar", None))
+        self.assertEqual(parse_comment_line(data), [("newpar", None)])
         data = '# invalid'
-        self.assertEqual(parse_comment_line(data), (None, None))
+        self.assertEqual(parse_comment_line(data), [])
 
     def test_parse_comment_line_optional_value_no_space(self):
         data = '#newdoc'
-        self.assertEqual(parse_comment_line(data), ("newdoc", None))
+        self.assertEqual(parse_comment_line(data), [("newdoc", None)])
         data = '#newpar'
-        self.assertEqual(parse_comment_line(data), ("newpar", None))
+        self.assertEqual(parse_comment_line(data), [("newpar", None)])
         data = '#invalid'
-        self.assertEqual(parse_comment_line(data), (None, None))
+        self.assertEqual(parse_comment_line(data), [])
 
 
 class TestParseIntValue(unittest.TestCase):

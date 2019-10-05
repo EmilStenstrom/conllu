@@ -55,9 +55,9 @@ def parse_token_and_metadata(data, fields=None, field_parsers=None, metadata_par
             continue
 
         if line.startswith('#'):
-            var_name, var_value = parse_comment_line(line, metadata_parsers=metadata_parsers)
-            if var_name:
-                metadata[var_name] = var_value
+            pairs = parse_comment_line(line, metadata_parsers=metadata_parsers)
+            for key, value in pairs:
+                metadata[key] = value
         else:
             tokens.append(parse_line(line, fields, field_parsers))
 
@@ -108,12 +108,17 @@ def parse_comment_line(line, metadata_parsers=None):
         metadata_parsers = new_metadata_parsers
 
     if key in metadata_parsers:
-        return metadata_parsers[key](key, value)
-    elif not value:
-        # Lines without value are invalid by default
-        return None, None
+        result = metadata_parsers[key](key, value)
+        # Allow returning pair from metadata parsers
+        if isinstance(result, tuple):
+            return [result]
+        return result
 
-    return (key, value)
+    if not key or not value:
+        # Lines without value are invalid by default
+        return []
+
+    return [(key, value)]
 
 def parse_pair_value(value):
     key_maybe_value = value.split('=', 1)
