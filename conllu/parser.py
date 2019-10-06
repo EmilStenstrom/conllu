@@ -88,7 +88,7 @@ def parse_line(line, fields, field_parsers=None):
         else:
             value = line[i]
 
-        data[field] = value
+        data[text(field)] = value
 
     return data
 
@@ -116,14 +116,15 @@ def parse_comment_line(line, metadata_parsers=None):
     # Allow returning pair instead of list of pairs from metadata parsers
     if custom_result:
         if isinstance(custom_result, tuple):
-            return [custom_result]
-        return custom_result
+            key, value = custom_result
+            return [(text(key), value)]
+        return [(text(key), value) for key, value in custom_result]
 
     if not key or not value:
         # Lines without value are invalid by default
         return []
 
-    return [(key, value)]
+    return [(text(key), value)]
 
 def parse_pair_value(value):
     key_maybe_value = value.split('=', 1)
