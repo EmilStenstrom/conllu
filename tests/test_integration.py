@@ -172,6 +172,37 @@ class TestTrickyCases(unittest.TestCase):
 
 
 @testlabel("integration")
+class TestParseCoNLLUPlus(unittest.TestCase):
+    def test_parse_conllu_plus(self):
+        data = dedent("""\
+            # global.columns = ID FORM UPOS HEAD DEPREL MISC PARSEME:MWE
+            # source_sent_id = conllu http://hdl.handle.net/11234/1-2837 UD_German-GSD/de_gsd-ud-train.conllu train-s16
+            # sent_id = train-s16
+            # text = Der CDU-Politiker strebt
+            1\tDer\tDET\t2\tdet\t_\t*
+            2\tCDU\tPROPN\t4\tcompound\tSpaceAfter=No\t*
+            3\t-\tPUNCT\t2\tpunct\tSpaceAfter=No\t*
+            4\tPolitiker\tNOUN\t5\tnsubj\t_\t*
+            5\tstrebt\tVERB\t0\troot\t_\t2:VPC.full
+        """)
+
+        sentences = parse(data)
+
+        self.assertEqual(
+            sentences[0][4],
+            OrderedDict([
+                ('id', 5),
+                ('form', 'strebt'),
+                ('upos', 'VERB'),
+                ('head', 0),
+                ('deprel', 'root'),
+                ('misc', None),
+                ('parseme:mwe', '2:VPC.full'),
+            ])
+        )
+
+
+@testlabel("integration")
 class TestParseCoNLL2009(unittest.TestCase):
     def test_parse_CoNLL2009_1(self):
         data = dedent("""\

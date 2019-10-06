@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from conllu.compat import string_to_file
 from conllu.models import TokenList
-from conllu.parser import parse_sentences, parse_token_and_metadata
+from conllu.parser import parse_conllu_plus_fields, parse_sentences, parse_token_and_metadata
 
 
 def parse(data, fields=None, field_parsers=None, metadata_parsers=None):
@@ -14,6 +14,9 @@ def parse(data, fields=None, field_parsers=None, metadata_parsers=None):
     ))
 
 def parse_incr(in_file, fields=None, field_parsers=None, metadata_parsers=None):
+    if not fields:
+        fields = parse_conllu_plus_fields(in_file, metadata_parsers=metadata_parsers)
+
     for sentence in parse_sentences(in_file):
         yield TokenList(*parse_token_and_metadata(
             sentence,
