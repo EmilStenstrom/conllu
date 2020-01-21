@@ -170,7 +170,7 @@ def parse_int_value(value):
         raise ParseException("'{}' is not a valid value for parse_int_value.".format(value))
 
 
-ID_SINGLE = re.compile(r"[1-9][0-9]*")
+ID_SINGLE = re.compile(r"(?:0|[1-9][0-9]*)")
 ID_RANGE = re.compile(r"[1-9][0-9]*\-[1-9][0-9]*")
 ID_DOT_ID = re.compile(r"[0-9][0-9]*\.[1-9][0-9]*")
 

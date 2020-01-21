@@ -401,8 +401,8 @@ class TestParseIDValue(unittest.TestCase):
         self._run_valid_invalid_tests([
             ("4", 4),
             ("10", 10),
+            ("0", 0),
         ], [
-            "0",
             "-10",
             "a",
         ])
@@ -461,6 +461,10 @@ class TestParsePairedListValue(unittest.TestCase):
         self.assertNotEqual(
             parse_paired_list_value("1:compound|6:ARG|9:ARG1|10:2ARG"),
             [('compound', 1), ('ARG', 6), ('ARG1', 9), ('2ARG', 10)]
+        )
+        self.assertEqual(
+            parse_paired_list_value("0:root"),
+            [('root', 0)]
         )
 
     def test_parse_empty(self):
