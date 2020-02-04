@@ -278,7 +278,10 @@ def serialize(tokenlist):
 
     if tokenlist.metadata:
         for key, value in tokenlist.metadata.items():
-            line = "# " + key + " = " + value
+            if value:
+                line = "# " + key + " = " + value
+            else:
+                line = "# " + key
             lines.append(line)
 
     for token_data in tokenlist:

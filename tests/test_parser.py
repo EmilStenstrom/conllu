@@ -640,6 +640,7 @@ class TestSerialize(unittest.TestCase):
 
     def test_metadata(self):
         data = dedent("""\
+            # newdoc
             # data = meta
             # meta = data
             1\tdog
