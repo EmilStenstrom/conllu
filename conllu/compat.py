@@ -83,11 +83,11 @@ try:
 except ImportError:
     from re import match
 
-    def fullmatch(regex, *args):
+    def fullmatch(regex, *args, **kwargs):
         if not regex.pattern.endswith("$"):
-            return match(regex.pattern + "$", *args)
+            return match(regex.pattern + "$", *args, flags=regex.flags, **kwargs)
 
-        return match(regex.pattern, *args)
+        return match(regex.pattern, *args, **kwargs)
 
 try:
     unicode('')
