@@ -61,6 +61,8 @@ Now you have the data in a variable called `data`. Let's parse it:
 [TokenList<The, quick, brown, fox, jumps, over, the, lazy, dog, .>]
 ```
 
+<blockquote>
+    
 **Advanced usage**: If you have many sentences (say over a megabyte) to parse at once, you can avoid loading them into memory at once by using `parse_incr()` instead of `parse`. It takes an opened file, and returns a generator instead of the list directly, so you need to either iterate over it, or call list() to get the TokenLists out. Here's how you would use it:
 
 ```python
@@ -73,6 +75,7 @@ for tokenlist in parse_incr(data_file):
 ```
 
 For most files, `parse` works fine.
+</blockquote>
 
 Since one CoNLL-U file usually contains multiple sentences, `parse()` always returns a list of sentences. Each sentence is represented by a TokenList.
 
@@ -168,6 +171,8 @@ Sometimes you're interested in the tree structure that hides in the `head` colum
 [TokenTree<...>]
 ```
 
+<blockquote>
+
 **Advanced usage**: If you have many sentences (say over a megabyte) to parse at once, you can avoid loading them into memory at once by using `parse_tree_incr()` instead of `parse_tree`. It takes an opened file, and returns a generator instead of the list directly, so you need to either iterate over it, or call list() to get the TokenTrees out. Here's how you would use it:
 
 ```python
@@ -178,6 +183,8 @@ data_file = open("huge_file.conllu", "r", encoding="utf-8")
 for tokentree in parse_tree_incr(data_file):
     print(tokentree)
 ```
+
+</blockquote>
 
 Since one CoNLL-U file usually contains multiple sentences, `parse_tree()` always returns a list of sentences. Each sentence is represented by a TokenTree.
 
