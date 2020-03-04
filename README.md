@@ -149,6 +149,18 @@ If you ever want to get your CoNLL-U formated text back (maybe after changing so
 10  .       .       PUNCT  .    _                           5   punct  _   _
 ```
 
+### Write a (eventually modified) serialized CoNLL-U back to a file
+
+After reading the CoNLL-U data from a file into the variable sentences, we can easily write it back (e.g. after adding, removing, editing tokens) to a file:
+
+```python
+with open('path-to-file', 'w') as outfile:
+    for sentence in sentences
+    f.write(sentence.serialize())
+    f.write('\n')
+```
+
+
 ### Turn a TokenList into a TokenTree (see below)
 
 You can also convert a TokenList to a TokenTree by using `to_tree`:
