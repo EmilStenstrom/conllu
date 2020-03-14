@@ -253,6 +253,18 @@ If you ever want to get your CoNLL-U formated text back (maybe after changing so
 ...
 ```
 
+If you want to write it back to a file, you can use something like this:
+
+```python
+>>> from conllu import parse_tree
+>>> sentences = parse_tree(data)
+>>> 
+>>> # Make some change to sentences here
+>>> 
+>>> with open('file-to-write-to', 'w') as f:
+...     f.writelines([sentence.serialize() + "\n" for sentence in sentences])
+```
+
 ## Customizing parsing to handle strange variations of CoNLL-U
 
 Far from all CoNLL-U files found in the wild follow the CoNLL-U format specification. CoNLL-U tries to parse even files that are malformed according to the specification, but sometimes that doesn't work. For those situations you can change how conllu parses your files.
