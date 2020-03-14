@@ -474,6 +474,10 @@ class TestParsePairedListValue(unittest.TestCase):
             parse_paired_list_value("25:obl:arg:į"),
             [('obl:arg:į', 25)]
         )
+        self.assertEqual(
+            parse_paired_list_value("3:obl:arg:عَلَى:gen"),
+            [('obl:arg:عَلَى:gen', 3)]
+        )
 
     def test_parse_empty(self):
         testcases = [
