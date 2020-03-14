@@ -2,7 +2,10 @@
 from __future__ import unicode_literals
 
 import doctest
+import os
 import re
+import shutil
+import tempfile
 
 from conllu.compat import MyDocTestParser
 
@@ -64,12 +67,25 @@ class ReadmeTestParser(MyDocTestParser):
         examples = [ReadmeTestParser.modify_example(example) for example in examples]
         return examples
 
+class ChdirTemp(object):
+    def setUp(self, doctest_object):
+        self.old_directory = os.getcwd()
+        self.tmp_directory = tempfile.mkdtemp()
+        os.chdir(self.tmp_directory)
+
+    def tearDown(self, doctest_object):
+        os.chdir(self.old_directory)
+        shutil.rmtree(self.tmp_directory)
+
 def load_tests(loader, tests, ignore):
+    cd = ChdirTemp()
     tests.addTests(
         doctest.DocFileSuite(
             "../README.md",
             parser=ReadmeTestParser(),
-            optionflags=doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE
+            optionflags=doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE,
+            setUp=cd.setUp,
+            tearDown=cd.tearDown,
         )
     )
     return tests
