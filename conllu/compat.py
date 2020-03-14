@@ -52,6 +52,11 @@ except ImportError:
     from StringIO import StringIO
 
 try:
+    FileNotFoundError = FileNotFoundError
+except NameError:
+    FileNotFoundError = IOError
+
+try:
     from contextlib import redirect_stdout
 except ImportError:
     import sys

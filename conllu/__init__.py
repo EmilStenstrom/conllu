@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 
-from conllu.compat import string_to_file
+from conllu.compat import FileNotFoundError, string_to_file
 from conllu.models import TokenList
 from conllu.parser import parse_conllu_plus_fields, parse_sentences, parse_token_and_metadata
 
@@ -14,6 +14,9 @@ def parse(data, fields=None, field_parsers=None, metadata_parsers=None):
     ))
 
 def parse_incr(in_file, fields=None, field_parsers=None, metadata_parsers=None):
+    if not hasattr(in_file, 'read'):
+        raise FileNotFoundError("Invalid file, 'parse_incr' needs an opened file as input")
+
     if not fields:
         fields = parse_conllu_plus_fields(in_file, metadata_parsers=metadata_parsers)
 

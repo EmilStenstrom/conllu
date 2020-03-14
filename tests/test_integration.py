@@ -7,7 +7,7 @@ from collections import OrderedDict
 from textwrap import dedent
 
 from conllu import parse, parse_incr, parse_tree, parse_tree_incr
-from conllu.compat import capture_print, string_to_file, text
+from conllu.compat import FileNotFoundError, capture_print, string_to_file, text
 from conllu.models import TokenList
 from conllu.parser import parse_dict_value, parse_int_value
 from tests.helpers import testlabel
@@ -143,6 +143,10 @@ class TestParse(unittest.TestCase):
 
     def test_parse_incr(self):
         self.assertEqual(parse(data), list(parse_incr(string_to_file(data))))
+
+    def test_parse_incr_invalid_file(self):
+        with self.assertRaises(FileNotFoundError):
+            list(parse_incr("SOME STRING DATA"))
 
     def test_parse_tree_incr(self):
         self.assertEqual(parse_tree(data), list(parse_tree_incr(string_to_file(data))))
