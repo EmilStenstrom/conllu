@@ -3,7 +3,7 @@ from __future__ import print_function, unicode_literals
 from conllu.compat import text
 from conllu.parser import ParseException, head_to_token, serialize
 
-DEFAULT_EXCLUDE_FIELDS = ('id', 'deprel', 'xpostag', 'feats', 'head', 'deps', 'misc')
+DEFAULT_EXCLUDE_FIELDS = ('id', 'deprel', 'xpos', 'feats', 'head', 'deps', 'misc')
 
 
 class TokenList(list):

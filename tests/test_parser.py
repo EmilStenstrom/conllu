@@ -259,8 +259,8 @@ class TestParseLine(unittest.TestCase):
                 ('id', 1),
                 ('form', 'The'),
                 ('lemma', 'the'),
-                ('upostag', 'DET'),
-                ('xpostag', 'DT'),
+                ('upos', 'DET'),
+                ('xpos', 'DT'),
                 ('feats', OrderedDict([('Definite', 'Def'), ('PronType', 'Art')])),
                 ('head', 4),
                 ('deprel', 'det'),
@@ -277,8 +277,8 @@ class TestParseLine(unittest.TestCase):
                 ('id', None),
                 ('form', '_'),
                 ('lemma', '_'),
-                ('upostag', '_'),
-                ('xpostag', None),
+                ('upos', '_'),
+                ('xpos', None),
                 ('feats', None),
                 ('head', None),
                 ('deprel', '_'),
@@ -300,8 +300,8 @@ class TestParseLine(unittest.TestCase):
             ('id', 1),
             ('form', 'The'),
             ('lemma', 'the'),
-            ('upostag', 'DET'),
-            ('xpostag', 'DT'),
+            ('upos', 'DET'),
+            ('xpos', 'DT'),
         ]))
 
     def test_parse_line_without_spacing(self):

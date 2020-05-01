@@ -5,10 +5,10 @@ from collections import OrderedDict, defaultdict
 
 from conllu.compat import fullmatch, text
 
-DEFAULT_FIELDS = ('id', 'form', 'lemma', 'upostag', 'xpostag', 'feats', 'head', 'deprel', 'deps', 'misc')
+DEFAULT_FIELDS = ('id', 'form', 'lemma', 'upos', 'xpos', 'feats', 'head', 'deprel', 'deps', 'misc')
 DEFAULT_FIELD_PARSERS = {
     "id": lambda line, i: parse_id_value(line[i]),
-    "xpostag": lambda line, i: parse_nullable_value(line[i]),
+    "xpos": lambda line, i: parse_nullable_value(line[i]),
     "feats": lambda line, i: parse_dict_value(line[i]),
     "head": lambda line, i: parse_int_value(line[i]),
     "deps": lambda line, i: parse_paired_list_value(line[i]),
