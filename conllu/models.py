@@ -1,10 +1,12 @@
 from __future__ import print_function, unicode_literals
 
+from collections import defaultdict
+
 from conllu.compat import text
-from conllu.parser import ParseException, head_to_token, serialize
+from conllu.exceptions import ParseException
+from conllu.serializer import serialize
 
 DEFAULT_EXCLUDE_FIELDS = ('id', 'deprel', 'xpostag', 'feats', 'head', 'deps', 'misc')
-
 
 class TokenList(list):
     metadata = None
@@ -56,6 +58,35 @@ class TokenList(list):
     def serialize(self):
         return serialize(self)
 
+    @staticmethod
+    def head_to_token(sentence):
+        if not sentence:
+            raise ParseException("Can't parse tree, need a tokenlist as input.")
+
+        if "head" not in sentence[0]:
+            raise ParseException("Can't parse tree, missing 'head' field.")
+
+        head_indexed = defaultdict(list)
+        for token in sentence:
+            # Filter out range and decimal ID:s before building tree
+            if "id" in token and not isinstance(token["id"], int):
+                continue
+
+            # Filter out tokens with negative head, they are sometimes used to
+            # specify tokens which should not be included in tree
+            if token["head"] < 0:
+                continue
+
+            head_indexed[token["head"]].append(token)
+
+        if len(head_indexed[0]) == 0:
+            raise ParseException("Found no head node, can't build tree")
+
+        if len(head_indexed[0]) > 1:
+            raise ParseException("Can't parse tree, found multiple root nodes.")
+
+        return head_indexed
+
     def to_tree(self):
         def _create_tree(head_to_token_mapping, id_=0):
             return [
@@ -63,7 +94,7 @@ class TokenList(list):
                 for child in head_to_token_mapping[id_]
             ]
 
-        root = _create_tree(head_to_token(self))[0]
+        root = _create_tree(self.head_to_token(self))[0]
         root.set_metadata(self.metadata)
         return root
 

@@ -1,9 +1,10 @@
 from __future__ import unicode_literals
 
 import re
-from collections import OrderedDict, defaultdict
+from collections import OrderedDict
 
 from conllu.compat import fullmatch, text
+from conllu.exceptions import ParseException
 
 DEFAULT_FIELDS = ('id', 'form', 'lemma', 'upostag', 'xpostag', 'feats', 'head', 'deprel', 'deps', 'misc')
 DEFAULT_FIELD_PARSERS = {
@@ -221,74 +222,16 @@ def parse_nullable_value(value):
 
     return value
 
-def head_to_token(sentence):
-    if not sentence:
-        raise ParseException("Can't parse tree, need a tokenlist as input.")
+# DEPRECATED: Mantain old paths until next major version
 
-    if "head" not in sentence[0]:
-        raise ParseException("Can't parse tree, missing 'head' field.")
+def serialize(*args, **kwargs):
+    from conllu.serializer import serialize as new_serialize
+    return new_serialize(*args, **kwargs)
 
-    head_indexed = defaultdict(list)
-    for token in sentence:
-        # Filter out range and decimal ID:s before building tree
-        if "id" in token and not isinstance(token["id"], int):
-            continue
+def serialize_field(*args, **kwargs):
+    from conllu.serializer import serialize_field as new_serialize_field
+    return new_serialize_field(*args, **kwargs)
 
-        # Filter out tokens with negative head, they are sometimes used to
-        # specify tokens which should not be included in tree
-        if token["head"] < 0:
-            continue
-
-        head_indexed[token["head"]].append(token)
-
-    if len(head_indexed[0]) == 0:
-        raise ParseException("Found no head node, can't build tree")
-
-    if len(head_indexed[0]) > 1:
-        raise ParseException("Can't parse tree, found multiple root nodes.")
-
-    return head_indexed
-
-def serialize_field(field):
-    if field is None:
-        return '_'
-
-    if isinstance(field, OrderedDict):
-        fields = []
-        for key, value in field.items():
-            if value is None:
-                value = "_"
-
-            fields.append('='.join((key, value)))
-
-        return '|'.join(fields)
-
-    if isinstance(field, tuple):
-        return "".join([serialize_field(item) for item in field])
-
-    if isinstance(field, list):
-        if len(field[0]) != 2:
-            raise ParseException("Can't serialize '{}', invalid format".format(field))
-        return "|".join([serialize_field(value) + ":" + text(key) for key, value in field])
-
-    return "{}".format(field)
-
-def serialize(tokenlist):
-    lines = []
-
-    if tokenlist.metadata:
-        for key, value in tokenlist.metadata.items():
-            if value:
-                line = "# " + key + " = " + value
-            else:
-                line = "# " + key
-            lines.append(line)
-
-    for token_data in tokenlist:
-        line = '\t'.join(serialize_field(val) for val in token_data.values())
-        lines.append(line)
-
-    return '\n'.join(lines) + "\n\n"
-
-class ParseException(Exception):
-    pass
+def head_to_token(*args, **kwargs):
+    from conllu.models import TokenList
+    return TokenList.head_to_token(*args, **kwargs)
