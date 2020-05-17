@@ -2,11 +2,10 @@
 from __future__ import unicode_literals
 
 import unittest
-from collections import OrderedDict
 from textwrap import dedent
 
 from conllu.compat import string_to_file
-from conllu.models import TokenList
+from conllu.models import Token, TokenList
 from conllu.parser import (
     DEFAULT_FIELDS, ParseException, head_to_token, parse_comment_line, parse_conllu_plus_fields, parse_dict_value,
     parse_id_value, parse_int_value, parse_line, parse_nullable_value, parse_paired_list_value, parse_sentences,
@@ -101,12 +100,12 @@ class TestParseTokenAndMetadata(unittest.TestCase):
         """)
         tokens, metadata = parse_token_and_metadata(data)
         self.assertListEqual(tokens, [
-            OrderedDict([("id", 1), ("form", "hej")]),
-            OrderedDict([("id", 2), ("form", "då")]),
-            OrderedDict([("id", 3), ("form", "hej")]),
-            OrderedDict([("id", 4), ("form", "då")]),
+            Token([("id", 1), ("form", "hej")]),
+            Token([("id", 2), ("form", "då")]),
+            Token([("id", 3), ("form", "hej")]),
+            Token([("id", 4), ("form", "då")]),
         ])
-        self.assertEqual(metadata, OrderedDict([("meta", "data")]))
+        self.assertEqual(metadata, Token([("meta", "data")]))
 
     def test_invalid_metadata(self):
         data = dedent("""\
@@ -118,7 +117,7 @@ class TestParseTokenAndMetadata(unittest.TestCase):
             # = data
         """)
         _, metadata = parse_token_and_metadata(data)
-        self.assertEqual(metadata, OrderedDict([
+        self.assertEqual(metadata, Token([
             ("meta", "data"),
             ("newdoc", None),
             ("newpar", None),
@@ -134,7 +133,7 @@ class TestParseTokenAndMetadata(unittest.TestCase):
             # text_en = Slovak constitution: pros and cons
         """)
         _, metadata = parse_token_and_metadata(data)
-        self.assertEqual(metadata, OrderedDict([
+        self.assertEqual(metadata, Token([
             ("global.columns", "ID FORM LEMMA UPOS XPOS FEATS HEAD DEPREL DEPS MISC"),
             ("newdoc id", "mf920901-001"),
             ("newpar id", "mf920901-001-p1"),
@@ -147,7 +146,7 @@ class TestParseTokenAndMetadata(unittest.TestCase):
             data,
             metadata_parsers={"global.columns": lambda key, value: (key, value.split())}
         )
-        self.assertEqual(metadata, OrderedDict([
+        self.assertEqual(metadata, Token([
             ("global.columns", ["ID", "FORM", "LEMMA", "UPOS", "XPOS", "FEATS", "HEAD", "DEPREL", "DEPS", "MISC"]),
             ("newdoc id", "mf920901-001"),
             ("newpar id", "mf920901-001-p1"),
@@ -170,7 +169,7 @@ class TestParseTokenAndMetadata(unittest.TestCase):
                 ]
             },
         )
-        self.assertEqual(metadata, OrderedDict([
+        self.assertEqual(metadata, Token([
             ("id", "1"),
             ("document_id", "36:1047"),
             ("span", "1"),
@@ -187,7 +186,7 @@ class TestParseTokenAndMetadata(unittest.TestCase):
                 "__fallback__": lambda key, value: ("sentence-id", key),
             },
         )
-        self.assertEqual(metadata, OrderedDict([
+        self.assertEqual(metadata, Token([
             ("sentence-id", "20191005"),
         ]))
 
@@ -198,8 +197,8 @@ class TestParseTokenAndMetadata(unittest.TestCase):
         """)
         tokens, _ = parse_token_and_metadata(data, fields=("id", "id", "id"))
         self.assertEqual(tokens, [
-            OrderedDict([("id", 1), ("id", 1), ("id", 1)]),
-            OrderedDict([("id", 2), ("id", 2), ("id", 2)]),
+            Token([("id", 1), ("id", 1), ("id", 1)]),
+            Token([("id", 2), ("id", 2), ("id", 2)]),
         ])
 
     def test_custom_field_parsers(self):
@@ -221,8 +220,8 @@ class TestParseTokenAndMetadata(unittest.TestCase):
 
         tokens, _ = parse_token_and_metadata(data, fields=fields, field_parsers=field_parsers)
         self.assertEqual(tokens, [
-            OrderedDict([("id", '1'), ("backwards", "sdrawkcab enil")]),
-            OrderedDict([("id", '2'), ("backwards", "sirap paris")]),
+            Token([("id", '1'), ("backwards", "sdrawkcab enil")]),
+            Token([("id", '2'), ("backwards", "sirap paris")]),
         ])
 
     def test_default_field_parsers_when_undefined(self):
@@ -237,8 +236,8 @@ class TestParseTokenAndMetadata(unittest.TestCase):
         }
         tokens, _ = parse_token_and_metadata(data, fields=fields, field_parsers=field_parsers)
         self.assertEqual(tokens, [
-            OrderedDict([("id", 1), ("form", "FROM")]),
-            OrderedDict([("id", 2), ("form", "PARIS")]),
+            Token([("id", 1), ("form", "FROM")]),
+            Token([("id", 2), ("form", "PARIS")]),
         ])
 
 
@@ -255,13 +254,13 @@ class TestParseLine(unittest.TestCase):
         line = "1\tThe\tthe\tDET\tDT\tDefinite=Def|PronType=Art\t4\tdet\t_\t_"
         self.assertEqual(
             parse_line(line, fields=DEFAULT_FIELDS),
-            OrderedDict([
+            Token([
                 ('id', 1),
                 ('form', 'The'),
                 ('lemma', 'the'),
                 ('upostag', 'DET'),
                 ('xpostag', 'DT'),
-                ('feats', OrderedDict([('Definite', 'Def'), ('PronType', 'Art')])),
+                ('feats', Token([('Definite', 'Def'), ('PronType', 'Art')])),
                 ('head', 4),
                 ('deprel', 'det'),
                 ('deps', None),
@@ -289,14 +288,14 @@ class TestParseLine(unittest.TestCase):
 
     def test_parse_line_only_id_head(self):
         line = "1\tThe\tthe\tDET\tDT\tDefinite=Def|PronType=Art\t4\tdet\t_\t_"
-        self.assertEqual(parse_line(line, fields=["id", "form"]), OrderedDict([
+        self.assertEqual(parse_line(line, fields=["id", "form"]), Token([
             ('id', 1),
             ('form', 'The'),
         ]))
 
     def test_parse_line_fewer_columns(self):
         line = "1\tThe\tthe\tDET\tDT"
-        self.assertEqual(parse_line(line, fields=DEFAULT_FIELDS), OrderedDict([
+        self.assertEqual(parse_line(line, fields=DEFAULT_FIELDS), Token([
             ('id', 1),
             ('form', 'The'),
             ('lemma', 'the'),
@@ -322,7 +321,7 @@ class TestParseLine(unittest.TestCase):
 
     def test_parse_line_two_spaces(self):
         line = "1  The  the  DET  DT  Definite=Def|PronType=Art  4  det  _  _"
-        self.assertEqual(parse_line(line, fields=["id", "form"]), OrderedDict([
+        self.assertEqual(parse_line(line, fields=["id", "form"]), Token([
             ('id', 1),
             ('form', 'The'),
         ]))
@@ -507,27 +506,27 @@ class TestParseDictValue(unittest.TestCase):
     def test_parse_dict_value(self):
         self.assertEqual(
             parse_dict_value("key1"),
-            OrderedDict([("key1", "")])
+            Token([("key1", "")])
         )
         self.assertEqual(
             parse_dict_value("key1=val1"),
-            OrderedDict([("key1", "val1")])
+            Token([("key1", "val1")])
         )
         self.assertEqual(
             parse_dict_value("key1=val1|key2=val2"),
-            OrderedDict([("key1", "val1"), ("key2", "val2")])
+            Token([("key1", "val1"), ("key2", "val2")])
         )
         self.assertEqual(
             parse_dict_value("key1=val1|key2|key3=val3"),
-            OrderedDict([("key1", "val1"), ("key2", ""), ("key3", "val3")])
+            Token([("key1", "val1"), ("key2", ""), ("key3", "val3")])
         )
         self.assertEqual(
             parse_dict_value("key1=val1|key1=val2"),
-            OrderedDict([("key1", "val2")])
+            Token([("key1", "val2")])
         )
         self.assertEqual(
             parse_dict_value("key1=_|_|_=val1"),
-            OrderedDict([("key1", None)])
+            Token([("key1", None)])
         )
         self.assertEqual(parse_dict_value(""), None)
         self.assertEqual(parse_dict_value("_"), None)
@@ -613,13 +612,13 @@ class TestHeadToToken(unittest.TestCase):
 
 class TestSerializeField(unittest.TestCase):
     def test_ordered_dict(self):
-        data = OrderedDict()
+        data = Token()
         self.assertEqual(serialize_field(data), "")
 
-        data = OrderedDict([('SpaceAfter', 'No')])
+        data = Token([('SpaceAfter', 'No')])
         self.assertEqual(serialize_field(data), "SpaceAfter=No")
 
-        data = OrderedDict([('Translit', None)])
+        data = Token([('Translit', None)])
         self.assertEqual(serialize_field(data), "Translit=_")
 
     def test_none(self):

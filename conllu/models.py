@@ -1,12 +1,18 @@
 from __future__ import print_function, unicode_literals
 
-from collections import defaultdict
+from collections import OrderedDict, defaultdict
 
 from conllu.compat import text
 from conllu.exceptions import ParseException
 from conllu.serializer import serialize
 
 DEFAULT_EXCLUDE_FIELDS = ('id', 'deprel', 'xpostag', 'feats', 'head', 'deps', 'misc')
+
+class Metadata(OrderedDict):
+    pass
+
+class Token(OrderedDict):
+    pass
 
 class TokenList(list):
     metadata = None

@@ -2,11 +2,10 @@
 from __future__ import unicode_literals
 
 import unittest
-from collections import OrderedDict
 from textwrap import dedent
 
 from conllu.compat import capture_print
-from conllu.models import TokenList, TokenTree
+from conllu.models import Token, TokenList, TokenTree
 from conllu.parser import ParseException, serialize
 
 
@@ -84,13 +83,13 @@ class TestParsinigTrickyTrees(unittest.TestCase):
 
     def test_simple_tree(self):
         tokenlist = TokenList([
-            OrderedDict([("id", 2), ("form", "dog"), ("head", 0)]),
-            OrderedDict([("id", 1), ("form", "a"), ("head", 2)]),
+            Token([("id", 2), ("form", "dog"), ("head", 0)]),
+            Token([("id", 1), ("form", "a"), ("head", 2)]),
         ])
         tree = TokenTree(
-            token=OrderedDict([("id", 2), ("form", "dog"), ("head", 0)]),
+            token=Token([("id", 2), ("form", "dog"), ("head", 0)]),
             children=[TokenTree(
-                token=OrderedDict([("id", 1), ("form", "a"), ("head", 2)]),
+                token=Token([("id", 1), ("form", "a"), ("head", 2)]),
                 children=[]
             )]
         )
@@ -98,14 +97,14 @@ class TestParsinigTrickyTrees(unittest.TestCase):
 
     def test_removes_negative_nodes(self):
         tokenlist = TokenList([
-            OrderedDict([("id", 2), ("form", "dog"), ("head", 0)]),
-            OrderedDict([("id", 1), ("form", "a"), ("head", 2)]),
-            OrderedDict([("id", 3), ("form", "😍"), ("head", -1)]),
+            Token([("id", 2), ("form", "dog"), ("head", 0)]),
+            Token([("id", 1), ("form", "a"), ("head", 2)]),
+            Token([("id", 3), ("form", "😍"), ("head", -1)]),
         ])
         tree = TokenTree(
-            token=OrderedDict([("id", 2), ("form", "dog"), ("head", 0)]),
+            token=Token([("id", 2), ("form", "dog"), ("head", 0)]),
             children=[TokenTree(
-                token=OrderedDict([("id", 1), ("form", "a"), ("head", 2)]),
+                token=Token([("id", 1), ("form", "a"), ("head", 2)]),
                 children=[]
             )]
         )
@@ -113,18 +112,18 @@ class TestParsinigTrickyTrees(unittest.TestCase):
 
     def test_multiple_root_nodes(self):
         tokenlist = TokenList([
-            OrderedDict([('id', 1), ('form', 'To'), ('head', 0)]),
-            OrderedDict([('id', 2), ('form', 'appear'), ('head', 1)]),
-            OrderedDict([('id', 4), ('form', 'EMNLP'), ('head', 0)]),
-            OrderedDict([('id', 5), ('form', '2014'), ('head', 4)]),
+            Token([('id', 1), ('form', 'To'), ('head', 0)]),
+            Token([('id', 2), ('form', 'appear'), ('head', 1)]),
+            Token([('id', 4), ('form', 'EMNLP'), ('head', 0)]),
+            Token([('id', 5), ('form', '2014'), ('head', 4)]),
         ])
         with self.assertRaises(ParseException):
             tokenlist.to_tree()
 
     def test_no_root_nodes(self):
         tokenlist = TokenList([
-            OrderedDict([('id', 1), ('form', 'To'), ('head', 1)]),
-            OrderedDict([('id', 2), ('form', 'appear'), ('head', 2)]),
+            Token([('id', 1), ('form', 'To'), ('head', 1)]),
+            Token([('id', 2), ('form', 'appear'), ('head', 2)]),
         ])
         with self.assertRaises(ParseException):
             tokenlist.to_tree()
@@ -176,22 +175,22 @@ class TestFilter(unittest.TestCase):
 
     def test_deep_filtering(self):
         tokenlist = TokenList([
-            {"form": "The", "feats": OrderedDict([('Definite', 'Def'), ('PronType', 'Art')])},
-            {"form": "quick", "feats": OrderedDict([('Degree', 'Pos')])},
-            {"form": "brown", "feats": OrderedDict([('Degree', 'Pos')])},
-            {"form": "fox", "feats": OrderedDict([('Number', 'Sing')])},
+            {"form": "The", "feats": Token([('Definite', 'Def'), ('PronType', 'Art')])},
+            {"form": "quick", "feats": Token([('Degree', 'Pos')])},
+            {"form": "brown", "feats": Token([('Degree', 'Pos')])},
+            {"form": "fox", "feats": Token([('Number', 'Sing')])},
         ])
         self.assertEqual(
             tokenlist.filter(feats__Degree="Pos"),
             TokenList([
-                {"form": "quick", "feats": OrderedDict([('Degree', 'Pos')])},
-                {"form": "brown", "feats": OrderedDict([('Degree', 'Pos')])},
+                {"form": "quick", "feats": Token([('Degree', 'Pos')])},
+                {"form": "brown", "feats": Token([('Degree', 'Pos')])},
             ])
         )
         self.assertEqual(
             tokenlist.filter(form="brown", feats__Degree="Pos"),
             TokenList([
-                {"form": "brown", "feats": OrderedDict([('Degree', 'Pos')])},
+                {"form": "brown", "feats": Token([('Degree', 'Pos')])},
             ])
         )
         self.assertEqual(
@@ -209,27 +208,27 @@ class TestFilter(unittest.TestCase):
 
     def test_nested_filtering(self):
         tokenlist = TokenList([
-            {"form": "The", "feats": OrderedDict([('Definite', 'Def'), ('PronType', 'Art')])},
-            {"form": "quick", "feats": OrderedDict([('Degree', 'Pos')])},
-            {"form": "brown", "feats": OrderedDict([('Degree', 'Pos')])},
-            {"form": "fox", "feats": OrderedDict([('Number', 'Sing')])},
+            {"form": "The", "feats": Token([('Definite', 'Def'), ('PronType', 'Art')])},
+            {"form": "quick", "feats": Token([('Degree', 'Pos')])},
+            {"form": "brown", "feats": Token([('Degree', 'Pos')])},
+            {"form": "fox", "feats": Token([('Number', 'Sing')])},
         ])
         self.assertEqual(
             tokenlist.filter(feats__Degree="Pos").filter(form="brown"),
             TokenList([
-                {"form": "brown", "feats": OrderedDict([('Degree', 'Pos')])},
+                {"form": "brown", "feats": Token([('Degree', 'Pos')])},
             ])
         )
         self.assertEqual(
             tokenlist.filter(form="brown").filter(feats__Degree="Pos"),
             TokenList([
-                {"form": "brown", "feats": OrderedDict([('Degree', 'Pos')])},
+                {"form": "brown", "feats": Token([('Degree', 'Pos')])},
             ])
         )
         self.assertEqual(
             tokenlist.filter(form="brown").filter(feats__Degree="Pos").filter(),
             TokenList([
-                {"form": "brown", "feats": OrderedDict([('Degree', 'Pos')])},
+                {"form": "brown", "feats": Token([('Degree', 'Pos')])},
             ])
         )
         self.assertEqual(
@@ -272,9 +271,9 @@ class TestSerializeTree(unittest.TestCase):
 
     def test_flatten(self):
         tree = TokenTree(
-            token=OrderedDict([("id", 2), ("form", "dog")]),
+            token=Token([("id", 2), ("form", "dog")]),
             children=[TokenTree(
-                token=OrderedDict([("id", 1), ("form", "a")]),
+                token=Token([("id", 1), ("form", "a")]),
                 children=[]
             )]
         )
@@ -287,9 +286,9 @@ class TestSerializeTree(unittest.TestCase):
             """)
         )
         tree = TokenTree(
-            token=OrderedDict([("id", 1), ("form", "dog")]),
+            token=Token([("id", 1), ("form", "dog")]),
             children=[TokenTree(
-                token=OrderedDict([("id", 2), ("form", "a")]),
+                token=Token([("id", 2), ("form", "a")]),
                 children=[]
             )]
         )

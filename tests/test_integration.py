@@ -3,12 +3,11 @@ from __future__ import unicode_literals
 
 import re
 import unittest
-from collections import OrderedDict
 from textwrap import dedent
 
 from conllu import parse, parse_incr, parse_tree, parse_tree_incr
 from conllu.compat import FileNotFoundError, capture_print, string_to_file, text
-from conllu.models import TokenList
+from conllu.models import Token, TokenList
 from conllu.parser import parse_dict_value, parse_int_value
 from tests.helpers import testlabel
 
@@ -42,13 +41,13 @@ class TestParse(unittest.TestCase):
 
         self.assertEqual(
             sentence[0],
-            OrderedDict([
+            Token([
                 ('id', 1),
                 ('form', 'The'),
                 ('lemma', 'the'),
                 ('upostag', 'DET'),
                 ('xpostag', 'DT'),
-                ('feats', OrderedDict([('Definite', 'Def'), ('PronType', 'Art')])),
+                ('feats', Token([('Definite', 'Def'), ('PronType', 'Art')])),
                 ('head', 4),
                 ('deprel', 'det'),
                 ('deps', None),
@@ -57,17 +56,17 @@ class TestParse(unittest.TestCase):
         )
         self.assertEqual(
             sentence[8],
-            OrderedDict([
+            Token([
                 ('id', 9),
                 ('form', 'dog'),
                 ('lemma', 'dog'),
                 ('upostag', 'NOUN'),
                 ('xpostag', 'NN'),
-                ('feats', OrderedDict([('Number', 'Sing')])),
+                ('feats', Token([('Number', 'Sing')])),
                 ('head', 5),
                 ('deprel', 'nmod'),
                 ('deps', None),
-                ('misc', OrderedDict([("SpaceAfter", "No")]))
+                ('misc', Token([("SpaceAfter", "No")]))
             ])
         )
         self.assertEqual(
@@ -89,13 +88,13 @@ class TestParse(unittest.TestCase):
 
         self.assertEqual(
             root.token,
-            OrderedDict([
+            Token([
                 ('id', 5),
                 ('form', 'jumps'),
                 ('lemma', 'jump'),
                 ('upostag', 'VERB'),
                 ('xpostag', 'VBZ'),
-                ('feats', OrderedDict([
+                ('feats', Token([
                     ("Mood", "Ind"),
                     ("Number", "Sing"),
                     ("Person", "3"),
@@ -194,7 +193,7 @@ class TestParseCoNLLUPlus(unittest.TestCase):
 
         self.assertEqual(
             sentences[0][4],
-            OrderedDict([
+            Token([
                 ('id', 5),
                 ('form', 'strebt'),
                 ('upos', 'VERB'),
@@ -234,21 +233,21 @@ class TestParseCoNLL2009(unittest.TestCase):
         )
         self.assertEqual(
             sentences[0][2],
-            OrderedDict([
+            Token([
                 ('id', 3),
                 ('form', 'knihy'),
                 ('lemma', 'kniha'),
                 ('plemma', 'kniha'),
                 ('pos', 'N'),
                 ('ppos', 'N'),
-                ('feats', OrderedDict([
+                ('feats', Token([
                     ('SubPOS', 'N'),
                     ('Gen', 'F'),
                     ('Num', 'S'),
                     ('Cas', '2'),
                     ('Neg', 'A')
                 ])),
-                ('pfeats', OrderedDict([
+                ('pfeats', Token([
                     ('SubPOS', 'N'),
                     ('Gen', 'F'),
                     ('Num', 'S'),
@@ -290,7 +289,7 @@ class TestParseCoNLL2009(unittest.TestCase):
         )
         self.assertEqual(
             sentences[0][4],
-            OrderedDict([
+            Token([
                 ('id', 5),
                 ('form', 'regnante'),
                 ('lemma', 'regno'),
@@ -305,7 +304,7 @@ class TestParseCoNLL2009(unittest.TestCase):
         )
         self.assertEqual(
             sentences[0].metadata,
-            OrderedDict([
+            Token([
                 ('id', "'1'-document_id='36:1047'-span='1'")
             ])
         )

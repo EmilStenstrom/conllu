@@ -5,6 +5,7 @@ from collections import OrderedDict
 
 from conllu.compat import fullmatch, text
 from conllu.exceptions import ParseException
+from conllu.models import Metadata, Token
 
 DEFAULT_FIELDS = ('id', 'form', 'lemma', 'upostag', 'xpostag', 'feats', 'head', 'deprel', 'deps', 'misc')
 DEFAULT_FIELD_PARSERS = {
@@ -71,7 +72,7 @@ def parse_token_and_metadata(data, fields=None, field_parsers=None, metadata_par
         field_parsers = new_field_parsers
 
     tokens = []
-    metadata = OrderedDict()
+    metadata = Metadata()
 
     for line in data.split('\n'):
         line = line.strip()
@@ -97,7 +98,7 @@ def parse_line(line, fields, field_parsers=None):
     if len(line) == 1:
         raise ParseException("Invalid line format, line must contain either tabs or two spaces.")
 
-    data = OrderedDict()
+    data = Token()
 
     for i, field in enumerate(fields):
         # Allow parsing CoNNL-U files with fewer columns

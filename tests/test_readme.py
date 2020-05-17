@@ -33,7 +33,7 @@ class ReadmeTestParser(MyDocTestParser):
             new_want = repr(new_want)
 
         # README has examples with lists formatted in multiple lines to make them easier to read
-        if new_want.startswith(("[", "OrderedDict([")):
+        if new_want.startswith(("[", "Token([", "Metadata([")):
             new_want = ReadmeTestParser.normalize_whitespace(new_want)
 
         example = doctest.Example(
