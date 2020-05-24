@@ -286,7 +286,7 @@ A normal CoNLL-U file consists of a specific set of fields (id, form, lemma, and
 """
 ```
 
-Now, let's parse this with the the default settings, and looks specifically at the first token to see how it was parsed.
+Now, let's parse this with the the default settings, and look specifically at the first token to see how it was parsed.
 
 ```python
 >>> sentences = parse(data)
@@ -302,7 +302,7 @@ The parser has assumed (incorrectly) that the third field must the the default Â
 Token([('id', 1), ('form', 'My'), ('tag', 'TAG1|TAG2')])
 ```
 
-The only difference is that you now get the correct field name back when parsing. How let's say you want those two tags returned as a list instead of as a string you have to split. This can be done using `field_parsers`.
+The only difference is that you now get the correct field name back when parsing. Now let's say you want those two tags returned as a list instead of as a string. This can be done using the `field_parsers` argument.
 
 ```python
 >>> split_func = lambda line, i: line[i].split("|")
@@ -313,10 +313,10 @@ Token([('id', 1), ('form', 'My'), ('tag', ['TAG1', 'TAG2'])])
 
 That's much better! `field_parsers` specifies a mapping from a field name, to a function that can parse that field. In our case, we specify that the field with custom logic is `"tag"` and that the function to handle it is `split_func`. Each field_parser gets sent two parameters:
 
-* `line`: The whole list of values from this line, split on whitespace. The reason you get the full line is so you can merge several tokens into one using a field_parser if you wanted.
+* `line`: The whole list of values from this line, split on whitespace. The reason you get the full line is so you can merge several tokens into one using a field_parser if you want.
 * `i`: The current location in the line where you currently are. Most often, you'll use `line[i]` to get the current value.
 
-In our case, we return `line[i].split("|")`, which returns a list, just like we want.
+In our case, we return `line[i].split("|")`, which returns a list like we want.
 
 Let's look at the metadata in this example.
 
@@ -336,7 +336,7 @@ None of these values are valid in CoNLL-U, but since the first line follows the 
 Metadata([('tagset', 'TAG1|TAG2|TAG3|TAG4')])
 ```
 
-Let's return this as a list using the metadata_parsers parameter.
+Let's return this as a list using the `metadata_parsers` parameter.
 
 ```python
 >>> sentences = parse(data, metadata_parsers={"tagset": lambda key, value: (key, value.split("|"))})
@@ -344,7 +344,7 @@ Let's return this as a list using the metadata_parsers parameter.
 Metadata([('tagset', ['TAG1', 'TAG2', 'TAG3', 'TAG4'])])
 ```
 
-A metadata parser behaves similarily as a field parser, but since most comments you'll see will be of the form "key = value" these values will be parsed and cleaned first, and then sent to your custom metadata_parser. Here we just take the value, and split it on "|", and return a list back. And lo and behold, we get what we wanted!
+A metadata parser behaves similarily to a field parser, but since most comments you'll see will be of the form "key = value" these values will be parsed and cleaned first, and then sent to your custom metadata_parser. Here we just take the value, and split it on "|", and return a list back. And lo and behold, we get what we wanted!
 
 Now, let's deal with the "sentence-123" comment. Specifying another metadata_parser won't work, because this is an ID that will be different for each sentence. Instead, let's use a special metadata parser, called `__fallback__`.
 
