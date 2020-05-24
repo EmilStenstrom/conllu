@@ -6,13 +6,26 @@ from conllu.compat import text
 from conllu.exceptions import ParseException
 from conllu.serializer import serialize
 
-DEFAULT_EXCLUDE_FIELDS = ('id', 'deprel', 'xpostag', 'feats', 'head', 'deps', 'misc')
+DEFAULT_EXCLUDE_FIELDS = ('id', 'deprel', 'xpos', 'feats', 'head', 'deps', 'misc')
 
 class Metadata(OrderedDict):
     pass
 
 class Token(OrderedDict):
-    pass
+    def __missing__(self, key):
+        if key == "upostag":
+            return self["upos"]
+
+        if key == "xpostag":
+            return self["xpos"]
+
+        if key == "upos":
+            return self["upostag"]
+
+        if key == "xpos":
+            return self["xpostag"]
+
+        raise KeyError("'" + key + "'")
 
 class TokenList(list):
     metadata = None

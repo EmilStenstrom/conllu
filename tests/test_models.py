@@ -9,6 +9,26 @@ from conllu.models import Token, TokenList, TokenTree
 from conllu.parser import ParseException, serialize
 
 
+class TestToken(unittest.TestCase):
+    def test_xupos_to_xupostag(self):
+        token = Token({"id": 1, "xpos": "DT", "upos": "DET"})
+        self.assertEqual(token["xpos"], "DT")
+        self.assertEqual(token["xpostag"], "DT")
+        self.assertEqual(token["upos"], "DET")
+        self.assertEqual(token["upostag"], "DET")
+
+    def test_xupostag_to_xupos(self):
+        token = Token({"id": 1, "xpostag": "DT", "upostag": "DET"})
+        self.assertEqual(token["xpos"], "DT")
+        self.assertEqual(token["xpostag"], "DT")
+        self.assertEqual(token["upos"], "DET")
+        self.assertEqual(token["upostag"], "DET")
+
+    def test_invalid_key_access(self):
+        token = Token({"id": 1, "xpostag": "DT", "upostag": "DET"})
+        with self.assertRaises(KeyError):
+            token["inexistent_value"]
+
 class TestTokenList(unittest.TestCase):
     def test_constructor(self):
         with self.assertRaises(ParseException):

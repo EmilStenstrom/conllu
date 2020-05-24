@@ -198,16 +198,16 @@ To quickly visualize the tree structure you can call `print_tree` on a TokenTree
 
 ```python
 >>> root.print_tree()
-(deprel:root) form:jumps lemma:jump upostag:VERB [5]
-    (deprel:nsubj) form:fox lemma:fox upostag:NOUN [4]
-        (deprel:det) form:The lemma:the upostag:DET [1]
-        (deprel:amod) form:quick lemma:quick upostag:ADJ [2]
-        (deprel:amod) form:brown lemma:brown upostag:ADJ [3]
-    (deprel:nmod) form:dog lemma:dog upostag:NOUN [9]
-        (deprel:case) form:over lemma:over upostag:ADP [6]
-        (deprel:det) form:the lemma:the upostag:DET [7]
-        (deprel:amod) form:lazy lemma:lazy upostag:ADJ [8]
-    (deprel:punct) form:. lemma:. upostag:PUNCT [10]
+(deprel:root) form:jumps lemma:jump upos:VERB [5]
+    (deprel:nsubj) form:fox lemma:fox upos:NOUN [4]
+        (deprel:det) form:The lemma:the upos:DET [1]
+        (deprel:amod) form:quick lemma:quick upos:ADJ [2]
+        (deprel:amod) form:brown lemma:brown upos:ADJ [3]
+    (deprel:nmod) form:dog lemma:dog upos:NOUN [9]
+        (deprel:case) form:over lemma:over upos:ADP [6]
+        (deprel:det) form:the lemma:the upos:DET [7]
+        (deprel:amod) form:lazy lemma:lazy upos:ADJ [8]
+    (deprel:punct) form:. lemma:. upos:PUNCT [10]
 ```
 
 To access the token corresponding to the current node in the tree, use `token`:

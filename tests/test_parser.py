@@ -240,7 +240,6 @@ class TestParseTokenAndMetadata(unittest.TestCase):
             Token([("id", 2), ("form", "PARIS")]),
         ])
 
-
 class TestParseLine(unittest.TestCase):
     def test_empty(self):
         with self.assertRaises(ParseException) as assert_context:
@@ -258,8 +257,8 @@ class TestParseLine(unittest.TestCase):
                 ('id', 1),
                 ('form', 'The'),
                 ('lemma', 'the'),
-                ('upostag', 'DET'),
-                ('xpostag', 'DT'),
+                ('upos', 'DET'),
+                ('xpos', 'DT'),
                 ('feats', Token([('Definite', 'Def'), ('PronType', 'Art')])),
                 ('head', 4),
                 ('deprel', 'det'),
@@ -271,13 +270,13 @@ class TestParseLine(unittest.TestCase):
     def test_parse_line_nullable_fields(self):
         line = "_\t_\t_\t_\t_\t_\t_\t_\t_\t_"
         self.assertEqual(
-            dict(parse_line(line, fields=DEFAULT_FIELDS)),
-            dict([
+            parse_line(line, fields=DEFAULT_FIELDS),
+            Token([
                 ('id', None),
                 ('form', '_'),
                 ('lemma', '_'),
-                ('upostag', '_'),
-                ('xpostag', None),
+                ('upos', '_'),
+                ('xpos', None),
                 ('feats', None),
                 ('head', None),
                 ('deprel', '_'),
@@ -299,8 +298,8 @@ class TestParseLine(unittest.TestCase):
             ('id', 1),
             ('form', 'The'),
             ('lemma', 'the'),
-            ('upostag', 'DET'),
-            ('xpostag', 'DT'),
+            ('upos', 'DET'),
+            ('xpos', 'DT'),
         ]))
 
     def test_parse_line_without_spacing(self):
@@ -325,6 +324,76 @@ class TestParseLine(unittest.TestCase):
             ('id', 1),
             ('form', 'The'),
         ]))
+
+    def test_parse_custom_fieldparsers(self):
+        line = "1\t2"
+        custom_fieldparsers = {
+            "id": lambda line, i: line[i] * 5,
+        }
+        self.assertEqual(
+            parse_line(line, fields=["id"], field_parsers=custom_fieldparsers),
+            Token([
+                ('id', "11111"),
+            ])
+        )
+
+    def test_parse_fieldparsers_alias_xupostag(self):
+        line = "1\t2"
+        custom_fieldparsers = {
+            "xpostag": lambda line, i: line[i] * 5,
+            "upostag": lambda line, i: line[i] * 5,
+        }
+        self.assertEqual(
+            parse_line(line, fields=["xpos", "upos"], field_parsers=custom_fieldparsers),
+            Token([
+                ('xpos', "11111"),
+                ('upos', "22222"),
+            ])
+        )
+
+    def test_parse_fieldparsers_alias_xupos(self):
+        line = "1\t2"
+        custom_fieldparsers = {
+            "xpos": lambda line, i: line[i] * 5,
+            "upos": lambda line, i: line[i] * 5,
+        }
+        self.assertEqual(
+            parse_line(line, fields=["xpostag", "upostag"], field_parsers=custom_fieldparsers),
+            Token([
+                ('xpostag', "11111"),
+                ('upostag', "22222"),
+            ])
+        )
+
+    def test_parse_fieldparsers_doesnt_alias_when_exists(self):
+        line = "1\t2"
+        custom_fieldparsers = {
+            "xpos": lambda line, i: line[i] * 5,
+            "xpostag": lambda line, i: line[i],
+            "upos": lambda line, i: line[i] * 5,
+            "upostag": lambda line, i: line[i],
+        }
+        self.assertEqual(
+            parse_line(line, fields=["xpostag", "upostag"], field_parsers=custom_fieldparsers),
+            Token([
+                ('xpostag', "1"),
+                ('upostag', "2"),
+            ])
+        )
+
+    def test_parse_fieldparsers_alias_two_ways(self):
+        line = "1\t2"
+        custom_fieldparsers = {
+            "xpos": lambda line, i: line[i] * 5,
+            "upostag": lambda line, i: line[i] * 5,
+        }
+        self.assertEqual(
+            parse_line(line, fields=["xpostag", "upos"], field_parsers=custom_fieldparsers),
+            Token([
+                ('xpostag', "11111"),
+                ('upos', "22222"),
+            ])
+        )
 
 class TestParseCommentLine(unittest.TestCase):
     def test_parse_spaces_before_square(self):

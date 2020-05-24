@@ -45,8 +45,8 @@ class TestParse(unittest.TestCase):
                 ('id', 1),
                 ('form', 'The'),
                 ('lemma', 'the'),
-                ('upostag', 'DET'),
-                ('xpostag', 'DT'),
+                ('upos', 'DET'),
+                ('xpos', 'DT'),
                 ('feats', Token([('Definite', 'Def'), ('PronType', 'Art')])),
                 ('head', 4),
                 ('deprel', 'det'),
@@ -60,8 +60,8 @@ class TestParse(unittest.TestCase):
                 ('id', 9),
                 ('form', 'dog'),
                 ('lemma', 'dog'),
-                ('upostag', 'NOUN'),
-                ('xpostag', 'NN'),
+                ('upos', 'NOUN'),
+                ('xpos', 'NN'),
                 ('feats', Token([('Number', 'Sing')])),
                 ('head', 5),
                 ('deprel', 'nmod'),
@@ -92,8 +92,8 @@ class TestParse(unittest.TestCase):
                 ('id', 5),
                 ('form', 'jumps'),
                 ('lemma', 'jump'),
-                ('upostag', 'VERB'),
-                ('xpostag', 'VBZ'),
+                ('upos', 'VERB'),
+                ('xpos', 'VBZ'),
                 ('feats', Token([
                     ("Mood", "Ind"),
                     ("Number", "Sing"),
@@ -127,16 +127,16 @@ class TestParse(unittest.TestCase):
         self.assertEqual(
             capture_print(root.print_tree),
             dedent("""\
-                (deprel:root) form:jumps lemma:jump upostag:VERB [5]
-                    (deprel:nsubj) form:fox lemma:fox upostag:NOUN [4]
-                        (deprel:det) form:The lemma:the upostag:DET [1]
-                        (deprel:amod) form:quick lemma:quick upostag:ADJ [2]
-                        (deprel:amod) form:brown lemma:brown upostag:ADJ [3]
-                    (deprel:nmod) form:dog lemma:dog upostag:NOUN [9]
-                        (deprel:case) form:over lemma:over upostag:ADP [6]
-                        (deprel:det) form:the lemma:the upostag:DET [7]
-                        (deprel:amod) form:lazy lemma:lazy upostag:ADJ [8]
-                    (deprel:punct) form:. lemma:. upostag:PUNCT [10]
+                (deprel:root) form:jumps lemma:jump upos:VERB [5]
+                    (deprel:nsubj) form:fox lemma:fox upos:NOUN [4]
+                        (deprel:det) form:The lemma:the upos:DET [1]
+                        (deprel:amod) form:quick lemma:quick upos:ADJ [2]
+                        (deprel:amod) form:brown lemma:brown upos:ADJ [3]
+                    (deprel:nmod) form:dog lemma:dog upos:NOUN [9]
+                        (deprel:case) form:over lemma:over upos:ADP [6]
+                        (deprel:det) form:the lemma:the upos:DET [7]
+                        (deprel:amod) form:lazy lemma:lazy upos:ADJ [8]
+                    (deprel:punct) form:. lemma:. upos:PUNCT [10]
             """)
         )
 

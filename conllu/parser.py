@@ -7,10 +7,10 @@ from conllu.compat import fullmatch, text
 from conllu.exceptions import ParseException
 from conllu.models import Metadata, Token
 
-DEFAULT_FIELDS = ('id', 'form', 'lemma', 'upostag', 'xpostag', 'feats', 'head', 'deprel', 'deps', 'misc')
+DEFAULT_FIELDS = ('id', 'form', 'lemma', 'upos', 'xpos', 'feats', 'head', 'deprel', 'deps', 'misc')
 DEFAULT_FIELD_PARSERS = {
     "id": lambda line, i: parse_id_value(line[i]),
-    "xpostag": lambda line, i: parse_nullable_value(line[i]),
+    "xpos": lambda line, i: parse_nullable_value(line[i]),
     "feats": lambda line, i: parse_dict_value(line[i]),
     "head": lambda line, i: parse_int_value(line[i]),
     "deps": lambda line, i: parse_paired_list_value(line[i]),
@@ -92,6 +92,17 @@ def parse_token_and_metadata(data, fields=None, field_parsers=None, metadata_par
 def parse_line(line, fields, field_parsers=None):
     # Be backwards compatible if people called parse_line without field_parsers before
     field_parsers = field_parsers or DEFAULT_FIELD_PARSERS
+
+    # Support xpostag/upostag as aliases for xpos/upos (both ways)
+    if "xpostag" not in field_parsers and "xpos" in field_parsers:
+        field_parsers["xpostag"] = field_parsers["xpos"]
+    if "xpos" not in field_parsers and "xpostag" in field_parsers:
+        field_parsers["xpos"] = field_parsers["xpostag"]
+
+    if "upostag" not in field_parsers and "upos" in field_parsers:
+        field_parsers["upostag"] = field_parsers["upos"]
+    if "upos" not in field_parsers and "upostag" in field_parsers:
+        field_parsers["upos"] = field_parsers["upostag"]
 
     line = re.split(r"\t| {2,}", line)
 
