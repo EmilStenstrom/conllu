@@ -23,6 +23,10 @@ Or, if you are using [conda](https://conda.io/docs/):
 conda install -c conda-forge conllu
 ```
 
+## Notes on updating from 2.0 to 3.0
+
+The Universal dependencies 2.0 release changed two of the field names from xpostag -> xpos and upostag -> upos. Version 3.0 of conllu handles this by aliasing the previous names to the new names. This means you can use xpos/upos or xpostag/upostag, they will both return the same thing. This does change the public API slightly, so I've upped the major version to 3.0, but I've taken care to ensure you most likely DO NOT have to update your code when you update to 3.0.
+
 ## Notes on updating from 0.1 to 1.0
 
 I don't like breaking backwards compatibility, but to be able to add new features I felt I had to. This means that updating from 0.1 to 1.0 *might* require code changes. Here's a guide on [how to upgrade to 1.0
