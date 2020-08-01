@@ -12,18 +12,16 @@ class Metadata(OrderedDict):
     pass
 
 class Token(OrderedDict):
+    MAPPING = {
+        "upostag": "upos",
+        "xpostag": "xpos",
+        "upos": "upostag",
+        "xpos": "xpostag",
+    }
+
     def __missing__(self, key):
-        if key == "upostag":
-            return self["upos"]
-
-        if key == "xpostag":
-            return self["xpos"]
-
-        if key == "upos":
-            return self["upostag"]
-
-        if key == "xpos":
-            return self["xpostag"]
+        if key in self.MAPPING:
+            return self[self.MAPPING[key]]
 
         raise KeyError("'" + key + "'")
 
