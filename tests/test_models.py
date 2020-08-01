@@ -16,6 +16,10 @@ class TestToken(unittest.TestCase):
         self.assertEqual(token["xpostag"], "DT")
         self.assertEqual(token["upos"], "DET")
         self.assertEqual(token["upostag"], "DET")
+        self.assertEqual(token.get("xpos"), "DT")
+        self.assertEqual(token.get("xpostag"), "DT")
+        self.assertEqual(token.get("upos"), "DET")
+        self.assertEqual(token.get("upostag"), "DET")
 
     def test_xupostag_to_xupos(self):
         token = Token({"id": 1, "xpostag": "DT", "upostag": "DET"})
@@ -23,6 +27,10 @@ class TestToken(unittest.TestCase):
         self.assertEqual(token["xpostag"], "DT")
         self.assertEqual(token["upos"], "DET")
         self.assertEqual(token["upostag"], "DET")
+        self.assertEqual(token.get("xpos"), "DT")
+        self.assertEqual(token.get("xpostag"), "DT")
+        self.assertEqual(token.get("upos"), "DET")
+        self.assertEqual(token.get("upostag"), "DET")
 
     def test_invalid_key_access(self):
         token = Token({"id": 1, "xpostag": "DT", "upostag": "DET"})

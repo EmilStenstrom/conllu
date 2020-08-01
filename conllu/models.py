@@ -19,6 +19,12 @@ class Token(OrderedDict):
         "xpos": "xpostag",
     }
 
+    def get(self, key, *args, **kwargs):
+        if key not in self and key in self.MAPPING:
+            key = self.MAPPING[key]
+
+        return super(Token, self).get(key, *args, **kwargs)
+
     def __missing__(self, key):
         if key in self.MAPPING:
             return self[self.MAPPING[key]]
