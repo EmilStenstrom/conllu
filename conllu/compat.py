@@ -59,8 +59,8 @@ except NameError:
 try:
     from contextlib import redirect_stdout
 except ImportError:
-    import sys
     import contextlib
+    import sys
 
     @contextlib.contextmanager
     def redirect_stdout(target):
