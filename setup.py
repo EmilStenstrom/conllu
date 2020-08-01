@@ -3,7 +3,7 @@ import os
 
 from setuptools import setup
 
-VERSION = '3.1'
+VERSION = '3.1.1'
 
 setup(
     name='conllu',
