@@ -275,6 +275,9 @@ class TestTokenTree(unittest.TestCase):
         tokentree2 = TokenTree(token={"id": 1}, children=[])
         self.assertNotEqual(tokentree1, tokentree2)
 
+        # Not equal with a plain dict
+        self.assertNotEqual(tokentree2, {"id": 1})
+
         tokentree2.metadata = metadata
         self.assertNotEqual(tokentree1, tokentree2)
 
