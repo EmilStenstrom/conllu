@@ -6,7 +6,7 @@ from collections import OrderedDict
 from conllu.exceptions import ParseException
 
 if T.TYPE_CHECKING:
-    from .models import TokenList
+    from conllu.models import TokenList
 
 
 def serialize_field(field: T.Any) -> str:

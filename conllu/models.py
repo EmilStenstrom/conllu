@@ -1,7 +1,8 @@
 from __future__ import print_function, unicode_literals
 
 import typing as T
-from collections import Mapping, OrderedDict, defaultdict
+from collections import OrderedDict, defaultdict
+from collections.abc import Mapping
 
 
 from conllu.exceptions import ParseException
@@ -133,7 +134,7 @@ class TokenList(T.List[Token]):
         return root
 
     def filter(self, **kwargs: T.Any) -> 'TokenList':
-        tokens = list(self.tokens.copy())
+        tokens: T.Iterable[Token] = self.tokens.copy()
 
         for query, value in kwargs.items():
             filtered_tokens = []

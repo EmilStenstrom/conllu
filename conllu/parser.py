@@ -248,8 +248,6 @@ def parse_nullable_value(value: str) -> T.Optional[str]:
     return value
 
 # DEPRECATED: Mantain old paths until next major version
-# TODO: When PEP 612 is implemented by mypy, type the below.
-
 def serialize(tokenlist: TokenList) -> str:
     from conllu.serializer import serialize as new_serialize
     return new_serialize(tokenlist)
@@ -258,6 +256,5 @@ def serialize_field(field: T.Any) -> str:
     from conllu.serializer import serialize_field as new_serialize_field
     return new_serialize_field(field)
 
-def head_to_token(sentence: 'TokenList') -> T.Dict[int, T.List[Token]]:
-    from conllu.models import TokenList
+def head_to_token(sentence: TokenList) -> T.Dict[int, T.List[Token]]:
     return TokenList.head_to_token(sentence)
