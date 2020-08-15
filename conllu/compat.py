@@ -1,17 +1,6 @@
 from io import StringIO
+from contextlib import redirect_stdout
 
-try:
-    from contextlib import redirect_stdout
-except ImportError:
-    import contextlib
-    import sys
-
-    @contextlib.contextmanager
-    def redirect_stdout(target):
-        original = sys.stdout
-        sys.stdout = target
-        yield
-        sys.stdout = original
 
 def string_to_file(string):
     return StringIO(text(string) if string else None)
