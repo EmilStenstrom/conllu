@@ -12,7 +12,7 @@
 
 ## Installation
 
-Note: As of conllu 4.0, Python 3.6 is required to install conllu. See [Notes on updating from 3.0 to 4.0](#notes-on-updating-from-3-0-to-4-0)
+Note: As of conllu 4.0, Python 3.6 is required to install conllu. See [Notes on updating from 3.0 to 4.0](#notes-on-updating-from-30-to-40)
 
 ```bash
 pip install conllu
