@@ -2,7 +2,6 @@ from __future__ import print_function, unicode_literals
 
 from collections import OrderedDict, defaultdict
 
-from conllu.compat import text
 from conllu.exceptions import ParseException
 from conllu.serializer import serialize
 
@@ -163,7 +162,7 @@ class TokenTree(object):
 
     def __repr__(self):
         return 'TokenTree<' + \
-            'token={id=' + text(self.token['id']) + ', form=' + self.token['form'] + '}, ' + \
+            'token={id=' + str(self.token['id']) + ', form=' + self.token['form'] + '}, ' + \
             'children=' + ('[...]' if self.children else 'None') + \
             '>'
 

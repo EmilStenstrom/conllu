@@ -6,11 +6,10 @@ import os
 import re
 import shutil
 import tempfile
+from doctest import DocTestParser
 
-from conllu.compat import MyDocTestParser
 
-
-class ReadmeTestParser(MyDocTestParser):
+class ReadmeTestParser(DocTestParser):
     @staticmethod
     def modify_example(example):
         new_source = example.source

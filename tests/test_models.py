@@ -4,9 +4,9 @@ from __future__ import unicode_literals
 import unittest
 from textwrap import dedent
 
-from conllu.compat import capture_print
 from conllu.models import Token, TokenList, TokenTree
 from conllu.parser import ParseException, serialize
+from tests.helpers import capture_print
 
 
 class TestToken(unittest.TestCase):

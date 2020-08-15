@@ -3,13 +3,13 @@ from __future__ import unicode_literals
 
 import re
 import unittest
+from io import StringIO
 from textwrap import dedent
 
 from conllu import parse, parse_incr, parse_tree, parse_tree_incr
-from conllu.compat import FileNotFoundError, capture_print, string_to_file, text
 from conllu.models import Token, TokenList
 from conllu.parser import parse_dict_value, parse_int_value
-from tests.helpers import testlabel
+from tests.helpers import capture_print, testlabel
 
 data = dedent("""\
     # text = The quick brown fox jumps over the lazy dog.
@@ -37,7 +37,7 @@ class TestParse(unittest.TestCase):
 
         sentence = sentences[0]
 
-        self.assertEqual(text(sentence), "TokenList<The, quick, brown, fox, jumps, over, the, lazy, dog, .>")
+        self.assertEqual(str(sentence), "TokenList<The, quick, brown, fox, jumps, over, the, lazy, dog, .>")
 
         self.assertEqual(
             sentence[0],
@@ -84,7 +84,7 @@ class TestParse(unittest.TestCase):
         self.assertEqual(len(sentences), 1)
 
         root = sentences[0]
-        self.assertEqual(text(root), "TokenTree<token={id=5, form=jumps}, children=[...]>")
+        self.assertEqual(str(root), "TokenTree<token={id=5, form=jumps}, children=[...]>")
 
         self.assertEqual(
             root.token,
@@ -109,7 +109,7 @@ class TestParse(unittest.TestCase):
         )
 
         self.assertEqual(
-            [text(child) for child in root.children],
+            [str(child) for child in root.children],
             [
                 "TokenTree<token={id=4, form=fox}, children=[...]>",
                 "TokenTree<token={id=9, form=dog}, children=[...]>",
@@ -141,14 +141,14 @@ class TestParse(unittest.TestCase):
         )
 
     def test_parse_incr(self):
-        self.assertEqual(parse(data), list(parse_incr(string_to_file(data))))
+        self.assertEqual(parse(data), list(parse_incr(StringIO(data))))
 
     def test_parse_incr_invalid_file(self):
         with self.assertRaises(FileNotFoundError):
             list(parse_incr("SOME STRING DATA"))
 
     def test_parse_tree_incr(self):
-        self.assertEqual(parse_tree(data), list(parse_tree_incr(string_to_file(data))))
+        self.assertEqual(parse_tree(data), list(parse_tree_incr(StringIO(data))))
 
 
 @testlabel("integration")

@@ -1,3 +1,7 @@
+from contextlib import redirect_stdout
+from io import StringIO
+
+
 def testlabel(*labels):
     """
     Usage::
@@ -13,3 +17,13 @@ def testlabel(*labels):
         return cls
 
     return inner
+
+def capture_print(func, args=None):
+    f = StringIO()
+    with redirect_stdout(f):
+        if args:
+            func(args)
+        else:
+            func()
+
+    return f.getvalue()
