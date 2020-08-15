@@ -1,18 +1,3 @@
-from io import StringIO
-from contextlib import redirect_stdout
-
-
-def capture_print(func, args=None):
-    f = StringIO()
-    with redirect_stdout(f):
-        if args:
-            func(args)
-        else:
-            func()
-
-    return f.getvalue()
-
-
 try:
     from re import fullmatch
 except ImportError:
