@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 
-from conllu.compat import FileNotFoundError, string_to_file
+from conllu.compat import string_to_file
 from conllu.models import TokenList
 from conllu.parser import parse_conllu_plus_fields, parse_sentences, parse_token_and_metadata
 

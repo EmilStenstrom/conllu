@@ -1,11 +1,6 @@
 from io import StringIO
 
 try:
-    FileNotFoundError = FileNotFoundError
-except NameError:
-    FileNotFoundError = IOError
-
-try:
     from contextlib import redirect_stdout
 except ImportError:
     import contextlib

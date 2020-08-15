@@ -6,7 +6,7 @@ import unittest
 from textwrap import dedent
 
 from conllu import parse, parse_incr, parse_tree, parse_tree_incr
-from conllu.compat import FileNotFoundError, capture_print, string_to_file, text
+from conllu.compat import capture_print, string_to_file, text
 from conllu.models import Token, TokenList
 from conllu.parser import parse_dict_value, parse_int_value
 from tests.helpers import testlabel
