@@ -2,9 +2,9 @@
 from __future__ import unicode_literals
 
 import unittest
+from io import StringIO
 from textwrap import dedent
 
-from conllu.compat import string_to_file
 from conllu.models import Token, TokenList
 from conllu.parser import (
     DEFAULT_FIELDS, ParseException, head_to_token, parse_comment_line, parse_conllu_plus_fields, parse_dict_value,
@@ -15,8 +15,8 @@ from conllu.parser import (
 
 class TestParseConlluPlusFields(unittest.TestCase):
     def test_empty(self):
-        self.assertEqual(parse_conllu_plus_fields(string_to_file("")), None)
-        self.assertEqual(parse_conllu_plus_fields(string_to_file(None)), None)
+        self.assertEqual(parse_conllu_plus_fields(StringIO("")), None)
+        self.assertEqual(parse_conllu_plus_fields(StringIO(None)), None)
 
     def test_simple(self):
         data = dedent("""\
@@ -24,7 +24,7 @@ class TestParseConlluPlusFields(unittest.TestCase):
             1\tDer\tDET\t2\tdet\t_\t*
         """)
         self.assertEqual(
-            parse_conllu_plus_fields(string_to_file(data)),
+            parse_conllu_plus_fields(StringIO(data)),
             ["id", "form", "upos", "head", "deprel", "misc", "parseme:mwe"]
         )
 
@@ -33,12 +33,12 @@ class TestParseConlluPlusFields(unittest.TestCase):
             # global.columns =
             1\tDer\tDET\t2\tdet\t_\t*
         """)
-        self.assertEqual(parse_conllu_plus_fields(string_to_file(data)), None)
+        self.assertEqual(parse_conllu_plus_fields(StringIO(data)), None)
 
 class TestParseSentencesGenerator(unittest.TestCase):
     def test_empty(self):
-        self.assertEqual(list(parse_sentences(string_to_file(""))), [])
-        self.assertEqual(list(parse_sentences(string_to_file(None))), [])
+        self.assertEqual(list(parse_sentences(StringIO(""))), [])
+        self.assertEqual(list(parse_sentences(StringIO(None))), [])
 
     def test_simple(self):
         data = dedent("""\
@@ -50,7 +50,7 @@ class TestParseSentencesGenerator(unittest.TestCase):
             2\tdå
             3\thej
         """)
-        sentences = list(parse_sentences(string_to_file(data)))
+        sentences = list(parse_sentences(StringIO(data)))
         self.assertEqual(sentences, [
             '1\thej\n2\tdå\n3\thej',
             '1\thej\n2\tdå\n3\thej',
@@ -70,7 +70,7 @@ class TestParseSentencesGenerator(unittest.TestCase):
             1\thej
             2\tdå
         """)
-        sentences = list(parse_sentences(string_to_file(data)))
+        sentences = list(parse_sentences(StringIO(data)))
         self.assertEqual(sentences, [
             '1\thej\n2\tdå',
             '1\thej\n2\tdå',
@@ -79,7 +79,7 @@ class TestParseSentencesGenerator(unittest.TestCase):
 
     def test_ends_without_newline(self):
         data = "1\thej\n2\tdå"
-        sentences = list(parse_sentences(string_to_file(data)))
+        sentences = list(parse_sentences(StringIO(data)))
         self.assertEqual(sentences, [
             '1\thej\n2\tdå',
         ])

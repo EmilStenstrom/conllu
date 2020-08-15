@@ -2,9 +2,6 @@ from io import StringIO
 from contextlib import redirect_stdout
 
 
-def string_to_file(string):
-    return StringIO(text(string) if string else None)
-
 def capture_print(func, args=None):
     f = StringIO()
     with redirect_stdout(f):

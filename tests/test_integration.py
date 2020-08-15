@@ -3,10 +3,11 @@ from __future__ import unicode_literals
 
 import re
 import unittest
+from io import StringIO
 from textwrap import dedent
 
 from conllu import parse, parse_incr, parse_tree, parse_tree_incr
-from conllu.compat import capture_print, string_to_file, text
+from conllu.compat import capture_print, text
 from conllu.models import Token, TokenList
 from conllu.parser import parse_dict_value, parse_int_value
 from tests.helpers import testlabel
@@ -141,14 +142,14 @@ class TestParse(unittest.TestCase):
         )
 
     def test_parse_incr(self):
-        self.assertEqual(parse(data), list(parse_incr(string_to_file(data))))
+        self.assertEqual(parse(data), list(parse_incr(StringIO(data))))
 
     def test_parse_incr_invalid_file(self):
         with self.assertRaises(FileNotFoundError):
             list(parse_incr("SOME STRING DATA"))
 
     def test_parse_tree_incr(self):
-        self.assertEqual(parse_tree(data), list(parse_tree_incr(string_to_file(data))))
+        self.assertEqual(parse_tree(data), list(parse_tree_incr(StringIO(data))))
 
 
 @testlabel("integration")
