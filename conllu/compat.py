@@ -1,7 +1,4 @@
-try:
-    from io import StringIO
-except ImportError:
-    from StringIO import StringIO
+from io import StringIO
 
 try:
     FileNotFoundError = FileNotFoundError
