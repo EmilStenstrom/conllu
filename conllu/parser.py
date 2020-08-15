@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 import re
 from collections import OrderedDict
 
-from conllu.compat import fullmatch, text
+from conllu.compat import text
 from conllu.exceptions import ParseException
 from conllu.models import Metadata, Token
 
@@ -177,7 +177,7 @@ def parse_int_value(value):
     if value == '_':
         return None
 
-    if fullmatch(INTEGER, value):
+    if re.fullmatch(INTEGER, value):
         return int(value)
     else:
         raise ParseException("'{}' is not a valid value for parse_int_value.".format(value))
@@ -191,16 +191,16 @@ def parse_id_value(value):
     if not value or value == '_':
         return None
 
-    if fullmatch(ID_SINGLE, value):
+    if re.fullmatch(ID_SINGLE, value):
         return int(value)
 
-    elif fullmatch(ID_RANGE, value):
+    elif re.fullmatch(ID_RANGE, value):
         from_, to = value.split("-")
         from_, to = int(from_), int(to)
         if to > from_:
             return (int(from_), "-", int(to))
 
-    elif fullmatch(ID_DOT_ID, value):
+    elif re.fullmatch(ID_DOT_ID, value):
         return (int(value.split(".")[0]), ".", int(value.split(".")[1]))
 
     raise ParseException("'{}' is not a valid ID.".format(value))
@@ -211,7 +211,7 @@ DEPS_RE = re.compile("(" + ANY_ID.pattern + r")(:[^\d:_\-|][^:|]*)+")
 MULTI_DEPS_PATTERN = re.compile(r"{}(\|{})*".format(DEPS_RE.pattern, DEPS_RE.pattern))
 
 def parse_paired_list_value(value):
-    if fullmatch(MULTI_DEPS_PATTERN, value):
+    if re.fullmatch(MULTI_DEPS_PATTERN, value):
         return [
             (part.split(":", 1)[1], parse_id_value(part.split(":")[0]))
             for part in value.split("|")
