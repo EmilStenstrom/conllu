@@ -5,13 +5,14 @@
 ## Why should you use conllu?
 
 - It's simple. ~300 lines of code.
-- Works with both Python 2 and Python 3
 - It has no dependencies
 - Nice set of tests with CI setup: ![Build status on Travis](https://api.travis-ci.org/EmilStenstrom/conllu.svg?branch=master)
 - It has 100% test coverage (and has undergone [mutation testing](https://github.com/boxed/mutmut/))
 - It has [![lots of downloads](http://pepy.tech/badge/conllu)](http://pepy.tech/project/conllu)
 
 ## Installation
+
+Note: As of conllu 4.0, Python 3.6 is required to install conllu. See [Notes on updating from 3.0 to 4.0](#notes-on-updating-from-3-0-to-4-0)
 
 ```bash
 pip install conllu
@@ -22,6 +23,10 @@ Or, if you are using [conda](https://conda.io/docs/):
 ```bash
 conda install -c conda-forge conllu
 ```
+
+## Notes on updating from 3.0 to 4.0
+
+Conllu version 4.0 drops support for Python 2 and all versions of earlier than Python 3.6. If you need support for older versions of python, you can always pin your install to an old version of conllu. You can install it with `pip install conllu==3.1.1`.
 
 ## Notes on updating from 2.0 to 3.0
 
