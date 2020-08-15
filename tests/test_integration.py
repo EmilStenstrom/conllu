@@ -9,7 +9,7 @@ from textwrap import dedent
 from conllu import parse, parse_incr, parse_tree, parse_tree_incr
 from conllu.models import Token, TokenList
 from conllu.parser import parse_dict_value, parse_int_value
-from tests.helpers import testlabel, capture_print
+from tests.helpers import capture_print, testlabel
 
 data = dedent("""\
     # text = The quick brown fox jumps over the lazy dog.

@@ -6,7 +6,6 @@ import os
 import re
 import shutil
 import tempfile
-
 from doctest import DocTestParser
 
 
