@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 
 from collections import OrderedDict
 
-from conllu.compat import text
 from conllu.exceptions import ParseException
 
 
@@ -26,7 +25,7 @@ def serialize_field(field):
     if isinstance(field, list):
         if len(field[0]) != 2:
             raise ParseException("Can't serialize '{}', invalid format".format(field))
-        return "|".join([serialize_field(value) + ":" + text(key) for key, value in field])
+        return "|".join([serialize_field(value) + ":" + str(key) for key, value in field])
 
     return "{}".format(field)
 

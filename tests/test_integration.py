@@ -7,7 +7,6 @@ from io import StringIO
 from textwrap import dedent
 
 from conllu import parse, parse_incr, parse_tree, parse_tree_incr
-from conllu.compat import text
 from conllu.models import Token, TokenList
 from conllu.parser import parse_dict_value, parse_int_value
 from tests.helpers import testlabel, capture_print
@@ -38,7 +37,7 @@ class TestParse(unittest.TestCase):
 
         sentence = sentences[0]
 
-        self.assertEqual(text(sentence), "TokenList<The, quick, brown, fox, jumps, over, the, lazy, dog, .>")
+        self.assertEqual(str(sentence), "TokenList<The, quick, brown, fox, jumps, over, the, lazy, dog, .>")
 
         self.assertEqual(
             sentence[0],
@@ -85,7 +84,7 @@ class TestParse(unittest.TestCase):
         self.assertEqual(len(sentences), 1)
 
         root = sentences[0]
-        self.assertEqual(text(root), "TokenTree<token={id=5, form=jumps}, children=[...]>")
+        self.assertEqual(str(root), "TokenTree<token={id=5, form=jumps}, children=[...]>")
 
         self.assertEqual(
             root.token,
@@ -110,7 +109,7 @@ class TestParse(unittest.TestCase):
         )
 
         self.assertEqual(
-            [text(child) for child in root.children],
+            [str(child) for child in root.children],
             [
                 "TokenTree<token={id=4, form=fox}, children=[...]>",
                 "TokenTree<token={id=9, form=dog}, children=[...]>",

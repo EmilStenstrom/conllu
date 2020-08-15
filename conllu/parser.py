@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 import re
 from collections import OrderedDict
 
-from conllu.compat import text
 from conllu.exceptions import ParseException
 from conllu.models import Metadata, Token
 
@@ -125,7 +124,7 @@ def parse_line(line, fields, field_parsers=None):
         else:
             value = line[i]
 
-        data[text(field)] = value
+        data[str(field)] = value
 
     return data
 
@@ -154,14 +153,14 @@ def parse_comment_line(line, metadata_parsers=None):
     if custom_result:
         if isinstance(custom_result, tuple):
             key, value = custom_result
-            return [(text(key), value)]
-        return [(text(key), value) for key, value in custom_result]
+            return [(str(key), value)]
+        return [(str(key), value) for key, value in custom_result]
 
     if not key or not value:
         # Lines without value are invalid by default
         return []
 
-    return [(text(key), value)]
+    return [(str(key), value)]
 
 def parse_pair_value(value):
     key_maybe_value = value.split('=', 1)
