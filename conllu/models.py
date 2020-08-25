@@ -1,25 +1,16 @@
 from __future__ import print_function, unicode_literals
 
 import typing as T
-import typing_extensions as TT
-from collections import OrderedDict, defaultdict
 from collections.abc import Mapping
+from collections import OrderedDict, defaultdict
 
 
 from conllu.exceptions import ParseException
 from conllu.serializer import serialize
 
-
-@TT.runtime_checkable
-class Addable(TT.Protocol):
-    def __add__(self, other: T.Any) -> T.Any:
-        ...
-
-
 # If mypy supported recurisve types, this would be
-# _MetadataType = Union[Metadata, Addable[_MetadataType]].
-# This would imply that Addable is generic as well.
-_MetadataType = T.Union['Metadata', Addable]
+# _MetadataType = Union[Metadata, List[_MetadataType]].
+_MetadataType = T.Union['Metadata', T.List[T.Any]]
 
 DEFAULT_EXCLUDE_FIELDS = ('id', 'deprel', 'xpos', 'feats', 'head', 'deps', 'misc')
 
