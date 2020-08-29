@@ -1,6 +1,8 @@
 from __future__ import print_function, unicode_literals
 
+import typing as T
 from collections import OrderedDict, defaultdict
+from collections.abc import Mapping
 
 from conllu.exceptions import ParseException
 from conllu.serializer import serialize
@@ -18,70 +20,65 @@ class Token(OrderedDict):
         "xpos": "xpostag",
     }
 
-    def get(self, key, *args, **kwargs):
+    def get(self, key: str, default: T.Optional[T.Any] = None) -> T.Any:
         if key not in self and key in self.MAPPING:
             key = self.MAPPING[key]
 
-        return super(Token, self).get(key, *args, **kwargs)
+        return super(Token, self).get(key, default)
 
-    def __missing__(self, key):
+    def __missing__(self, key: str) -> T.Any:
         if key in self.MAPPING:
             return self[self.MAPPING[key]]
 
         raise KeyError("'" + key + "'")
 
-class TokenList(list):
-    metadata = None
+class TokenList(T.List[Token]):
 
-    def __init__(self, tokens, metadata=None):
+    metadata: Metadata = Metadata()
+
+    def __init__(self, tokens: T.Iterable[Token], metadata: Metadata = None):
         super(TokenList, self).__init__(tokens)
         if not isinstance(tokens, list):
             raise ParseException("Can't create TokenList, tokens is not a list.")
 
-        self.metadata = metadata
+        self.metadata = metadata or Metadata()
 
-    def __repr__(self):
-        return 'TokenList<' + ', '.join(token['form'] for token in self) + '>'
+    def __repr__(self) -> str:
+        return 'TokenList<' + ', '.join(token['form'] for token in self if 'form' in token) + '>'
 
-    def __eq__(self, other):
+    def __eq__(self, other: T.Any) -> bool:
         return super(TokenList, self).__eq__(other) \
             and (not hasattr(other, 'metadata') or self.metadata == other.metadata)
 
-    def __ne__(self, other):
+    def __ne__(self, other: T.Any) -> bool:
         return not self == other
 
-    def clear(self):
+    def clear(self) -> None:
         self[:] = []  # Supported in Python 2 and 3, unlike clear()
-        self.metadata = None
+        self.metadata = Metadata()
 
-    def copy(self):
+    def copy(self) -> 'TokenList':
         tokens_copy = self[:]  # Supported in Python 2 and 3, unlike copy()
         return TokenList(tokens_copy, self.metadata)
 
-    def extend(self, iterable):
+    def extend(self, iterable: T.Union['TokenList', T.Iterable[Token]]) -> None:
         super(TokenList, self).extend(iterable)
-        if hasattr(iterable, 'metadata'):
-            if hasattr(self.metadata, '__add__') and hasattr(iterable.metadata, '__add__'):
-                self.metadata += iterable.metadata
-            elif type(self.metadata) is dict and type(iterable.metadata) is dict:
-                # noinspection PyUnresolvedReferences
-                self.metadata.update(iterable.metadata)
-            else:
-                self.metadata = [self.metadata, iterable.metadata]
+        if isinstance(iterable, TokenList):
+            self.metadata.update(iterable.metadata)
 
     @property
-    def tokens(self):
+    def tokens(self) -> 'TokenList':
         return self
 
     @tokens.setter
-    def tokens(self, value):
+    def tokens(self, value: T.Iterable[Token]) -> None:
         self[:] = value  # Supported in Python 2 and 3, unlike clear()
 
-    def serialize(self):
+    def serialize(self) -> str:
         return serialize(self)
 
     @staticmethod
-    def head_to_token(sentence):
+    def head_to_token(sentence: 'TokenList') -> T.Dict[int, T.List[Token]]:
         if not sentence:
             raise ParseException("Can't parse tree, need a tokenlist as input.")
 
@@ -109,8 +106,8 @@ class TokenList(list):
 
         return head_indexed
 
-    def to_tree(self):
-        def _create_tree(head_to_token_mapping, id_=0):
+    def to_tree(self) -> 'TokenTree':
+        def _create_tree(head_to_token_mapping: T.Dict[int, T.List[Token]], id_: int = 0) -> T.List['TokenTree']:
             return [
                 TokenTree(child, _create_tree(head_to_token_mapping, child["id"]))
                 for child in head_to_token_mapping[id_]
@@ -120,8 +117,8 @@ class TokenList(list):
         root.set_metadata(self.metadata)
         return root
 
-    def filter(self, **kwargs):
-        tokens = self.tokens.copy()
+    def filter(self, **kwargs: T.Any) -> 'TokenList':
+        tokens: T.Iterable[Token] = self.tokens.copy()
 
         for query, value in kwargs.items():
             filtered_tokens = []
@@ -133,48 +130,56 @@ class TokenList(list):
 
         return TokenList(tokens)
 
-def traverse_dict(obj, query):
+
+_T = T.TypeVar("_T")
+def traverse_dict(obj: T.Mapping[str, _T], query: str) -> T.Optional[_T]:
     """
         Get elements inside a nested dict, based on a dict query. The query is defined by a
         string separated by '__'. traverse_dict(foo, 'a__b__c') is roughly equivalent to foo[a][b][c] but
         will short circuit to return None if something on the query is None.
     """
-    query = query.split('__')
-    for name in query:
-        obj = obj.get(name, None)
-        if obj is None:
+    query_split = query.split('__')
+
+    cur_obj: T.Optional[T.Union[_T, T.Mapping[str, _T]]] = obj
+    for name in query_split:
+        assert isinstance(cur_obj, Mapping)  # help mypy
+        cur_obj = cur_obj.get(name, None)
+        if cur_obj is None:
             return None
-    return obj
+    assert not isinstance(cur_obj, Mapping)  # help mypy
+    return cur_obj
 
 
 class TokenTree(object):
-    token = None
-    children = None
-    metadata = None
+    token: Token
+    children: T.List['TokenTree']
+    metadata: T.Optional[Metadata]
 
-    def __init__(self, token, children, metadata=None):
+    def __init__(self, token: Token, children: T.List['TokenTree'], metadata: T.Optional[Metadata] = None):
         self.token = token
         self.children = children
         self.metadata = metadata
 
-    def set_metadata(self, metadata):
+    def set_metadata(self, metadata: T.Optional[Metadata]) -> None:
         self.metadata = metadata
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return 'TokenTree<' + \
-            'token={id=' + str(self.token['id']) + ', form=' + self.token['form'] + '}, ' + \
+            'token={id=' + str(self.token['id']) + ', form=' + str(self.token['form']) + '}, ' + \
             'children=' + ('[...]' if self.children else 'None') + \
             '>'
 
-    def __eq__(self, other):
-        return self.token == other.token and self.children == other.children \
-            and self.metadata == other.metadata
+    def __eq__(self, other: T.Any) -> bool:
+        if isinstance(other, TokenTree):
+            return self.token == other.token and self.children == other.children \
+                and self.metadata == other.metadata
+        return False
 
-    def serialize(self):
+    def serialize(self) -> str:
         if not self.token or "id" not in self.token:
             raise ParseException("Could not serialize tree, missing 'id' field.")
 
-        def flatten_tree(root_token, token_list=[]):
+        def flatten_tree(root_token: TokenTree, token_list: T.List[Token] = []) -> T.List[Token]:
             token_list.append(root_token.token)
 
             for child_token in root_token.children:
@@ -188,7 +193,8 @@ class TokenTree(object):
 
         return serialize(tokenlist)
 
-    def print_tree(self, depth=0, indent=4, exclude_fields=DEFAULT_EXCLUDE_FIELDS):
+    def print_tree(self, depth: int = 0, indent: int = 4,
+                   exclude_fields: T.Sequence[str] = DEFAULT_EXCLUDE_FIELDS) -> None:
         if not self.token:
             raise ParseException("Can't print, token is None.")
 

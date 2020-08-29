@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 import os
 
-from setuptools import setup
+from setuptools import setup  # type: ignore
 
 VERSION = '4.0'
 
 setup(
     name='conllu',
     packages=["conllu"],
+    package_data={
+        "": ["py.typed"]
+    },
     version=VERSION,
     description='CoNLL-U Parser parses a CoNLL-U formatted string into a nested python dictionary',
     long_description=open(os.path.join(os.path.dirname(__file__), 'README.md')).read(),
@@ -15,7 +18,6 @@ setup(
     author=u'Emil Stenström',
     author_email='em@kth.se',
     url='https://github.com/EmilStenstrom/conllu/',
-    install_requires=[],
     keywords=['conllu', 'conll', 'conll-u', 'parser', 'nlp'],
     classifiers=[
         "Programming Language :: Python",

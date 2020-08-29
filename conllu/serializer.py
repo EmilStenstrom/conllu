@@ -1,11 +1,15 @@
 from __future__ import unicode_literals
 
+import typing as T
 from collections import OrderedDict
 
 from conllu.exceptions import ParseException
 
+if T.TYPE_CHECKING:
+    from conllu.models import TokenList
 
-def serialize_field(field):
+
+def serialize_field(field: T.Any) -> str:
     if field is None:
         return '_'
 
@@ -29,7 +33,7 @@ def serialize_field(field):
 
     return "{}".format(field)
 
-def serialize(tokenlist):
+def serialize(tokenlist: 'TokenList') -> str:
     lines = []
 
     if tokenlist.metadata:

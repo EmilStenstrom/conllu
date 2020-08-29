@@ -1,12 +1,18 @@
 from __future__ import unicode_literals
 
+import typing as T
 from io import StringIO
 
-from conllu.models import TokenList
-from conllu.parser import parse_conllu_plus_fields, parse_sentences, parse_token_and_metadata
+from conllu.models import TokenList, TokenTree
+from conllu.parser import (
+    _FieldParserType, _MetadataParserType, parse_conllu_plus_fields, parse_sentences, parse_token_and_metadata,
+)
 
 
-def parse(data, fields=None, field_parsers=None, metadata_parsers=None):
+def parse(data: str, fields: T.Optional[T.Sequence[str]] = None,
+          field_parsers: T.Dict[str, _FieldParserType] = None,
+          metadata_parsers: T.Optional[T.Dict[str, _MetadataParserType]] = None
+          ) -> T.List[TokenList]:
     return list(parse_incr(
         StringIO(data),
         fields=fields,
@@ -14,7 +20,10 @@ def parse(data, fields=None, field_parsers=None, metadata_parsers=None):
         metadata_parsers=metadata_parsers
     ))
 
-def parse_incr(in_file, fields=None, field_parsers=None, metadata_parsers=None):
+def parse_incr(in_file: T.TextIO, fields: T.Optional[T.Sequence[str]] = None,
+               field_parsers: T.Dict[str, _FieldParserType] = None,
+               metadata_parsers: T.Optional[T.Dict[str, _MetadataParserType]] = None
+               ) -> T.Iterator[TokenList]:
     if not hasattr(in_file, 'read'):
         raise FileNotFoundError("Invalid file, 'parse_incr' needs an opened file as input")
 
@@ -29,9 +38,9 @@ def parse_incr(in_file, fields=None, field_parsers=None, metadata_parsers=None):
             metadata_parsers=metadata_parsers
         ))
 
-def parse_tree(data):
+def parse_tree(data: str) -> T.List[TokenTree]:
     return list(parse_tree_incr(StringIO(data)))
 
-def parse_tree_incr(in_file):
+def parse_tree_incr(in_file: T.TextIO) -> T.Iterator[TokenTree]:
     for tokenlist in parse_incr(in_file):
         yield tokenlist.to_tree()
