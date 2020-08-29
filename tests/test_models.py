@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import unittest
 from textwrap import dedent
 
-from conllu.models import Token, TokenList, TokenTree
+from conllu.models import Metadata, Token, TokenList, TokenTree
 from conllu.parser import ParseException, serialize
 from tests.helpers import capture_print
 
@@ -61,7 +61,7 @@ class TestTokenList(unittest.TestCase):
         tokenlist = TokenList([{"id": 1}, {"id": 2}, {"id": 3}], {"meta": "data"})
         tokenlist.clear()
         self.assertEqual(len(tokenlist.tokens), 0)
-        self.assertEqual(tokenlist.metadata, None)
+        self.assertEqual(tokenlist.metadata, Metadata())
 
     def test_copy(self):
         tokenlist1 = TokenList([{"id": 1}, {"id": 2}, {"id": 3}], {"meta": "data"})
@@ -69,32 +69,20 @@ class TestTokenList(unittest.TestCase):
         self.assertIsNot(tokenlist1, tokenlist2)
         self.assertEqual(tokenlist1, tokenlist2)
 
-    def test_extend(self):
+    def test_extend_tokenlist_no_metadata_with_list(self):
         tokenlist1 = TokenList([{"id": 1}, {"id": 2}, {"id": 3}])
         tokenlist2 = [{"id": 4}, {"id": 5}, {"id": 6}]
         tokenlist1.extend(tokenlist2)
         tokenlist3 = TokenList([{"id": 1}, {"id": 2}, {"id": 3}, {"id": 4}, {"id": 5}, {"id": 6}])
         self.assertEqual(tokenlist1, tokenlist3)
 
+    def test_extend_tokenlist_and_merge_metadata(self):
         tokenlist4 = TokenList([{"id": 1}, {"id": 2}, {"id": 3}], {"meta1": "data1"})
         tokenlist5 = TokenList([{"id": 4}, {"id": 5}, {"id": 6}], {"meta2": "data2"})
         tokenlist4.extend(tokenlist5)
         tokenlist6 = TokenList([{"id": 1}, {"id": 2}, {"id": 3}, {"id": 4}, {"id": 5}, {"id": 6}],
                                {"meta1": "data1", "meta2": "data2"})
         self.assertEqual(tokenlist4, tokenlist6)
-
-        tokenlist7 = TokenList([{"id": 1}, {"id": 2}, {"id": 3}], "abc")
-        tokenlist8 = TokenList([{"id": 4}, {"id": 5}, {"id": 6}], "de")
-        tokenlist7.extend(tokenlist8)
-        tokenlist9 = TokenList([{"id": 1}, {"id": 2}, {"id": 3}, {"id": 4}, {"id": 5}, {"id": 6}], "abcde")
-        self.assertEqual(tokenlist7, tokenlist9)
-
-        tokenlist7 = TokenList([{"id": 1}, {"id": 2}, {"id": 3}], "abc")
-        tokenlist8 = TokenList([{"id": 4}, {"id": 5}, {"id": 6}], {"meta2": "data2"})
-        tokenlist7.extend(tokenlist8)
-        tokenlist9 = TokenList([{"id": 1}, {"id": 2}, {"id": 3}, {"id": 4}, {"id": 5}, {"id": 6}],
-                               ["abc", {"meta2": "data2"}])
-        self.assertEqual(tokenlist7, tokenlist9)
 
     def test_tokens(self):
         tokenlist = TokenList([{"id": 1}, {"id": 2}, {"id": 3}])

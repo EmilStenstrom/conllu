@@ -7,10 +7,6 @@ from collections.abc import Mapping
 from conllu.exceptions import ParseException
 from conllu.serializer import serialize
 
-# If mypy supported recurisve types, this would be
-# _MetadataType = Union[Metadata, List[_MetadataType]].
-_MetadataType = T.Union['Metadata', T.List[T.Any]]
-
 DEFAULT_EXCLUDE_FIELDS = ('id', 'deprel', 'xpos', 'feats', 'head', 'deps', 'misc')
 
 class Metadata(OrderedDict):
@@ -38,17 +34,17 @@ class Token(OrderedDict):
 
 class TokenList(T.List[Token]):
 
-    metadata: T.Optional[_MetadataType] = None
+    metadata: Metadata = Metadata()
 
-    def __init__(self, tokens: T.Iterable[Token], metadata: T.Optional[_MetadataType] = None):
+    def __init__(self, tokens: T.Iterable[Token], metadata: Metadata = None):
         super(TokenList, self).__init__(tokens)
         if not isinstance(tokens, list):
             raise ParseException("Can't create TokenList, tokens is not a list.")
 
-        self.metadata = metadata
+        self.metadata = metadata or Metadata()
 
     def __repr__(self) -> str:
-        return 'TokenList<' + ', '.join(token['form'] for token in self) + '>'
+        return 'TokenList<' + ', '.join(token['form'] for token in self if 'form' in token) + '>'
 
     def __eq__(self, other: T.Any) -> bool:
         return super(TokenList, self).__eq__(other) \
@@ -59,22 +55,16 @@ class TokenList(T.List[Token]):
 
     def clear(self) -> None:
         self[:] = []  # Supported in Python 2 and 3, unlike clear()
-        self.metadata = None
+        self.metadata = Metadata()
 
     def copy(self) -> 'TokenList':
         tokens_copy = self[:]  # Supported in Python 2 and 3, unlike copy()
         return TokenList(tokens_copy, self.metadata)
 
-    def extend(self, iterable: T.Iterable[Token]) -> None:
+    def extend(self, iterable: T.Union['TokenList', T.Iterable[Token]]) -> None:
         super(TokenList, self).extend(iterable)
         if isinstance(iterable, TokenList):
-            if isinstance(self.metadata, list) and isinstance(iterable.metadata, list):
-                self.metadata += iterable.metadata
-            elif isinstance(self.metadata, dict) and isinstance(iterable.metadata, dict):
-                # noinspection PyUnresolvedReferences
-                self.metadata.update(iterable.metadata)
-            else:
-                self.metadata = [self.metadata, iterable.metadata]
+            self.metadata.update(iterable.metadata)
 
     @property
     def tokens(self) -> 'TokenList':
@@ -163,14 +153,14 @@ def traverse_dict(obj: T.Mapping[str, _T], query: str) -> T.Optional[_T]:
 class TokenTree(object):
     token: Token
     children: T.List['TokenTree']
-    metadata: T.Optional[_MetadataType]
+    metadata: T.Optional[Metadata]
 
     def __init__(self, token: Token, children: T.List['TokenTree'], metadata: T.Optional[Metadata] = None):
         self.token = token
         self.children = children
         self.metadata = metadata
 
-    def set_metadata(self, metadata: T.Optional[_MetadataType]) -> None:
+    def set_metadata(self, metadata: T.Optional[Metadata]) -> None:
         self.metadata = metadata
 
     def __repr__(self) -> str:
