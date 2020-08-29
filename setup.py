@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
-from setuptools import setup
+from setuptools import setup  # type: ignore
 
 VERSION = '4.0'
 
