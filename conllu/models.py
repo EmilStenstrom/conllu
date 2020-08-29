@@ -58,7 +58,7 @@ class TokenList(T.List[Token]):
         self.metadata = Metadata()
 
     def copy(self) -> 'TokenList':
-        tokens_copy = self[:]  # Supported in Python 2 and 3, unlike copy()
+        tokens_copy = super().copy()
         return TokenList(tokens_copy, self.metadata)
 
     def extend(self, iterable: T.Union['TokenList', T.Iterable[Token]]) -> None:
@@ -72,7 +72,7 @@ class TokenList(T.List[Token]):
 
     @tokens.setter
     def tokens(self, value: T.Iterable[Token]) -> None:
-        self[:] = value  # Supported in Python 2 and 3, unlike clear()
+        self[:] = value
 
     def serialize(self) -> str:
         return serialize(self)
