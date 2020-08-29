@@ -1,8 +1,7 @@
 from __future__ import unicode_literals
 
-from io import StringIO
-
 import typing as T
+from io import StringIO
 
 from conllu.models import TokenList, TokenTree
 from conllu.parser import (

@@ -1,9 +1,8 @@
 from __future__ import print_function, unicode_literals
 
 import typing as T
-from collections.abc import Mapping
 from collections import OrderedDict, defaultdict
-
+from collections.abc import Mapping
 
 from conllu.exceptions import ParseException
 from conllu.serializer import serialize
