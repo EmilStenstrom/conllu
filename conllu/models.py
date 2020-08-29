@@ -1,7 +1,7 @@
 from __future__ import print_function, unicode_literals
 
 import typing as T
-from collections import OrderedDict, defaultdict
+from collections import defaultdict
 from collections.abc import Mapping
 
 from conllu.exceptions import ParseException
@@ -9,10 +9,10 @@ from conllu.serializer import serialize
 
 DEFAULT_EXCLUDE_FIELDS = ('id', 'deprel', 'xpos', 'feats', 'head', 'deps', 'misc')
 
-class Metadata(OrderedDict):
+class Metadata(dict):
     pass
 
-class Token(OrderedDict):
+class Token(dict):
     MAPPING = {
         "upostag": "upos",
         "xpostag": "xpos",

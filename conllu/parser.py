@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 
 import re
 import typing as T
-from collections import OrderedDict
 
 from conllu.exceptions import ParseException
 from conllu.models import Metadata, Token, TokenList
@@ -236,10 +235,10 @@ def parse_dict_value(value: str) -> T.Optional[T.Dict[str, T.Optional[str]]]:
     if parse_nullable_value(value) is None:
         return None
 
-    return OrderedDict([
-        (part.split("=")[0], parse_nullable_value(part.split("=")[1]) if "=" in part else "")
+    return {
+        part.split("=")[0]: parse_nullable_value(part.split("=")[1]) if "=" in part else ""
         for part in value.split("|") if parse_nullable_value(part.split("=")[0]) is not None
-    ])
+    }
 
 def parse_nullable_value(value: str) -> T.Optional[str]:
     if not value or value == "_":

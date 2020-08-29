@@ -32,7 +32,7 @@ class ReadmeTestParser(DocTestParser):
             new_want = repr(new_want)
 
         # README has examples with lists formatted in multiple lines to make them easier to read
-        if new_want.startswith(("[", "Token([", "Metadata([")):
+        if new_want.startswith(("[", "{")):
             new_want = ReadmeTestParser.normalize_whitespace(new_want)
 
         example = doctest.Example(
@@ -57,9 +57,9 @@ class ReadmeTestParser(DocTestParser):
         for i, item in enumerate(lst):
             if not i % 2:
                 lst[i] = re.sub(r"\s+", "", item)
+                lst[i] = lst[i].replace(",", ", ").replace(":", ": ")
 
-        text_no_whitespace = separator.join(lst)
-        return text_no_whitespace.replace(",", ", ")
+        return separator.join(lst)
 
     def get_examples(self, *args, **kwargs):
         examples = super(ReadmeTestParser, self).get_examples(*args, **kwargs)

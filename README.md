@@ -99,12 +99,12 @@ The TokenList supports indexing, so you can get the first token, represented by 
 ```python
 >>> token = sentence[0]
 >>> token
-Token([
-    ('id', 1),
-    ('form', 'The'),
-    ('lemma', 'the'),
+{
+    'id': 1,
+    'form': 'The',
+    'lemma': 'the',
     ...
-])
+}
 >>> token["form"]
 'The'
 ```
@@ -134,9 +134,7 @@ Each sentence can also have metadata in the form of comments before the sentence
 
 ```python
 >>> sentence.metadata
-Metadata([
-    ('text', 'The quick brown fox jumps over the lazy dog.')
-])
+{'text': 'The quick brown fox jumps over the lazy dog.'}
 ```
 
 ### Turn a TokenList back into CoNLL-U
@@ -223,12 +221,12 @@ To access the token corresponding to the current node in the tree, use `token`:
 
 ```python
 >>> root.token
-Token([
-    ('id', 5),
-    ('form', 'jumps'),
-    ('lemma', 'jump'),
+{
+    'id': 5,
+    'form': 'jumps',
+    'lemma': 'jump',
     ...
-])
+}
 ```
 
 To start walking down the children of the current node, use the children attribute:
@@ -247,9 +245,7 @@ Just like with `parse()`, if a sentence has metadata it is available in a proper
 
 ```python
 >>> root.metadata
-Metadata([
-    ('text', 'The quick brown fox jumps over the lazy dog.')
-])
+{'text': 'The quick brown fox jumps over the lazy dog.'}
 ```
 
 If you ever want to get your CoNLL-U formated text back (maybe after changing something?), use the `serialize()` method:
@@ -296,7 +292,7 @@ Now, let's parse this with the the default settings, and look specifically at th
 ```python
 >>> sentences = parse(data)
 >>> sentences[0][0]
-Token([('id', 1), ('form', 'My'), ('lemma', 'TAG1|TAG2')])
+{'id': 1, 'form': 'My', 'lemma': 'TAG1|TAG2'}
 ```
 
 The parser has assumed (incorrectly) that the third field must the the default ´lemma´ field and parsed it as such. Let's customize this so the parser gets the name right, by setting the `fields` parameter when calling parse.
@@ -304,7 +300,7 @@ The parser has assumed (incorrectly) that the third field must the the default �
 ```python
 >>> sentences = parse(data, fields=["id", "form", "tag"])
 >>> sentences[0][0]
-Token([('id', 1), ('form', 'My'), ('tag', 'TAG1|TAG2')])
+{'id': 1, 'form': 'My', 'tag': 'TAG1|TAG2'}
 ```
 
 The only difference is that you now get the correct field name back when parsing. Now let's say you want those two tags returned as a list instead of as a string. This can be done using the `field_parsers` argument.
@@ -313,7 +309,7 @@ The only difference is that you now get the correct field name back when parsing
 >>> split_func = lambda line, i: line[i].split("|")
 >>> sentences = parse(data, fields=["id", "form", "tag"], field_parsers={"tag": split_func})
 >>> sentences[0][0]
-Token([('id', 1), ('form', 'My'), ('tag', ['TAG1', 'TAG2'])])
+{'id': 1, 'form': 'My', 'tag': ['TAG1', 'TAG2']}
 ```
 
 That's much better! `field_parsers` specifies a mapping from a field name, to a function that can parse that field. In our case, we specify that the field with custom logic is `"tag"` and that the function to handle it is `split_func`. Each field_parser gets sent two parameters:
@@ -338,7 +334,7 @@ None of these values are valid in CoNLL-U, but since the first line follows the 
 ```python
 >>> sentences = parse(data)
 >>> sentences[0].metadata
-Metadata([('tagset', 'TAG1|TAG2|TAG3|TAG4')])
+{'tagset': 'TAG1|TAG2|TAG3|TAG4'}
 ```
 
 Let's return this as a list using the `metadata_parsers` parameter.
@@ -346,7 +342,7 @@ Let's return this as a list using the `metadata_parsers` parameter.
 ```python
 >>> sentences = parse(data, metadata_parsers={"tagset": lambda key, value: (key, value.split("|"))})
 >>> sentences[0].metadata
-Metadata([('tagset', ['TAG1', 'TAG2', 'TAG3', 'TAG4'])])
+{'tagset': ['TAG1', 'TAG2', 'TAG3', 'TAG4']}
 ```
 
 A metadata parser behaves similarily to a field parser, but since most comments you'll see will be of the form "key = value" these values will be parsed and cleaned first, and then sent to your custom metadata_parser. Here we just take the value, and split it on "|", and return a list back. And lo and behold, we get what we wanted!
@@ -359,10 +355,10 @@ Now, let's deal with the "sentence-123" comment. Specifying another metadata_par
 ...    "__fallback__": lambda key, value: ("sentence-id", key)
 ... })
 >>> sentences[0].metadata
-Metadata([
-    ('tagset', ['TAG1', 'TAG2', 'TAG3', 'TAG4']),
-    ('sentence-id', 'sentence-123')
-])
+{
+    'tagset': ['TAG1', 'TAG2', 'TAG3', 'TAG4'],
+    'sentence-id': 'sentence-123'
+}
 ```
 
 Just what we wanted! `__fallback__` gets called any time none of the other metadata_parsers match, and just like the others, it gets sent the key and value of the current line. In our case, the line contains no "=" to split on, so key will be "sentence-123" and value will be empty. We can return whatever we want here, but let's just say we want to call this field "sentence-id" so we return that as the key, and "sentence-123" as our value.
@@ -386,11 +382,11 @@ This is actually three different comments, but somehow they are separated by "-"
 ...    "__fallback__": lambda key, value: [pair.split("=") for pair in (key + "=" + value).split("-")]
 ... })
 >>> sentences[0].metadata
-Metadata([
-    ('id', '1'),
-    ('document_id', '36:1047'),
-    ('span', '1')
-])
+{
+    'id': '1',
+    'document_id': '36:1047',
+    'span': '1'
+}
 ```
 
 Our fallback parser returns a **list** of matches, one per pair of metadata comments we find. The `key + "=" + value` trick is needed since by default conllu assumes that this is a valid comment, so `key` is "id" and `value` is everything after the first "=", `1-document_id=36:1047-span=1` (note the missing "id=" in the beginning). We need to add it back before splitting on "-".

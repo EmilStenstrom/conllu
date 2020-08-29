@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 
 import typing as T
-from collections import OrderedDict
 
 from conllu.exceptions import ParseException
 
@@ -13,7 +12,7 @@ def serialize_field(field: T.Any) -> str:
     if field is None:
         return '_'
 
-    if isinstance(field, OrderedDict):
+    if isinstance(field, dict):
         fields = []
         for key, value in field.items():
             if value is None:
