@@ -101,9 +101,6 @@ class TokenList(T.List[Token]):
         if len(head_indexed[0]) == 0:
             raise ParseException("Found no head node, can't build tree")
 
-        if len(head_indexed[0]) > 1:
-            raise ParseException("Can't parse tree, found multiple root nodes.")
-
         return head_indexed
 
     def to_tree(self) -> 'TokenTree':
@@ -113,7 +110,16 @@ class TokenList(T.List[Token]):
                 for child in head_to_token_mapping[id_]
             ]
 
-        root = _create_tree(self.head_to_token(self))[0]
+        head_indexed = self.head_to_token(self)
+        if len(head_indexed[0]) > 1:
+            # Introduce fake root node that multiple root nodes can have a single parent
+            head_indexed[-1] = [Token(
+                [("id", 0), ("form", "_"), ("deprel", "root")]
+            )]
+            root = _create_tree(head_indexed, -1)[0]
+        else:
+            root = _create_tree(head_indexed, 0)[0]
+
         root.set_metadata(self.metadata)
         return root
 

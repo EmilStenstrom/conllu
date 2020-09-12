@@ -132,9 +132,32 @@ class TestParsinigTrickyTrees(unittest.TestCase):
             Token([('id', 2), ('form', 'appear'), ('head', 1)]),
             Token([('id', 4), ('form', 'EMNLP'), ('head', 0)]),
             Token([('id', 5), ('form', '2014'), ('head', 4)]),
+            Token([('id', 6), ('form', 'Yay!'), ('head', 0)]),
         ])
-        with self.assertRaises(ParseException):
-            tokenlist.to_tree()
+        tree = TokenTree(
+            token=Token([("id", 0), ("form", "_"), ("deprel", "root")]),
+            children=[
+                TokenTree(
+                    token=Token([("id", 1), ("form", "To"), ("head", 0)]),
+                    children=[TokenTree(
+                        token=Token([("id", 2), ("form", "appear"), ("head", 1)]),
+                        children=[]
+                    )]
+                ),
+                TokenTree(
+                    token=Token([("id", 4), ("form", "EMNLP"), ("head", 0)]),
+                    children=[TokenTree(
+                        token=Token([("id", 5), ("form", "2014"), ("head", 4)]),
+                        children=[]
+                    )]
+                ),
+                TokenTree(
+                    token=Token([("id", 6), ("form", "Yay!"), ("head", 0)]),
+                    children=[]
+                ),
+            ]
+        )
+        self.assertTreeEqual(tokenlist.to_tree(), tree)
 
     def test_no_root_nodes(self):
         tokenlist = TokenList([
