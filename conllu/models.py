@@ -93,7 +93,8 @@ class TokenList(T.List[Token]):
 
             # Filter out tokens with negative head, they are sometimes used to
             # specify tokens which should not be included in tree
-            if token["head"] < 0:
+            # Also filter out those that have no head, just exclude them from the tree.
+            if (token.get("head") is None) or token["head"] < 0:
                 continue
 
             head_indexed[token["head"]].append(token)

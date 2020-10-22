@@ -645,6 +645,20 @@ class TestHeadToToken(unittest.TestCase):
             }
         )
 
+    def test_none_head(self):
+        self.assertEqual(
+            head_to_token([
+                {"data": "a", "head": 0},
+                {"data": "dog", "head": 1},
+                {"data": "wags", "head": None},
+                {"data": "tail", "head": None},
+            ]),
+            {
+                0: [{"data": "a", "head": 0}],
+                1: [{"data": "dog", "head": 1}],
+            }
+        )
+
     def test_range_ids_ignored(self):
         self.assertEqual(
             dict(head_to_token([
