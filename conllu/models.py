@@ -28,7 +28,7 @@ class Token(dict):
 
     def __missing__(self, key: str) -> T.Any:
         if key in self.MAPPING:
-            return self[self.MAPPING[key]]
+            return self.get(self.MAPPING[key])
 
         raise KeyError("'" + key + "'")
 

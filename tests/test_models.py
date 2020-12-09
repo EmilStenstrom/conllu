@@ -40,6 +40,11 @@ class TestToken(unittest.TestCase):
         self.assertEqual(token.get("inexistent_value"), None)
         self.assertEqual(token.get("inexistent_value", "HEJ"), "HEJ")
 
+    def test_missing_upos_and_upostag(self):
+        token = Token({"id": 1})
+        self.assertEqual(token["upos"], None)
+        self.assertEqual(token.get("upos"), None)
+
 class TestTokenList(unittest.TestCase):
     def test_constructor(self):
         with self.assertRaises(ParseException):
