@@ -37,6 +37,9 @@ class TestToken(unittest.TestCase):
         with self.assertRaises(KeyError):
             token["inexistent_value"]
 
+        self.assertEqual(token.get("inexistent_value"), None)
+        self.assertEqual(token.get("inexistent_value", "HEJ"), "HEJ")
+
 class TestTokenList(unittest.TestCase):
     def test_constructor(self):
         with self.assertRaises(ParseException):
