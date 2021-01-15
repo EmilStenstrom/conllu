@@ -130,8 +130,11 @@ class TokenList(T.List[Token]):
         for query, value in kwargs.items():
             filtered_tokens = []
             for token in tokens:
-                if traverse_dict(token, query) == value:
+                if callable(value) and value(traverse_dict(token, query)) is True:
                     filtered_tokens.append(token)
+                else:
+                    if traverse_dict(token, query) == value:
+                        filtered_tokens.append(token)
 
             tokens = filtered_tokens
 
