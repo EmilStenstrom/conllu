@@ -72,7 +72,7 @@ Now you have the data in a variable called `data`. Let's parse it:
 ```
 
 <blockquote>
-    
+
 **Advanced usage**: If you have many sentences (say over a megabyte) to parse at once, you can avoid loading them into memory at once by using `parse_incr()` instead of `parse`. It takes an opened file, and returns a generator instead of the list directly, so you need to either iterate over it, or call list() to get the TokenLists out. Here's how you would use it:
 
 ```python
@@ -128,6 +128,23 @@ TokenList<quick, brown, lazy>
 ```
 
 Filters can also be chained (meaning you can do `sentence.filter(...).filter(...)`), and filtering on multiple properties at the same time (`sentence.filter(field1=value1, field2=value2)`) means that ALL properties must match.
+
+#### New in conllu 4.3: `filter()` a TokenList by lambda
+
+You can also filter using a lambda function as value. This is useful if you, for instance, would like to filter out only tokens with integer ID:s:
+
+```python
+>>> from conllu.models import TokenList, Token
+>>> sentence2 = TokenList([
+...    Token(id=(1, "-", 2), form="It's"),
+...    Token(id=1, form="It"),
+...    Token(id=2, form="is"),
+... ])
+>>> sentence2
+TokenList<It's, It, is>
+>>> sentence2.filter(id=lambda x: type(x) is int)
+TokenList<It, is>
+```
 
 ### Parse metadata from a CoNLL-U file
 
@@ -264,9 +281,9 @@ If you want to write it back to a file, you can use something like this:
 ```python
 >>> from conllu import parse_tree
 >>> sentences = parse_tree(data)
->>> 
+>>>
 >>> # Make some change to sentences here
->>> 
+>>>
 >>> with open('file-to-write-to', 'w') as f:
 ...     f.writelines([sentence.serialize() + "\n" for sentence in sentences])
 ```
