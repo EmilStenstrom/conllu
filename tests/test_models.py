@@ -287,61 +287,46 @@ class TestFilter(unittest.TestCase):
             TokenList([])
         )
 
-    def test_lambda_filtering(self):
+    def test_lambda_basic_filtering(self):
         tokenlist = TokenList([
             Token({'id': (1, '-', 2), 'form': "It's", 'lemma': '_', 'feats': None}),
-            Token({'id': 1, 'form': 'It', 'lemma': 'it',
-                   'feats': {
-                       'Case': 'Nom',
-                       'Number': 'Sing'
-                   }}),
-            Token({'id': 2, 'form': "'s", 'lemma': 'be',
-                   'feats': {
-                       'Mood': 'Ind',
-                       'Number': 'Sing'
-                   }})
+            Token({'id': 1, 'form': 'It', 'lemma': 'it'}),
+            Token({'id': 2, 'form': "'s", 'lemma': 'be'})
         ])
 
         self.assertEqual(
             tokenlist.filter(id=lambda x: type(x) is int),
             TokenList([
-                Token({'id': 1, 'form': 'It', 'lemma': 'it',
-                       'feats': {
-                           'Case': 'Nom',
-                           'Number': 'Sing'
-                       }}),
-                Token({'id': 2, 'form': "'s", 'lemma': 'be',
-                       'feats': {
-                           'Mood': 'Ind',
-                           'Number': 'Sing'
-                       }})
+                Token({'id': 1, 'form': 'It', 'lemma': 'it'}),
+                Token({'id': 2, 'form': "'s", 'lemma': 'be'})
             ])
         )
-
         self.assertEqual(
             tokenlist.filter(lemma=lambda x: x.startswith('b')),
             TokenList([
-                Token({'id': 2, 'form': "'s", 'lemma': 'be',
-                       'feats': {
-                           'Mood': 'Ind',
-                           'Number': 'Sing'
-                       }})
+                Token({'id': 2, 'form': "'s", 'lemma': 'be'})
+            ])
+        )
+
+    def test_lambda_deep_filtering(self):
+        tokenlist = TokenList([
+            Token({'id': (1, '-', 2), 'feats': None}),
+            Token({'id': 1, 'feats': {'Case': 'Nom', 'Number': 'Sing'}}),
+            Token({'id': 2, 'feats': {'Mood': 'Ind', 'Number': 'Sing'}})
+        ])
+
+        self.assertEqual(
+            tokenlist.filter(feats__Mood=lambda x: x == 'Ind'),
+            TokenList([
+                Token({'id': 2, 'feats': {'Mood': 'Ind', 'Number': 'Sing'}})
             ])
         )
 
         self.assertEqual(
             tokenlist.filter(feats__Number=lambda x: x == 'Sing'),
             TokenList([
-                Token({'id': 1, 'form': 'It', 'lemma': 'it',
-                       'feats': {
-                           'Case': 'Nom',
-                           'Number': 'Sing'
-                       }}),
-                Token({'id': 2, 'form': "'s", 'lemma': 'be',
-                       'feats': {
-                           'Mood': 'Ind',
-                           'Number': 'Sing'
-                       }})
+                Token({'id': 1, 'feats': {'Case': 'Nom', 'Number': 'Sing'}}),
+                Token({'id': 2, 'feats': {'Mood': 'Ind', 'Number': 'Sing'}})
             ])
         )
 
