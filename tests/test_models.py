@@ -45,6 +45,7 @@ class TestToken(unittest.TestCase):
         self.assertEqual(token["upos"], None)
         self.assertEqual(token.get("upos"), None)
 
+
 class TestTokenList(unittest.TestCase):
     def test_constructor(self):
         with self.assertRaises(ParseException):
@@ -97,6 +98,7 @@ class TestTokenList(unittest.TestCase):
         self.assertEqual(tokenlist.tokens, [{"id": 1}, {"id": 2}, {"id": 3}])
         tokenlist.tokens = [{"id": 4}, {"id": 5}]
         self.assertEqual(tokenlist.tokens, [{"id": 4}, {"id": 5}])
+
 
 class TestParsinigTrickyTrees(unittest.TestCase):
     def assertTreeEqual(self, tree, other):
@@ -175,10 +177,12 @@ class TestParsinigTrickyTrees(unittest.TestCase):
         with self.assertRaises(ParseException):
             tokenlist.to_tree()
 
+
 class TestSerialize(unittest.TestCase):
     def test_serialize_on_tokenlist(self):
         tokenlist = TokenList([{"id": 1}])
         self.assertEqual(tokenlist.serialize(), serialize(tokenlist))
+
 
 class TestFilter(unittest.TestCase):
     def test_basic_filtering(self):
@@ -281,6 +285,49 @@ class TestFilter(unittest.TestCase):
         self.assertEqual(
             tokenlist.filter(form="brown").filter(feats__Degree="Pos").filter(id=0),
             TokenList([])
+        )
+
+    def test_lambda_basic_filtering(self):
+        tokenlist = TokenList([
+            Token({'id': (1, '-', 2), 'form': "It's", 'lemma': '_', 'feats': None}),
+            Token({'id': 1, 'form': 'It', 'lemma': 'it'}),
+            Token({'id': 2, 'form': "'s", 'lemma': 'be'})
+        ])
+
+        self.assertEqual(
+            tokenlist.filter(id=lambda x: type(x) is int),
+            TokenList([
+                Token({'id': 1, 'form': 'It', 'lemma': 'it'}),
+                Token({'id': 2, 'form': "'s", 'lemma': 'be'})
+            ])
+        )
+        self.assertEqual(
+            tokenlist.filter(lemma=lambda x: x.startswith('b')),
+            TokenList([
+                Token({'id': 2, 'form': "'s", 'lemma': 'be'})
+            ])
+        )
+
+    def test_lambda_deep_filtering(self):
+        tokenlist = TokenList([
+            Token({'id': (1, '-', 2), 'feats': None}),
+            Token({'id': 1, 'feats': {'Case': 'Nom', 'Number': 'Sing'}}),
+            Token({'id': 2, 'feats': {'Mood': 'Ind', 'Number': 'Sing'}})
+        ])
+
+        self.assertEqual(
+            tokenlist.filter(feats__Mood=lambda x: x == 'Ind'),
+            TokenList([
+                Token({'id': 2, 'feats': {'Mood': 'Ind', 'Number': 'Sing'}})
+            ])
+        )
+
+        self.assertEqual(
+            tokenlist.filter(feats__Number=lambda x: x == 'Sing'),
+            TokenList([
+                Token({'id': 1, 'feats': {'Case': 'Nom', 'Number': 'Sing'}}),
+                Token({'id': 2, 'feats': {'Mood': 'Ind', 'Number': 'Sing'}})
+            ])
         )
 
 
