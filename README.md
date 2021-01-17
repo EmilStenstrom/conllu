@@ -7,7 +7,7 @@
 - It's simple. ~300 lines of code.
 - It has no dependencies
 - Full typing support so your editor can do autocompletion
-- Nice set of tests with CI setup: ![Build](https://github.com/EmilStenstrom/conllu/workflows/Run%20tests%20for%20all%20supported%20python%20versions/badge.svg)
+- Nice set of tests with CI setup: [![Build](https://github.com/EmilStenstrom/conllu/workflows/Run%20tests%20for%20all%20supported%20python%20versions/badge.svg)](https://github.com/EmilStenstrom/conllu/actions?query=workflow%3A%22Run+tests+for+all+supported+python+versions%22)
 - It has 100% test branch coverage (and has undergone [mutation testing](https://github.com/boxed/mutmut/))
 - It has [![lots of downloads](http://pepy.tech/badge/conllu)](http://pepy.tech/project/conllu)
 
