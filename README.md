@@ -7,7 +7,7 @@
 - It's simple. ~300 lines of code.
 - It has no dependencies
 - Full typing support so your editor can do autocompletion
-- Nice set of tests with CI setup: ![Build status on Travis](https://api.travis-ci.org/EmilStenstrom/conllu.svg?branch=master)
+- Nice set of tests with CI setup: ![Build](https://github.com/EmilStenstrom/conllu/workflows/Run%20tests%20for%20all%20supported%20python%20versions/badge.svg)
 - It has 100% test branch coverage (and has undergone [mutation testing](https://github.com/boxed/mutmut/))
 - It has [![lots of downloads](http://pepy.tech/badge/conllu)](http://pepy.tech/project/conllu)
 
