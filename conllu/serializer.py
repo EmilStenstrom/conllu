@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import typing as T
 
 from conllu.exceptions import ParseException

@@ -1,5 +1,3 @@
-from __future__ import print_function, unicode_literals
-
 import typing as T
 from collections import defaultdict
 from collections.abc import Mapping
