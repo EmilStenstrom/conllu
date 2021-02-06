@@ -36,7 +36,8 @@ class TokenList(T.List[Token]):
 
     metadata: Metadata = Metadata()
 
-    def __init__(self, tokens: T.Iterable[Token], metadata: Metadata = None):
+    def __init__(self, tokens: T.Iterable[Token] = None, metadata: Metadata = None):
+        tokens = tokens or []
         super(TokenList, self).__init__(tokens)
         if not isinstance(tokens, list):
             raise ParseException("Can't create TokenList, tokens is not a list.")

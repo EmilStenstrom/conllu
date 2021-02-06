@@ -99,6 +99,10 @@ class TestTokenList(unittest.TestCase):
         tokenlist.tokens = [{"id": 4}, {"id": 5}]
         self.assertEqual(tokenlist.tokens, [{"id": 4}, {"id": 5}])
 
+    def test_empty(self):
+        tokenlist = TokenList()
+        self.assertEqual(tokenlist.tokens, [])
+
 
 class TestParsinigTrickyTrees(unittest.TestCase):
     def assertTreeEqual(self, tree, other):
