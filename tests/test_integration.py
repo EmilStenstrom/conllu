@@ -167,8 +167,8 @@ class TestTrickyCases(unittest.TestCase):
                 token
                 for token in data[0]
                 if isinstance(token["id"], int)
-            ])
-            self.assertEqual(parse_tree(testcase)[0].serialize(), testcase_without_range_and_elided)
+            ], metadata=data[0].metadata)
+            self.assertEqual(parse_tree(testcase)[0].serialize(), testcase_without_range_and_elided.serialize())
 
 
 @testlabel("integration")
