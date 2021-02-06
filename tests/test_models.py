@@ -90,6 +90,11 @@ class TestTokenList(unittest.TestCase):
                                {"meta1": "data1", "meta2": "data2"})
         self.assertEqual(tokenlist4, tokenlist6)
 
+    def test_extend_with_dict_list(self):
+        tokenlist = TokenList([{"id": 1}])
+        tokenlist.extend([{"id": 2}, {"id": 3}])
+        self.assertEqual(tokenlist, TokenList([{"id": 1}, {"id": 2}, {"id": 3}]))
+
     def test_tokens(self):
         tokenlist = TokenList([{"id": 1}, {"id": 2}, {"id": 3}])
         self.assertEqual(tokenlist.tokens, [{"id": 1}, {"id": 2}, {"id": 3}])
@@ -104,6 +109,12 @@ class TestTokenList(unittest.TestCase):
         tokenlist = TokenList()
         tokenlist.append(Token({"id": 1}))
         self.assertEqual(tokenlist, TokenList([{"id": 1}]))
+
+    def test_append_dict_transforms_to_token(self):
+        tokenlist = TokenList([{"id": 1}])
+        tokenlist.append({"id": 2})
+        self.assertEqual(tokenlist, TokenList([{"id": 1}, {"id": 2}]))
+        self.assertEqual(type(tokenlist[1]), Token)
 
 class TestParsinigTrickyTrees(unittest.TestCase):
     def assertTreeEqual(self, tree, other):

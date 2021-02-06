@@ -36,9 +36,14 @@ class TokenList(T.List[Token]):
 
     def __init__(self, tokens: T.Iterable[Token] = None, metadata: Metadata = None):
         tokens = tokens or []
-        super(TokenList, self).__init__(tokens)
+
         if not isinstance(tokens, list):
             raise ParseException("Can't create TokenList, tokens is not a list.")
+
+        if len(tokens) > 0 and not isinstance(tokens[0], Token):
+            tokens = [Token(token) for token in tokens]
+
+        super(TokenList, self).__init__(tokens)
 
         self.metadata = metadata or Metadata()
 
@@ -46,8 +51,10 @@ class TokenList(T.List[Token]):
         return 'TokenList<' + ', '.join(token['form'] for token in self if 'form' in token) + '>'
 
     def __eq__(self, other: T.Any) -> bool:
-        return super(TokenList, self).__eq__(other) \
-            and (not hasattr(other, 'metadata') or self.metadata == other.metadata)
+        if not isinstance(other, TokenList):
+            other = TokenList(other)
+
+        return self[:] == other[:] and self.metadata == other.metadata
 
     def __ne__(self, other: T.Any) -> bool:
         return not self == other
@@ -61,9 +68,18 @@ class TokenList(T.List[Token]):
         return TokenList(tokens_copy, self.metadata)
 
     def extend(self, iterable: T.Union['TokenList', T.Iterable[Token]]) -> None:
+        if not isinstance(iterable, TokenList):
+            iterable = TokenList(iterable)
+
         super(TokenList, self).extend(iterable)
-        if isinstance(iterable, TokenList):
-            self.metadata.update(iterable.metadata)
+
+        self.metadata.update(iterable.metadata)
+
+    def append(self, token: Token) -> None:
+        if not isinstance(token, Token):
+            token = Token(token)
+
+        super(TokenList, self).append(token)
 
     @property
     def tokens(self) -> 'TokenList':
