@@ -54,7 +54,7 @@ class TokenList(T.List[Token]):
         return not self == other
 
     def clear(self) -> None:
-        self[:] = []  # Supported in Python 2 and 3, unlike clear()
+        self[:] = []
         self.metadata = Metadata()
 
     def copy(self) -> 'TokenList':
