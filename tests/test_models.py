@@ -98,12 +98,12 @@ class TestTokenList(unittest.TestCase):
 
     def test_empty(self):
         tokenlist = TokenList()
-        self.assertEqual(tokenlist.tokens, [])
+        self.assertEqual(tokenlist, TokenList([]))
 
     def test_append(self):
         tokenlist = TokenList()
         tokenlist.append(Token({"id": 1}))
-        self.assertEqual(tokenlist.tokens, [{"id": 1}])
+        self.assertEqual(tokenlist, TokenList([{"id": 1}]))
 
 class TestParsinigTrickyTrees(unittest.TestCase):
     def assertTreeEqual(self, tree, other):
