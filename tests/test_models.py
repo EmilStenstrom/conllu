@@ -127,6 +127,60 @@ class TestTokenList(unittest.TestCase):
         self.assertEqual(tokenlist, TokenList([{"id": 1}, {"id": 2}]))
         self.assertEqual(type(tokenlist[1]), Token)
 
+    def test_insert(self):
+        tokenlist = TokenList()
+        tokenlist.insert(0, Token({"id": 1}))
+        self.assertEqual(tokenlist, TokenList([{"id": 1}]))
+
+        tokenlist.insert(1, {"id": 2})
+        self.assertEqual(tokenlist, TokenList([{"id": 1}, {"id": 2}]))
+        self.assertEqual(type(tokenlist[1]), Token)
+
+    def test_remove(self):
+        tokenlist = TokenList([{"id": 1}, {"id": 2}])
+        tokenlist.remove(Token({"id": 1}))
+        self.assertEqual(tokenlist, TokenList([{"id": 2}]))
+
+        tokenlist.remove({"id": 2})
+        self.assertEqual(tokenlist, TokenList())
+
+    def test_index(self):
+        tokenlist = TokenList([{"id": 1}, {"id": 2}])
+        self.assertEqual(tokenlist.index(Token({"id": 1})), 0)
+        self.assertEqual(tokenlist.index({"id": 2}), 1)
+
+    def test_count(self):
+        tokenlist = TokenList([{"id": 1}, {"id": 1}, {"id": 2}])
+        self.assertEqual(tokenlist.count(Token({"id": 1})), 2)
+        self.assertEqual(tokenlist.count({"id": 2}), 1)
+
+    def test_getitem_write_token_to_index(self):
+        tokenlist = TokenList([{"id": 1}, {"id": 2}])
+        tokenlist[0] = Token({"id": 3})
+        self.assertEqual(tokenlist, TokenList([{"id": 3}, {"id": 2}]))
+
+    def test_getitem_write_dict_to_index(self):
+        tokenlist = TokenList([{"id": 1}, {"id": 2}])
+        tokenlist[1] = {"id": 3}
+        self.assertEqual(tokenlist, TokenList([{"id": 1}, {"id": 3}]))
+        self.assertEqual(type(tokenlist[1]), Token)
+
+    def test_getitem_write_list_of_dicts_to_slice(self):
+        tokenlist = TokenList([{"id": 1}, {"id": 2}])
+        tokenlist[:] = [{"id": 1}]
+        self.assertEqual(tokenlist, TokenList([{"id": 1}]))
+        self.assertEqual(type(tokenlist[0]), Token)
+
+    def test_getitem_read_from_slice(self):
+        tokenlist = TokenList([{"id": 1}, {"id": 2}, {"id": 3}])
+        self.assertEqual(tokenlist[0:2], [{"id": 1}, {"id": 2}])
+
+    def test_getitem_write_to_token(self):
+        tokenlist = TokenList([{"id": 1}, {"id": 2}])
+        self.assertEqual(tokenlist[1]["id"], 2)
+        tokenlist[1]["id"] = 3
+        self.assertEqual(tokenlist[1]["id"], 3)
+
 class TestParsinigTrickyTrees(unittest.TestCase):
     def assertTreeEqual(self, tree, other):
         self.assertEqual(tree.token, other.token)
