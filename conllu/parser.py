@@ -40,7 +40,8 @@ def parse_conllu_plus_fields(in_file: T.TextIO,
     if not first_line.startswith("#"):
         return None
 
-    _, metadata = parse_token_and_metadata(first_line, metadata_parsers=metadata_parsers)
+    tokenlist = parse_token_and_metadata(first_line, metadata_parsers=metadata_parsers)
+    metadata = tokenlist.metadata
 
     fields = None
     if "global.columns" in metadata and metadata["global.columns"]:
@@ -64,7 +65,7 @@ def parse_sentences(in_file: T.TextIO) -> T.Iterator[str]:
 def parse_token_and_metadata(data: str, fields: T.Optional[T.Sequence[str]] = None,
                              field_parsers: T.Optional[T.Dict[str, _FieldParserType]] = None,
                              metadata_parsers: T.Optional[T.Dict[str, _MetadataParserType]] = None
-                             ) -> T.Tuple[T.List[Token], Metadata]:
+                             ) -> TokenList:
     if not data:
         raise ParseException("Can't create TokenList, no data sent to constructor.")
 
@@ -93,7 +94,7 @@ def parse_token_and_metadata(data: str, fields: T.Optional[T.Sequence[str]] = No
         else:
             tokens.append(parse_line(line, fields, field_parsers))
 
-    return tokens, metadata
+    return TokenList(tokens, metadata, default_fields=fields)
 
 def parse_line(line: str,
                fields: T.Sequence[str], field_parsers: T.Optional[T.Dict[str, _FieldParserType]] = None

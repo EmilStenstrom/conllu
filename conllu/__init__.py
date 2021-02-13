@@ -29,12 +29,12 @@ def parse_incr(in_file: T.TextIO, fields: T.Optional[T.Sequence[str]] = None,
         fields = parse_conllu_plus_fields(in_file, metadata_parsers=metadata_parsers)
 
     for sentence in parse_sentences(in_file):
-        yield TokenList(*parse_token_and_metadata(
+        yield parse_token_and_metadata(
             sentence,
             fields=fields,
             field_parsers=field_parsers,
             metadata_parsers=metadata_parsers
-        ))
+        )
 
 def parse_tree(data: str) -> T.List[TokenTree]:
     return list(parse_tree_incr(StringIO(data)))

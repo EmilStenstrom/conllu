@@ -2,7 +2,7 @@ import unittest
 from io import StringIO
 from textwrap import dedent
 
-from conllu.models import Token, TokenList
+from conllu.models import Token
 from conllu.parser import (
     DEFAULT_FIELDS, ParseException, head_to_token, parse_comment_line, parse_conllu_plus_fields, parse_dict_value,
     parse_id_value, parse_int_value, parse_line, parse_nullable_value, parse_paired_list_value, parse_sentences,
@@ -95,14 +95,14 @@ class TestParseTokenAndMetadata(unittest.TestCase):
             3\thej
             4\tdå
         """)
-        tokens, metadata = parse_token_and_metadata(data)
-        self.assertListEqual(tokens, [
+        tokenlist = parse_token_and_metadata(data)
+        self.assertListEqual(tokenlist.tokens, [
             Token([("id", 1), ("form", "hej")]),
             Token([("id", 2), ("form", "då")]),
             Token([("id", 3), ("form", "hej")]),
             Token([("id", 4), ("form", "då")]),
         ])
-        self.assertEqual(metadata, Token([("meta", "data")]))
+        self.assertEqual(tokenlist.metadata, Token([("meta", "data")]))
 
     def test_invalid_metadata(self):
         data = dedent("""\
@@ -113,8 +113,8 @@ class TestParseTokenAndMetadata(unittest.TestCase):
             # meta
             # = data
         """)
-        _, metadata = parse_token_and_metadata(data)
-        self.assertEqual(metadata, Token([
+        tokenlist = parse_token_and_metadata(data)
+        self.assertEqual(tokenlist.metadata, Token([
             ("meta", "data"),
             ("newdoc", None),
             ("newpar", None),
@@ -129,8 +129,8 @@ class TestParseTokenAndMetadata(unittest.TestCase):
             # text = Slovenská ústava: pro i proti
             # text_en = Slovak constitution: pros and cons
         """)
-        _, metadata = parse_token_and_metadata(data)
-        self.assertEqual(metadata, Token([
+        tokenlist = parse_token_and_metadata(data)
+        self.assertEqual(tokenlist.metadata, Token([
             ("global.columns", "ID FORM LEMMA UPOS XPOS FEATS HEAD DEPREL DEPS MISC"),
             ("newdoc id", "mf920901-001"),
             ("newpar id", "mf920901-001-p1"),
@@ -139,11 +139,11 @@ class TestParseTokenAndMetadata(unittest.TestCase):
             ("text_en", "Slovak constitution: pros and cons"),
         ]))
 
-        _, metadata = parse_token_and_metadata(
+        tokenlist = parse_token_and_metadata(
             data,
             metadata_parsers={"global.columns": lambda key, value: (key, value.split())}
         )
-        self.assertEqual(metadata, Token([
+        self.assertEqual(tokenlist.metadata, Token([
             ("global.columns", ["ID", "FORM", "LEMMA", "UPOS", "XPOS", "FEATS", "HEAD", "DEPREL", "DEPS", "MISC"]),
             ("newdoc id", "mf920901-001"),
             ("newpar id", "mf920901-001-p1"),
@@ -157,7 +157,7 @@ class TestParseTokenAndMetadata(unittest.TestCase):
             #\tid='1'-document_id='36:1047'-span='1'
         """)
 
-        _, metadata = parse_token_and_metadata(
+        tokenlist = parse_token_and_metadata(
             data,
             metadata_parsers={
                 "id": lambda key, value: [
@@ -166,7 +166,7 @@ class TestParseTokenAndMetadata(unittest.TestCase):
                 ]
             },
         )
-        self.assertEqual(metadata, Token([
+        self.assertEqual(tokenlist.metadata, Token([
             ("id", "1"),
             ("document_id", "36:1047"),
             ("span", "1"),
@@ -177,13 +177,13 @@ class TestParseTokenAndMetadata(unittest.TestCase):
             #20191005
         """)
 
-        _, metadata = parse_token_and_metadata(
+        tokenlist = parse_token_and_metadata(
             data,
             metadata_parsers={
                 "__fallback__": lambda key, value: ("sentence-id", key),
             },
         )
-        self.assertEqual(metadata, Token([
+        self.assertEqual(tokenlist.metadata, Token([
             ("sentence-id", "20191005"),
         ]))
 
@@ -192,8 +192,8 @@ class TestParseTokenAndMetadata(unittest.TestCase):
             1\t1\t1
             2\t2\t2
         """)
-        tokens, _ = parse_token_and_metadata(data, fields=("id", "id", "id"))
-        self.assertEqual(tokens, [
+        tokenlist = parse_token_and_metadata(data, fields=("id", "id", "id"))
+        self.assertEqual(tokenlist.tokens, [
             Token([("id", 1), ("id", 1), ("id", 1)]),
             Token([("id", 2), ("id", 2), ("id", 2)]),
         ])
@@ -215,8 +215,8 @@ class TestParseTokenAndMetadata(unittest.TestCase):
             "backwards": lambda line, i: parse_backwards(line[i:len(line)])
         }
 
-        tokens, _ = parse_token_and_metadata(data, fields=fields, field_parsers=field_parsers)
-        self.assertEqual(tokens, [
+        tokenlist = parse_token_and_metadata(data, fields=fields, field_parsers=field_parsers)
+        self.assertEqual(tokenlist.tokens, [
             Token([("id", '1'), ("backwards", "sdrawkcab enil")]),
             Token([("id", '2'), ("backwards", "sirap paris")]),
         ])
@@ -231,8 +231,8 @@ class TestParseTokenAndMetadata(unittest.TestCase):
             # Rely on default 'id' field parser
             "form": lambda line, i: line[i].upper()
         }
-        tokens, _ = parse_token_and_metadata(data, fields=fields, field_parsers=field_parsers)
-        self.assertEqual(tokens, [
+        tokenlist = parse_token_and_metadata(data, fields=fields, field_parsers=field_parsers)
+        self.assertEqual(tokenlist.tokens, [
             Token([("id", 1), ("form", "FROM")]),
             Token([("id", 2), ("form", "PARIS")]),
         ])
@@ -726,7 +726,7 @@ class TestSerializeField(unittest.TestCase):
 class TestSerialize(unittest.TestCase):
     def test_identity_unicode(self):
         data = "5\tlängtar\n\n"
-        tokenlist = TokenList(*parse_token_and_metadata(data))
+        tokenlist = parse_token_and_metadata(data)
         self.assertEqual(serialize(tokenlist), data)
 
     def test_metadata(self):
@@ -737,12 +737,12 @@ class TestSerialize(unittest.TestCase):
             1\tdog
 
         """)
-        tokenlist = TokenList(*parse_token_and_metadata(data))
+        tokenlist = parse_token_and_metadata(data)
         self.assertEqual(serialize(tokenlist), data)
 
     def test_serialize_tricky_fields(self):
         data = dedent("""\
             5\tjumps\tjump\tVERB\tVBZ\tMood=Ind|Number=Sing\t0\troot\t_\tSpaceAfter=No
         """)
-        tokenlist = TokenList(*parse_token_and_metadata(data))
+        tokenlist = parse_token_and_metadata(data)
         self.assertEqual(serialize(tokenlist).strip(), data.strip())
