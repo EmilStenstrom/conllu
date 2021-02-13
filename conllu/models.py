@@ -82,8 +82,8 @@ class TokenList(T.List[Token]):
         super(TokenList, self).append(token)
 
     @property
-    def tokens(self) -> 'TokenList':
-        return self
+    def tokens(self) -> T.List[Token]:
+        return self[:]
 
     @tokens.setter
     def tokens(self, value: T.Iterable[Token]) -> None:
