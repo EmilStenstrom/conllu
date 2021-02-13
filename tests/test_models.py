@@ -77,7 +77,7 @@ class TestTokenList(unittest.TestCase):
     def test_clear(self):
         tokenlist = TokenList([{"id": 1}, {"id": 2}, {"id": 3}], {"meta": "data"})
         tokenlist.clear()
-        self.assertEqual(len(tokenlist.tokens), 0)
+        self.assertEqual(len(tokenlist), 0)
         self.assertEqual(tokenlist.metadata, Metadata())
 
     def test_copy(self):
@@ -106,12 +106,6 @@ class TestTokenList(unittest.TestCase):
         tokenlist.extend([{"id": 2}, {"id": 3}])
         self.assertEqual(tokenlist, TokenList([{"id": 1}, {"id": 2}, {"id": 3}]))
 
-    def test_tokens(self):
-        tokenlist = TokenList([{"id": 1}, {"id": 2}, {"id": 3}])
-        self.assertEqual(tokenlist.tokens, [{"id": 1}, {"id": 2}, {"id": 3}])
-        tokenlist.tokens = [{"id": 4}, {"id": 5}]
-        self.assertEqual(tokenlist.tokens, [{"id": 4}, {"id": 5}])
-
     def test_empty(self):
         tokenlist = TokenList()
         self.assertEqual(tokenlist, TokenList([]))
@@ -121,8 +115,6 @@ class TestTokenList(unittest.TestCase):
         tokenlist.append(Token({"id": 1}))
         self.assertEqual(tokenlist, TokenList([{"id": 1}]))
 
-    def test_append_dict_transforms_to_token(self):
-        tokenlist = TokenList([{"id": 1}])
         tokenlist.append({"id": 2})
         self.assertEqual(tokenlist, TokenList([{"id": 1}, {"id": 2}]))
         self.assertEqual(type(tokenlist[1]), Token)

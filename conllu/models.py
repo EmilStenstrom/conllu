@@ -60,20 +60,21 @@ class TokenList(T.List[Token]):
         self.default_fields = default_fields
 
     def __repr__(self) -> str:
-        return 'TokenList<' + ', '.join(token['form'] for token in self if 'form' in token) + '>'
+        return 'TokenList<' + ', '.join(str(token) for token in self) + '>'
 
     def __eq__(self, other: T.Any) -> bool:
         if not isinstance(other, TokenList):
             other = TokenList(other)
 
-        return self[:] == other[:] and self.metadata == other.metadata
+        return super(TokenList, self).__eq__(other) and self.metadata == other.metadata
 
     def __ne__(self, other: T.Any) -> bool:
         return not self == other
 
     def clear(self) -> None:
-        self[:] = []
+        super(TokenList, self).clear()
         self.metadata = Metadata()
+        self.default_fields = None
 
     def copy(self) -> 'TokenList':
         tokens_copy = super().copy()
@@ -102,9 +103,6 @@ class TokenList(T.List[Token]):
         token = self._dict_to_token_and_set_defaults(token)
         super(TokenList, self).append(token)
 
-    @property
-    def tokens(self) -> T.List[Token]:
-        return self[:]
     def insert(self, i: int, token: T.Union[dict, Token]) -> None:
         token = self._dict_to_token_and_set_defaults(token)
         super(TokenList, self).insert(i, token)
@@ -112,9 +110,6 @@ class TokenList(T.List[Token]):
     @T.overload
     def __setitem__(self, key: int, tokens: T.Union[dict, Token]) -> None: ...  # noqa, pragma: no cover
 
-    @tokens.setter
-    def tokens(self, value: T.Iterable[Token]) -> None:
-        self[:] = value
     @T.overload
     def __setitem__(self, key: slice, tokens: T.Union[T.Iterable[T.Union[dict, Token]], 'TokenList']) -> None: ...  # noqa, pragma: no cover
 
@@ -178,7 +173,7 @@ class TokenList(T.List[Token]):
         return root
 
     def filter(self, **kwargs: T.Any) -> 'TokenList':
-        tokens: T.Iterable[Token] = self.tokens.copy()
+        tokens: T.Iterable[Token] = self.copy()
 
         for query, value in kwargs.items():
             filtered_tokens = []

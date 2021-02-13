@@ -2,7 +2,7 @@ import unittest
 from io import StringIO
 from textwrap import dedent
 
-from conllu.models import Token
+from conllu.models import Token, TokenList
 from conllu.parser import (
     DEFAULT_FIELDS, ParseException, head_to_token, parse_comment_line, parse_conllu_plus_fields, parse_dict_value,
     parse_id_value, parse_int_value, parse_line, parse_nullable_value, parse_paired_list_value, parse_sentences,
@@ -96,13 +96,12 @@ class TestParseTokenAndMetadata(unittest.TestCase):
             4\tdå
         """)
         tokenlist = parse_token_and_metadata(data)
-        self.assertListEqual(tokenlist.tokens, [
+        self.assertListEqual(tokenlist, TokenList([
             Token([("id", 1), ("form", "hej")]),
             Token([("id", 2), ("form", "då")]),
             Token([("id", 3), ("form", "hej")]),
             Token([("id", 4), ("form", "då")]),
-        ])
-        self.assertEqual(tokenlist.metadata, Token([("meta", "data")]))
+        ], metadata={"meta": "data"}))
 
     def test_invalid_metadata(self):
         data = dedent("""\
@@ -114,11 +113,11 @@ class TestParseTokenAndMetadata(unittest.TestCase):
             # = data
         """)
         tokenlist = parse_token_and_metadata(data)
-        self.assertEqual(tokenlist.metadata, Token([
-            ("meta", "data"),
-            ("newdoc", None),
-            ("newpar", None),
-        ]))
+        self.assertEqual(tokenlist.metadata, {
+            "meta": "data",
+            "newdoc": None,
+            "newpar": None,
+        })
 
     def test_custom_metadata_parsers(self):
         data = dedent("""\
@@ -193,7 +192,7 @@ class TestParseTokenAndMetadata(unittest.TestCase):
             2\t2\t2
         """)
         tokenlist = parse_token_and_metadata(data, fields=("id", "id", "id"))
-        self.assertEqual(tokenlist.tokens, [
+        self.assertEqual(tokenlist, [
             Token([("id", 1), ("id", 1), ("id", 1)]),
             Token([("id", 2), ("id", 2), ("id", 2)]),
         ])
@@ -216,7 +215,7 @@ class TestParseTokenAndMetadata(unittest.TestCase):
         }
 
         tokenlist = parse_token_and_metadata(data, fields=fields, field_parsers=field_parsers)
-        self.assertEqual(tokenlist.tokens, [
+        self.assertEqual(tokenlist, [
             Token([("id", '1'), ("backwards", "sdrawkcab enil")]),
             Token([("id", '2'), ("backwards", "sirap paris")]),
         ])
@@ -232,7 +231,7 @@ class TestParseTokenAndMetadata(unittest.TestCase):
             "form": lambda line, i: line[i].upper()
         }
         tokenlist = parse_token_and_metadata(data, fields=fields, field_parsers=field_parsers)
-        self.assertEqual(tokenlist.tokens, [
+        self.assertEqual(tokenlist, [
             Token([("id", 1), ("form", "FROM")]),
             Token([("id", 2), ("form", "PARIS")]),
         ])
@@ -244,7 +243,7 @@ class TestParseTokenAndMetadata(unittest.TestCase):
         """)
         tokenlist = parse_token_and_metadata(data, fields=["id", "form"])
         tokenlist.append({"id": 3})
-        self.assertEqual(tokenlist.tokens, [
+        self.assertEqual(tokenlist, [
             Token({"id": 1, "form": "hej"}),
             Token({"id": 2, "form": "då"}),
             Token({"id": 3, "form": "_"}),  # Form is set to default value
