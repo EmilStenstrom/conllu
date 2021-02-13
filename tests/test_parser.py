@@ -237,6 +237,19 @@ class TestParseTokenAndMetadata(unittest.TestCase):
             Token([("id", 2), ("form", "PARIS")]),
         ])
 
+    def test_fields_from_parse_become_defaults_in_tokenlist(self):
+        data = dedent("""\
+            1\thej
+            2\tdå
+        """)
+        tokenlist = parse_token_and_metadata(data, fields=["id", "form"])
+        tokenlist.append({"id": 3})
+        self.assertEqual(tokenlist.tokens, [
+            Token({"id": 1, "form": "hej"}),
+            Token({"id": 2, "form": "då"}),
+            Token({"id": 3, "form": "_"}),  # Form is set to default value
+        ])
+
 class TestParseLine(unittest.TestCase):
     def test_empty(self):
         with self.assertRaises(ParseException) as assert_context:

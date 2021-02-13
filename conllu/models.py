@@ -31,7 +31,12 @@ class Token(dict):
         raise KeyError("'" + key + "'")
 
 class TokenList(T.List[Token]):
-    def __init__(self, tokens: T.Iterable[Token] = None, metadata: Metadata = None):
+    def __init__(
+        self,
+        tokens: T.Iterable[Token] = None,
+        metadata: Metadata = None,
+        default_fields: T.Optional[T.Iterable[str]] = None,
+    ):
         tokens = tokens or []
 
         if not isinstance(tokens, list):
@@ -43,6 +48,7 @@ class TokenList(T.List[Token]):
         super(TokenList, self).__init__(tokens)
 
         self.metadata = metadata or Metadata()
+        self.default_fields = default_fields
 
     def __repr__(self) -> str:
         return 'TokenList<' + ', '.join(token['form'] for token in self if 'form' in token) + '>'
@@ -62,7 +68,7 @@ class TokenList(T.List[Token]):
 
     def copy(self) -> 'TokenList':
         tokens_copy = super().copy()
-        return TokenList(tokens_copy, self.metadata)
+        return TokenList(tokens_copy, self.metadata, self.default_fields)
 
     def extend(self, iterable: T.Union['TokenList', T.Iterable[Token]]) -> None:
         if not isinstance(iterable, TokenList):
@@ -75,6 +81,11 @@ class TokenList(T.List[Token]):
     def append(self, token: Token) -> None:
         if not isinstance(token, Token):
             token = Token(token)
+
+        if self.default_fields:
+            for field in self.default_fields:
+                if field not in token:
+                    token[field] = "_"
 
         super(TokenList, self).append(token)
 
