@@ -186,6 +186,7 @@ If you omit a field when passing in a dict, conllu will fill in a "_" for those 
 >>> sentences[0].append({"id": 2})
 >>> sentences[0]
 TokenList<The, _>
+```
 
 ### Parse metadata from a CoNLL-U file
 
