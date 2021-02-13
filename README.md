@@ -146,6 +146,47 @@ TokenList<It's, It, is>
 TokenList<It, is>
 ```
 
+### Writing data back to a TokenList
+
+If you want to change your CoNLL-U file, there are a couple of convenience methods to know about.
+
+You can add a new token by simply appending a dictionary with the fields you want to a TokenList:
+
+```python
+>>> sentence3 = TokenList([
+...    {"id": 1, "form": "Lazy"},
+...    {"id": 2, "form": "fox"},
+... ])
+>>> sentence3
+TokenList<Lazy, fox>
+>>> sentence3.append({"id": 3, "form": "box"})
+>>> sentence3
+TokenList<Lazy, fox, box>
+```
+
+Changing a sentence just means indexing into it, and setting a value to what you want:
+
+```python
+>>> sentence4 = TokenList([
+...    {"id": 1, "form": "Lazy"},
+...    {"id": 2, "form": "fox"},
+... ])
+>>> sentence4[1]["form"] = "crocodile"
+>>> sentence4
+TokenList<Lazy, crocodile>
+>>> sentence4[1] = {"id": 2, "form": "elephant"}
+>>> sentence4
+TokenList<Lazy, elephant>
+```
+
+If you omit a field when passing in a dict, conllu will fill in a "_" for those values.
+
+```python
+>>> sentences = parse("1  The")
+>>> sentences[0].append({"id": 2})
+>>> sentences[0]
+TokenList<The, _>
+
 ### Parse metadata from a CoNLL-U file
 
 Each sentence can also have metadata in the form of comments before the sentence starts. This is available in a property on the TokenList called `metadata`.
