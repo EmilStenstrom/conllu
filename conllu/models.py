@@ -30,6 +30,15 @@ class Token(dict):
 
         raise KeyError("'" + key + "'")
 
+    def __str__(self) -> str:
+        if 'form' in self:
+            return self['form']
+
+        if 'id' in self:
+            return f"id={self['id']}"
+
+        return ''
+
 class TokenList(T.List[Token]):
     def __init__(
         self,

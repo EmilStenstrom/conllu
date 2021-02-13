@@ -42,6 +42,10 @@ class TestToken(unittest.TestCase):
         self.assertEqual(token["upos"], None)
         self.assertEqual(token.get("upos"), None)
 
+    def test_str(self):
+        self.assertEqual(str(Token({"id": 1, "form": "The"})), "The")
+        self.assertEqual(str(Token({"id": 1})), "id=1")
+        self.assertEqual(str(Token({"x": 1})), "")
 
 class TestTokenList(unittest.TestCase):
     def test_constructor(self):
