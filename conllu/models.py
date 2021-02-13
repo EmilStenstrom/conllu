@@ -87,7 +87,7 @@ class TokenList(T.List[Token]):
 
         self.metadata.update(iterable.metadata)
 
-    def append(self, token: Token) -> None:
+    def _dict_to_token_and_set_defaults(self, token: T.Union[dict, Token]) -> Token:
         if not isinstance(token, Token):
             token = Token(token)
 
@@ -96,6 +96,10 @@ class TokenList(T.List[Token]):
                 if field not in token:
                     token[field] = "_"
 
+        return token
+
+    def append(self, token: T.Union[dict, Token]) -> None:
+        token = self._dict_to_token_and_set_defaults(token)
         super(TokenList, self).append(token)
 
     @property
