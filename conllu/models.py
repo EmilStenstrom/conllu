@@ -31,9 +31,6 @@ class Token(dict):
         raise KeyError("'" + key + "'")
 
 class TokenList(T.List[Token]):
-
-    metadata: Metadata = Metadata()
-
     def __init__(self, tokens: T.Iterable[Token] = None, metadata: Metadata = None):
         tokens = tokens or []
 
