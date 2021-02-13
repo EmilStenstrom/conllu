@@ -61,6 +61,10 @@ class TestTokenList(unittest.TestCase):
             TokenList([{"id": 1}], metadata={"meta": "data"}),
             TokenList([{"id": 1}], metadata={"meta": "data"})
         )
+        self.assertEqual(
+            TokenList([{"id": 1}]),
+            [{"id": 1}]
+        )
 
     def test_len(self):
         tokenlist = TokenList([{"id": 1}, {"id": 2}, {"id": 3}])
