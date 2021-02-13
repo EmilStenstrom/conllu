@@ -49,15 +49,18 @@ class TestTokenList(unittest.TestCase):
             TokenList({"id": 1})
 
     def test_eq(self):
-        metadata = {"meta": "data"}
-
-        tokenlist1 = TokenList([{"id": 1}])
-        tokenlist1.metadata = metadata
-        tokenlist2 = TokenList([{"id": 1}])
-        self.assertNotEqual(tokenlist1, tokenlist2)
-
-        tokenlist2.metadata = metadata
-        self.assertEqual(tokenlist1, tokenlist2)
+        self.assertEqual(
+            TokenList([{"id": 1}]),
+            TokenList([{"id": 1}])
+        )
+        self.assertNotEqual(
+            TokenList([{"id": 1}], metadata={"meta": "data"}),
+            TokenList([{"id": 1}])
+        )
+        self.assertEqual(
+            TokenList([{"id": 1}], metadata={"meta": "data"}),
+            TokenList([{"id": 1}], metadata={"meta": "data"})
+        )
 
     def test_len(self):
         tokenlist = TokenList([{"id": 1}, {"id": 2}, {"id": 3}])
