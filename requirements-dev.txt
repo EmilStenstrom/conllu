@@ -24,7 +24,7 @@ cryptography==3.4.7
     # via secretstorage
 distlib==0.3.1
     # via virtualenv
-docutils==0.16
+docutils==0.17
     # via readme-renderer
 filelock==3.0.12
     # via
@@ -79,7 +79,7 @@ pygments==2.8.1
     # via readme-renderer
 pyparsing==2.4.7
     # via packaging
-pytest==6.2.2
+pytest==6.2.3
     # via -r requirements-dev.in
 readme-renderer==29.0
     # via twine
@@ -105,7 +105,7 @@ toml==0.10.2
     #   tox
 tox==3.23.0
     # via -r requirements-dev.in
-tqdm==4.59.0
+tqdm==4.60.0
     # via twine
 twine==3.4.1
     # via -r requirements-dev.in
