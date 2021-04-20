@@ -7,6 +7,7 @@ VERSION = '4.4'
 setup(
     name='conllu',
     packages=["conllu"],
+    python_requires=">=3.6",
     package_data={
         "": ["py.typed"]
     },
