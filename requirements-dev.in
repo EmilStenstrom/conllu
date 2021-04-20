@@ -6,3 +6,4 @@ isort
 mypy
 twine
 wheel
+pip-tools
