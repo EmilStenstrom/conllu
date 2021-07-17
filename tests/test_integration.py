@@ -174,6 +174,7 @@ class TestTrickyCases(unittest.TestCase):
 @testlabel("integration")
 class TestParseCoNLLUPlus(unittest.TestCase):
     def test_parse_conllu_plus(self):
+        # Note: global.columns affects both sentences
         data = dedent("""\
             # global.columns = ID FORM UPOS HEAD DEPREL MISC PARSEME:MWE
             # source_sent_id = conllu http://hdl.handle.net/11234/1-2837 UD_German-GSD/de_gsd-ud-train.conllu train-s16
@@ -184,22 +185,56 @@ class TestParseCoNLLUPlus(unittest.TestCase):
             3\t-\tPUNCT\t2\tpunct\tSpaceAfter=No\t*
             4\tPolitiker\tNOUN\t5\tnsubj\t_\t*
             5\tstrebt\tVERB\t0\troot\t_\t2:VPC.full
+
+            # source_sent_id = conllu http://hdl.handle.net/11234/1-2837 UD_German-GSD/de_gsd-ud-train.conllu train-s17
+            # sent_id = train-s17
+            # text = Der ortsüblichen Vergleichsmiete orientieren.
+            1\tDer\tDET\t19\tdet\t_\t*
+            2\tortsüblichen\tADJ\t19\tamod\t_\t*
+            3\tVergleichsmiete\tNOUN\t20\tobl\t_\t*
+            4\torientieren\tVERB\t8\tacl\tSpaceAfter=No\t1
+            5\t.\tPUNCT\t5\tpunct\t_\t*
         """)
 
         sentences = parse(data)
 
         self.assertEqual(
-            sentences[0][4],
-            Token([
-                ('id', 5),
-                ('form', 'strebt'),
-                ('upos', 'VERB'),
-                ('head', 0),
-                ('deprel', 'root'),
-                ('misc', None),
-                ('parseme:mwe', '2:VPC.full'),
-            ])
+            [
+                {"form": token["form"], "parseme:mwe": token["parseme:mwe"]}
+                for token in sentences[0]
+            ],
+            [
+                {"form": "Der", "parseme:mwe": "*"},
+                {"form": "CDU", "parseme:mwe": "*"},
+                {"form": "-", "parseme:mwe": "*"},
+                {"form": "Politiker", "parseme:mwe": "*"},
+                {"form": "strebt", "parseme:mwe": "2:VPC.full"},
+            ]
         )
+        self.assertEqual(sentences[0].metadata, {
+            "global.columns": "ID FORM UPOS HEAD DEPREL MISC PARSEME:MWE",
+            "source_sent_id": "conllu http://hdl.handle.net/11234/1-2837 UD_German-GSD/de_gsd-ud-train.conllu train-s16",
+            "sent_id": "train-s16",
+            "text": "Der CDU-Politiker strebt",
+        })
+        self.assertEqual(
+            [
+                {"form": token["form"], "parseme:mwe": token["parseme:mwe"]}
+                for token in sentences[1]
+            ],
+            [
+                {"form": "Der", "parseme:mwe": "*"},
+                {"form": "ortsüblichen", "parseme:mwe": "*"},
+                {"form": "Vergleichsmiete", "parseme:mwe": "*"},
+                {"form": "orientieren", "parseme:mwe": "1"},
+                {"form": ".", "parseme:mwe": "*"},
+            ]
+        )
+        self.assertEqual(sentences[1].metadata, {
+            "source_sent_id": "conllu http://hdl.handle.net/11234/1-2837 UD_German-GSD/de_gsd-ud-train.conllu train-s17",
+            "sent_id": "train-s17",
+            "text": "Der ortsüblichen Vergleichsmiete orientieren.",
+        })
 
 
 @testlabel("integration")
