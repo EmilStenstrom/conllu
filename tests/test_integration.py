@@ -177,7 +177,7 @@ class TestParseCoNLLUPlus(unittest.TestCase):
         # Note: global.columns affects both sentences
         data = dedent("""\
             # global.columns = ID FORM UPOS HEAD DEPREL MISC PARSEME:MWE
-            # source_sent_id = conllu http://hdl.handle.net/11234/1-2837 UD_German-GSD/de_gsd-ud-train.conllu train-s16
+            # source_sent_id = conllu http://hdl.handle.net/11234/1-2837 UD_German-GSD/de_gsd-ud-train.conllu
             # sent_id = train-s16
             # text = Der CDU-Politiker strebt
             1\tDer\tDET\t2\tdet\t_\t*
@@ -186,7 +186,7 @@ class TestParseCoNLLUPlus(unittest.TestCase):
             4\tPolitiker\tNOUN\t5\tnsubj\t_\t*
             5\tstrebt\tVERB\t0\troot\t_\t2:VPC.full
 
-            # source_sent_id = conllu http://hdl.handle.net/11234/1-2837 UD_German-GSD/de_gsd-ud-train.conllu train-s17
+            # source_sent_id = conllu http://hdl.handle.net/11234/1-2837 UD_German-GSD/de_gsd-ud-train.conllu
             # sent_id = train-s17
             # text = Der ortsüblichen Vergleichsmiete orientieren.
             1\tDer\tDET\t19\tdet\t_\t*
@@ -213,7 +213,7 @@ class TestParseCoNLLUPlus(unittest.TestCase):
         )
         self.assertEqual(sentences[0].metadata, {
             "global.columns": "ID FORM UPOS HEAD DEPREL MISC PARSEME:MWE",
-            "source_sent_id": "conllu http://hdl.handle.net/11234/1-2837 UD_German-GSD/de_gsd-ud-train.conllu train-s16",
+            "source_sent_id": "conllu http://hdl.handle.net/11234/1-2837 UD_German-GSD/de_gsd-ud-train.conllu",
             "sent_id": "train-s16",
             "text": "Der CDU-Politiker strebt",
         })
@@ -231,7 +231,7 @@ class TestParseCoNLLUPlus(unittest.TestCase):
             ]
         )
         self.assertEqual(sentences[1].metadata, {
-            "source_sent_id": "conllu http://hdl.handle.net/11234/1-2837 UD_German-GSD/de_gsd-ud-train.conllu train-s17",
+            "source_sent_id": "conllu http://hdl.handle.net/11234/1-2837 UD_German-GSD/de_gsd-ud-train.conllu",
             "sent_id": "train-s17",
             "text": "Der ortsüblichen Vergleichsmiete orientieren.",
         })
