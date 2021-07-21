@@ -7,6 +7,11 @@ from conllu.serializer import serialize
 
 DEFAULT_EXCLUDE_FIELDS = ('id', 'deprel', 'xpos', 'feats', 'head', 'deps', 'misc')
 
+if T.TYPE_CHECKING:
+    class SupportsIndex(T.Protocol):
+        def __index__(self) -> int:
+            pass
+
 class Metadata(dict):
     pass
 
@@ -108,19 +113,19 @@ class TokenList(T.List[Token]):
         super(TokenList, self).insert(i, token)
 
     @T.overload
-    def __setitem__(self, key: int, tokens: T.Union[dict, Token]) -> None: ...  # noqa, pragma: no cover
+    def __setitem__(self, key: 'SupportsIndex', tokens: T.Union[dict, Token]) -> None: ...  # noqa, pragma: no cover
 
     @T.overload
     def __setitem__(self, key: slice, tokens: T.Union[T.Iterable[T.Union[dict, Token]], 'TokenList']) -> None: ...  # noqa, pragma: no cover
 
     def __setitem__(self, key, tokens):  # noqa: F811
-        if isinstance(key, int):
+        if isinstance(key, slice):
+            tokens = [self._dict_to_token_and_set_defaults(token) for token in tokens]
+            super(TokenList, self).__setitem__(key, tokens)
+        else:
             token = tokens
             token = self._dict_to_token_and_set_defaults(token)
             super(TokenList, self).__setitem__(key, token)
-        else:
-            tokens = [self._dict_to_token_and_set_defaults(token) for token in tokens]
-            super(TokenList, self).__setitem__(key, tokens)
 
     def serialize(self) -> str:
         return serialize(self)
