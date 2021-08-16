@@ -52,7 +52,7 @@ def parse_conllu_plus_fields(in_file: T.TextIO,
 def parse_sentences(in_file: T.TextIO) -> T.Iterator[str]:
     buf: T.List[str] = []
     for line in in_file:
-        if line == "\n":
+        if line.strip() == "":
             if not buf:
                 continue
             yield "".join(buf).rstrip()

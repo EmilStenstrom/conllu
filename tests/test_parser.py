@@ -81,6 +81,22 @@ class TestParseSentencesGenerator(unittest.TestCase):
             '1\thej\n2\tdå',
         ])
 
+    # WNUT 2017 (https://noisy-text.github.io/2017/emerging-rare-entities.html) has blank lines
+    # denoted as \t\n, so test this
+    def test_newlines_with_tabs(self):
+        data = dedent("""\
+            1\thej
+            2\tdå
+            \t
+            1\thej
+            2\tdå
+        """)
+        sentences = list(parse_sentences(StringIO(data)))
+        self.assertEqual(sentences, [
+            '1\thej\n2\tdå',
+            '1\thej\n2\tdå',
+        ])
+
 class TestParseTokenAndMetadata(unittest.TestCase):
     def test_empty(self):
         with self.assertRaises(ParseException):
