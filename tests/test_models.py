@@ -173,7 +173,7 @@ class TestTokenList(unittest.TestCase):
         tokenlist[1]["id"] = 3
         self.assertEqual(tokenlist[1]["id"], 3)
 
-class TestParsinigTrickyTrees(unittest.TestCase):
+class TestParsingTrickyTrees(unittest.TestCase):
     def assertTreeEqual(self, tree, other):
         self.assertEqual(tree.token, other.token)
         self.assertEqual(len(tree.children), len(other.children))
