@@ -8,33 +8,35 @@ from conllu.models import Token, TokenList
 from conllu.parser import parse_dict_value, parse_int_value
 from tests.helpers import capture_print, testlabel
 
-data = dedent("""\
-    # text = The quick brown fox jumps over the lazy dog.
-    1   The     the    DET    DT   Definite=Def|PronType=Art   4   det     _   _
-    2   quick   quick  ADJ    JJ   Degree=Pos                  4   amod    _   _
-    3   brown   brown  ADJ    JJ   Degree=Pos                  4   amod    _   _
-    4   fox     fox    NOUN   NN   Number=Sing                 5   nsubj   _   _
-    5   jumps   jump   VERB   VBZ  Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin   0   root    _   _
-    6   over    over   ADP    IN   _                           9   case    _   _
-    7   the     the    DET    DT   Definite=Def|PronType=Art   9   det     _   _
-    8   lazy    lazy   ADJ    JJ   Degree=Pos                  9   amod    _   _
-    9   dog     dog    NOUN   NN   Number=Sing                 5   nmod    _   SpaceAfter=No
-    10  .       .      PUNCT  .    _                           5   punct   _   _
-
-""")
-data = re.sub(r"  +", r"\t", data)
-
 @testlabel("integration")
 class TestParse(unittest.TestCase):
     maxDiff = None
 
+    data = re.sub(r"  +", r"\t", dedent("""\
+        # text = The quick brown fox jumps over the lazy dog.
+        1   The     the    DET    DT   Definite=Def|PronType=Art   4   det     _   _
+        2   quick   quick  ADJ    JJ   Degree=Pos                  4   amod    _   _
+        3   brown   brown  ADJ    JJ   Degree=Pos                  4   amod    _   _
+        4   fox     fox    NOUN   NN   Number=Sing                 5   nsubj   _   _
+        5   jumps   jump   VERB   VBZ  Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin   0   root    _   _
+        6   over    over   ADP    IN   _                           9   case    _   _
+        7   the     the    DET    DT   Definite=Def|PronType=Art   9   det     _   _
+        8   lazy    lazy   ADJ    JJ   Degree=Pos                  9   amod    _   _
+        9   dog     dog    NOUN   NN   Number=Sing                 5   nmod    _   SpaceAfter=No
+        10  .       .      PUNCT  .    _                           5   punct   _   _
+
+    """))
+
     def test_parse(self):
-        sentences = parse(data)
+        sentences = parse(self.data)
         self.assertEqual(len(sentences), 1)
 
         sentence = sentences[0]
 
-        self.assertEqual(str(sentence), "TokenList<The, quick, brown, fox, jumps, over, the, lazy, dog, .>")
+        self.assertEqual(
+            str(sentence),
+            "TokenList<The, quick, brown, fox, jumps, over, the, lazy, dog, ."
+        )
 
         self.assertEqual(
             sentence[0],
@@ -77,7 +79,7 @@ class TestParse(unittest.TestCase):
         )
 
     def test_parse_tree(self):
-        sentences = parse_tree(data)
+        sentences = parse_tree(self.data)
         self.assertEqual(len(sentences), 1)
 
         root = sentences[0]
@@ -119,7 +121,7 @@ class TestParse(unittest.TestCase):
             "The quick brown fox jumps over the lazy dog."
         )
 
-        self.assertEqual(root.serialize(), data)
+        self.assertEqual(root.serialize(), self.data)
 
         self.assertEqual(
             capture_print(root.print_tree),
@@ -138,14 +140,14 @@ class TestParse(unittest.TestCase):
         )
 
     def test_parse_incr(self):
-        self.assertEqual(parse(data), list(parse_incr(StringIO(data))))
+        self.assertEqual(parse(self.data), list(parse_incr(StringIO(self.data))))
 
     def test_parse_incr_invalid_file(self):
         with self.assertRaises(FileNotFoundError):
             list(parse_incr("SOME STRING DATA"))
 
     def test_parse_tree_incr(self):
-        self.assertEqual(parse_tree(data), list(parse_tree_incr(StringIO(data))))
+        self.assertEqual(parse_tree(self.data), list(parse_tree_incr(StringIO(self.data))))
 
 
 @testlabel("integration")
