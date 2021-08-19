@@ -68,7 +68,7 @@ Now you have the data in a variable called `data`. Let's parse it:
 ```python
 >>> sentences = parse(data)
 >>> sentences
-[TokenList<The, quick, brown, fox, jumps, over, the, lazy, dog, .>]
+[TokenList<The, quick, brown, fox, jumps, over, the, lazy, dog, ., metadata={text: "The quick brown fox jumps over the lazy dog."}>]
 ```
 
 <blockquote>
@@ -92,7 +92,7 @@ Since one CoNLL-U file usually contains multiple sentences, `parse()` always ret
 ```python
 >>> sentence = sentences[0]
 >>> sentence
-TokenList<The, quick, brown, fox, jumps, over, the, lazy, dog, .>
+TokenList<The, quick, brown, fox, jumps, over, the, lazy, dog, ., metadata={text: "The quick brown fox jumps over the lazy dog."}>
 ```
 
 The TokenList supports indexing, so you can get the first token, represented by an ordered dictionary, like this:
@@ -115,7 +115,7 @@ The TokenList supports indexing, so you can get the first token, represented by 
 ```python
 >>> sentence = sentences[0]
 >>> sentence
-TokenList<The, quick, brown, fox, jumps, over, the, lazy, dog, .>
+TokenList<The, quick, brown, fox, jumps, over, the, lazy, dog, ., metadata={text: "The quick brown fox jumps over the lazy dog."}>
 >>> sentence.filter(form="quick")
 TokenList<quick>
 ```

@@ -65,7 +65,12 @@ class TokenList(T.List[Token]):
         self.default_fields = default_fields
 
     def __repr__(self) -> str:
-        return 'TokenList<' + ', '.join(str(token) for token in self) + '>'
+        tokens = ', '.join(str(token) for token in self)
+        if not self.metadata:
+            return f'TokenList<{tokens}>'
+        else:
+            metadata = ', '.join(f"{key}: \"{value}\"" for key, value in self.metadata.items())
+            return f'TokenList<{tokens}, metadata={{{metadata}}}>'
 
     def __eq__(self, other: T.Any) -> bool:
         if not isinstance(other, TokenList):

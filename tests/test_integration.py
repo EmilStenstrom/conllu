@@ -36,6 +36,7 @@ class TestParse(unittest.TestCase):
         self.assertEqual(
             str(sentence),
             "TokenList<The, quick, brown, fox, jumps, over, the, lazy, dog, ."
+            ", metadata={text: \"The quick brown fox jumps over the lazy dog.\"}>"
         )
 
         self.assertEqual(
