@@ -12,6 +12,7 @@ setup(
         "": ["py.typed"]
     },
     version=VERSION,
+    license='MIT License',
     description='CoNLL-U Parser parses a CoNLL-U formatted string into a nested python dictionary',
     long_description=open(os.path.join(os.path.dirname(__file__), 'README.md')).read(),
     long_description_content_type="text/markdown",
