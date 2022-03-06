@@ -8,6 +8,7 @@ from conllu.models import Token, TokenList
 from conllu.parser import parse_dict_value, parse_int_value
 from tests.helpers import capture_print, testlabel
 
+
 @testlabel("integration")
 class TestParse(unittest.TestCase):
     maxDiff = None
