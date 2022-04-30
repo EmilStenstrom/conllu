@@ -46,7 +46,7 @@ At the top level, conllu provides two methods, `parse` and `parse_tree`. The fir
 
 ```python
 >>> from conllu import parse
->>>
+>>> 
 >>> data = """
 # text = The quick brown fox jumps over the lazy dog.
 1   The     the    DET    DT   Definite=Def|PronType=Art   4   det     _   _
@@ -323,9 +323,9 @@ If you want to write it back to a file, you can use something like this:
 ```python
 >>> from conllu import parse_tree
 >>> sentences = parse_tree(data)
->>>
+>>> 
 >>> # Make some change to sentences here
->>>
+>>> 
 >>> with open('file-to-write-to', 'w') as f:
 ...     f.writelines([sentence.serialize() + "\n" for sentence in sentences])
 ```
