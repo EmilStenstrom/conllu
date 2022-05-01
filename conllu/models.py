@@ -12,6 +12,10 @@ if T.TYPE_CHECKING:
         def __index__(self) -> int:
             pass
 
+    class SupportsNext(T.Protocol):
+        def __next__(self) -> int:
+            pass
+
 class Metadata(dict):
     pass
 
@@ -286,3 +290,83 @@ class TokenTree(object):
         ))
         for child in self.children:
             child.print_tree(depth=depth + 1, indent=indent, exclude_fields=exclude_fields)
+
+class SentenceList(T.List[TokenList]):
+    def __init__(
+        self,
+        sentences: T.Iterable[TokenList] = None,
+        metadata: Metadata = None,
+    ):
+        sentences = sentences or []
+
+        if hasattr(sentences, "__next__"):
+            sentences = list(sentences)
+
+        if not isinstance(sentences, list):
+            raise ParseException("Can't create SentenceList, sentences is not a list.")
+
+        super(SentenceList, self).__init__(sentences)
+
+        self.metadata = metadata or Metadata()
+
+    def __repr__(self) -> str:
+        sentences = ', '.join(str(sentence) for sentence in self)
+        if not self.metadata:
+            return f'[{sentences}]'
+        else:
+            metadata = ', '.join(f"{key}: \"{value}\"" for key, value in self.metadata.items())
+            return f'SentenceList<{sentences}, metadata={{{metadata}}}>'
+
+    def __eq__(self, other: T.Any) -> bool:
+        if not isinstance(other, SentenceList):
+            other = SentenceList(other)
+
+        return super(SentenceList, self).__eq__(other) and self.metadata == other.metadata
+
+    def __ne__(self, other: T.Any) -> bool:
+        return not self == other
+
+    def clear(self) -> None:
+        super(SentenceList, self).clear()
+        self.metadata = Metadata()
+
+    def copy(self) -> 'SentenceList':
+        sentences_copy = super().copy()
+        return SentenceList(sentences_copy, self.metadata)
+
+    def extend(self, iterable: T.Union['SentenceList', T.Iterable[TokenList], None]) -> None:
+        if not isinstance(iterable, SentenceList):
+            iterable = SentenceList(iterable)
+
+        super(SentenceList, self).extend(iterable)
+
+        self.metadata.update(iterable.metadata)
+
+
+class SentenceGenerator(T.Iterable[TokenList]):
+    def __init__(
+        self,
+        sentences: T.Iterator[TokenList],
+        metadata: Metadata = None,
+    ):
+        if isinstance(sentences, T.List):
+            sentences = iter(sentences)
+
+        if not isinstance(sentences, T.Iterator):
+            raise ParseException("Can't create SentenceGenerator, sentences is not an iterator.")
+
+        self.sentences = sentences
+        self.metadata = metadata or Metadata()
+
+    def __iter__(self) -> T.Iterator[TokenList]:
+        return self.sentences.__iter__()
+
+    def __next__(self) -> TokenList:
+        return self.sentences.__next__()
+
+    def __repr__(self) -> str:
+        if not self.metadata:
+            return f'SentenceGenerator<{id(self)}>'
+        else:
+            metadata = ', '.join(f"{key}: \"{value}\"" for key, value in self.metadata.items())
+            return f'SentenceGenerator<{id(self)}, metadata={{{metadata}}}>'

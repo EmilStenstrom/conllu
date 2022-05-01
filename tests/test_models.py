@@ -1,7 +1,7 @@
 import unittest
 from textwrap import dedent
 
-from conllu.models import Metadata, Token, TokenList, TokenTree
+from conllu.models import Metadata, SentenceGenerator, SentenceList, Token, TokenList, TokenTree
 from conllu.parser import ParseException, serialize
 from tests.helpers import capture_print
 
@@ -146,18 +146,18 @@ class TestTokenList(unittest.TestCase):
         self.assertEqual(tokenlist.count(Token({"id": 1})), 2)
         self.assertEqual(tokenlist.count({"id": 2}), 1)
 
-    def test_getitem_write_token_to_index(self):
+    def test_setitem_write_token_to_index(self):
         tokenlist = TokenList([{"id": 1}, {"id": 2}])
         tokenlist[0] = Token({"id": 3})
         self.assertEqual(tokenlist, TokenList([{"id": 3}, {"id": 2}]))
 
-    def test_getitem_write_dict_to_index(self):
+    def test_setitem_write_dict_to_index(self):
         tokenlist = TokenList([{"id": 1}, {"id": 2}])
         tokenlist[1] = {"id": 3}
         self.assertEqual(tokenlist, TokenList([{"id": 1}, {"id": 3}]))
         self.assertEqual(type(tokenlist[1]), Token)
 
-    def test_getitem_write_list_of_dicts_to_slice(self):
+    def test_setitem_write_list_of_dicts_to_slice(self):
         tokenlist = TokenList([{"id": 1}, {"id": 2}])
         tokenlist[:] = [{"id": 1}]
         self.assertEqual(tokenlist, TokenList([{"id": 1}]))
@@ -167,7 +167,7 @@ class TestTokenList(unittest.TestCase):
         tokenlist = TokenList([{"id": 1}, {"id": 2}, {"id": 3}])
         self.assertEqual(tokenlist[0:2], [{"id": 1}, {"id": 2}])
 
-    def test_getitem_write_to_token(self):
+    def test_setitem_write_to_token(self):
         tokenlist = TokenList([{"id": 1}, {"id": 2}])
         self.assertEqual(tokenlist[1]["id"], 2)
         tokenlist[1]["id"] = 3
@@ -505,3 +505,85 @@ class TestPrintTree(unittest.TestCase):
                 (deprel:Y) test:data [X]
                 (deprel:Y) test:data [X]
         """))
+
+
+class TestSentenceList(unittest.TestCase):
+    def test_init_empty_sentences_should_not_raise(self):
+        SentenceList()
+
+    def test_init_generator_sentences_should_not_raise(self):
+        def test():
+            yield
+
+        SentenceList(test())
+
+    def test_init_nonlist_raises(self):
+        with self.assertRaises(ParseException):
+            SentenceList((1, 2, 4))
+
+    def test_equals(self):
+        tokenlists = [TokenList([{"id": 1}])]
+        self.assertEqual(SentenceList(tokenlists), SentenceList(tokenlists))
+        self.assertEqual(SentenceList(tokenlists), tokenlists)
+        self.assertEqual(tokenlists, SentenceList(tokenlists))
+
+        tokenlists2 = [TokenList([{"id": 2}])]
+        self.assertNotEqual(SentenceList(tokenlists), SentenceList(tokenlists2))
+
+    def test_clear(self):
+        sentences = SentenceList([TokenList([{"id": 1}])], metadata={"a": 1})
+        sentences.clear()
+        self.assertEqual(sentences, SentenceList())
+
+    def test_copy(self):
+        sentences = SentenceList([TokenList([{"id": 1}])], metadata={"a": 1})
+        sentences2 = sentences.copy()
+        self.assertNotEqual(id(sentences), id(sentences2))
+        self.assertEqual(sentences, sentences2)
+
+    def test_extend(self):
+        sentences = SentenceList([TokenList([{"id": 1}])], metadata={"a": 1})
+        sentences2 = SentenceList([TokenList([{"id": 2}])], metadata={"b": 2})
+        sentences3 = [TokenList([{"id": 3}])]
+
+        sentences.extend(sentences2)
+        self.assertEqual(
+            sentences,
+            SentenceList(
+                [TokenList([{"id": 1}]), TokenList([{"id": 2}])], metadata={"a": 1, "b": 2}
+            )
+        )
+
+        sentences.extend(sentences3)
+        self.assertEqual(
+            sentences,
+            SentenceList(
+                [
+                    TokenList([{"id": 1}]), TokenList([{"id": 2}]), TokenList([{"id": 3}])
+                ], metadata={"a": 1, "b": 2}
+            )
+        )
+
+class TestSentenceGenerator(unittest.TestCase):
+    def test_init_empty_sentences_should_not_raise(self):
+        with self.assertRaises(TypeError):
+            SentenceGenerator()
+
+    def test_init_with_list_casts_to_iterator(self):
+        sentences = SentenceGenerator([TokenList([{"id": 1}])])
+        self.assertEqual(next(sentences), TokenList([{"id": 1}]))
+
+    def test_init_raises_with_non_iterator(self):
+        with self.assertRaises(ParseException):
+            SentenceGenerator((1, 2, 4))
+
+    def test_generator_generates(self):
+        tokenlist1 = TokenList([{"id": 1}])
+        tokenlist2 = TokenList([{"id": 2}])
+
+        def two_sentences():
+            yield tokenlist1
+            yield tokenlist2
+
+        self.assertEqual(list(SentenceGenerator(two_sentences())), [tokenlist1, tokenlist2])
+        self.assertEqual(next(SentenceGenerator(two_sentences())), tokenlist1)

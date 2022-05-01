@@ -66,6 +66,7 @@ def parse_token_and_metadata(data: str, fields: T.Optional[T.Sequence[str]] = No
                              field_parsers: T.Optional[T.Dict[str, _FieldParserType]] = None,
                              metadata_parsers: T.Optional[T.Dict[str, _MetadataParserType]] = None
                              ) -> TokenList:
+
     if not data:
         raise ParseException("Can't create TokenList, no data sent to constructor.")
 
