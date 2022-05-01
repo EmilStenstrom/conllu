@@ -113,7 +113,7 @@ class TokenList(T.List[Token]):
         token = self._dict_to_token_and_set_defaults(token)
         super(TokenList, self).append(token)
 
-    def insert(self, i: int, token: T.Union[dict, Token]) -> None:
+    def insert(self, i: 'SupportsIndex', token: T.Union[dict, Token]) -> None:
         token = self._dict_to_token_and_set_defaults(token)
         super(TokenList, self).insert(i, token)
 
