@@ -768,6 +768,28 @@ class TestSerialize(unittest.TestCase):
         tokenlist = parse_token_and_metadata(data)
         self.assertEqual(serialize(tokenlist), data)
 
+    def test_non_str_metadata(self):
+        data = dedent("""\
+            # line_id = 128
+            # weight = 3.14
+            1\tdog
+
+        """)
+        tokenlist = parse_token_and_metadata(
+            data,
+            metadata_parsers={
+                "line_id": lambda k, v: (k, int(v)),
+                "weight": lambda k, v: (k, float(v))
+            }
+        )
+        self.assertIsInstance(tokenlist.metadata['line_id'], int)
+        self.assertEqual(tokenlist.metadata['line_id'], 128)
+
+        self.assertIsInstance(tokenlist.metadata['weight'], float)
+        self.assertEqual(tokenlist.metadata['weight'], 3.14)
+
+        self.assertEqual(serialize(tokenlist), data)
+
     def test_serialize_tricky_fields(self):
         data = dedent("""\
             5\tjumps\tjump\tVERB\tVBZ\tMood=Ind|Number=Sing\t0\troot\t_\tSpaceAfter=No
