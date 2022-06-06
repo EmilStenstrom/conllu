@@ -1,87 +1,54 @@
+import contextlib
 import doctest
 import os
 import re
-import shutil
 import tempfile
-from doctest import DocTestParser
+from doctest import OutputChecker
+from pathlib import Path
+from unittest import mock
 
 
-class ReadmeTestParser(DocTestParser):
-    @staticmethod
-    def modify_example(example):
-        new_source = example.source
-        new_want = example.want
+class ReadmeOutputChecker(OutputChecker):
+    def check_output(self, want, got, optionflags):
+        # Allow dicts and lists to be formatted with whitespace around brackets
+        if want.startswith("{") or want.startswith("["):
+            want = re.sub(r"\s*([\{\[\]\}])\s*", r"\1", want, flags=re.MULTILINE)
+            got = re.sub(r"\s*([\{\[\]\}])\s*", r"\1", got, flags=re.MULTILINE)
 
-        # README is formatted without "..." before multi-line input to make code easy to copy-paste
-        if new_source.endswith('"""\n'):
-            new_source += new_want + '\n"""'
-            new_want = ""
+        return OutputChecker.check_output(self, want, got, optionflags)
 
-        # doctest sometimes incorrectly includes markdown in returned example
-        if new_want.endswith("```\n"):
-            new_want = new_want[:new_want.index("```")]
+@contextlib.contextmanager
+def temporary_chdir():
+    try:
+        old = os.getcwd()
+        with tempfile.TemporaryDirectory() as tempdir:
+            os.chdir(tempdir)
+            yield
+    finally:
+        os.chdir(old)
 
-        # README's serialize() has spaces instead of tabs to make output easier to read
-        if new_want.startswith("# text"):
-            new_want = re.sub(r" {2,}", "\t", new_want)
-            new_want = new_want.rstrip() + "\n\n"
-            # README cheats and prints return value without quotes
-            new_want = repr(new_want)
+def test_readme():
+    readme_file = Path("README.md")
 
-        # README has examples with lists formatted in multiple lines to make them easier to read
-        if new_want.startswith(("[", "{")):
-            new_want = ReadmeTestParser.normalize_whitespace(new_want)
+    # Copy contents of README, to remove ``` and run all code in one session
+    readme_data = ""
+    with open(readme_file, "r") as f:
+        for line in f:
+            if line == "```\n":
+                readme_data += "\n"
+            else:
+                readme_data += line
 
-        example = doctest.Example(
-            source=new_source,
-            want=new_want,
-            exc_msg=example.exc_msg,
-            lineno=example.lineno,
-            indent=example.indent,
-            options=example.options
-        )
-
-        return example
-
-    @staticmethod
-    def normalize_whitespace(text):
-        """Remove all whitespace except inside strings and after commas"""
-        separator = "'"
-        if text.find('"') > text.find("'"):
-            separator = '"'
-
-        lst = text.split(separator)
-        for i, item in enumerate(lst):
-            if not i % 2:
-                lst[i] = re.sub(r"\s+", "", item)
-                lst[i] = lst[i].replace(",", ", ").replace(":", ": ")
-
-        return separator.join(lst)
-
-    def get_examples(self, *args, **kwargs):
-        examples = super(ReadmeTestParser, self).get_examples(*args, **kwargs)
-        examples = [ReadmeTestParser.modify_example(example) for example in examples]
-        return examples
-
-class ChdirTemp(object):
-    def setUp(self, doctest_object):
-        self.old_directory = os.getcwd()
-        self.tmp_directory = tempfile.mkdtemp()
-        os.chdir(self.tmp_directory)
-
-    def tearDown(self, doctest_object):
-        os.chdir(self.old_directory)
-        shutil.rmtree(self.tmp_directory)
-
-def load_tests(loader, tests, ignore):
-    cd = ChdirTemp()
-    tests.addTests(
-        doctest.DocFileSuite(
-            "../README.md",
-            parser=ReadmeTestParser(),
-            optionflags=doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE,
-            setUp=cd.setUp,
-            tearDown=cd.tearDown,
-        )
-    )
-    return tests
+    with temporary_chdir():
+        with mock.patch('doctest.OutputChecker', ReadmeOutputChecker):
+            doctest.run_docstring_examples(
+                readme_data,
+                globs={},
+                name=readme_file.name,
+                optionflags=(
+                    doctest.ELLIPSIS
+                    | doctest.NORMALIZE_WHITESPACE
+                    | doctest.FAIL_FAST
+                    | doctest.REPORT_NDIFF
+                ),
+            )

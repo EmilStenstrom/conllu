@@ -48,19 +48,19 @@ At the top level, conllu provides two methods, `parse` and `parse_tree`. The fir
 >>> from conllu import parse
 >>> 
 >>> data = """
-# text = The quick brown fox jumps over the lazy dog.
-1   The     the    DET    DT   Definite=Def|PronType=Art   4   det     _   _
-2   quick   quick  ADJ    JJ   Degree=Pos                  4   amod    _   _
-3   brown   brown  ADJ    JJ   Degree=Pos                  4   amod    _   _
-4   fox     fox    NOUN   NN   Number=Sing                 5   nsubj   _   _
-5   jumps   jump   VERB   VBZ  Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin   0   root    _   _
-6   over    over   ADP    IN   _                           9   case    _   _
-7   the     the    DET    DT   Definite=Def|PronType=Art   9   det     _   _
-8   lazy    lazy   ADJ    JJ   Degree=Pos                  9   amod    _   _
-9   dog     dog    NOUN   NN   Number=Sing                 5   nmod    _   SpaceAfter=No
-10  .       .      PUNCT  .    _                           5   punct   _   _
-
-"""
+... # text = The quick brown fox jumps over the lazy dog.
+... 1   The     the    DET    DT   Definite=Def|PronType=Art   4   det     _   _
+... 2   quick   quick  ADJ    JJ   Degree=Pos                  4   amod    _   _
+... 3   brown   brown  ADJ    JJ   Degree=Pos                  4   amod    _   _
+... 4   fox     fox    NOUN   NN   Number=Sing                 5   nsubj   _   _
+... 5   jumps   jump   VERB   VBZ  Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin   0   root    _   _
+... 6   over    over   ADP    IN   _                           9   case    _   _
+... 7   the     the    DET    DT   Definite=Def|PronType=Art   9   det     _   _
+... 8   lazy    lazy   ADJ    JJ   Degree=Pos                  9   amod    _   _
+... 9   dog     dog    NOUN   NN   Number=Sing                 5   nmod    _   SpaceAfter=No
+... 10  .       .      PUNCT  .    _                           5   punct   _   _
+...
+... """
 ```
 
 Now you have the data in a variable called `data`. Let's parse it:
@@ -100,12 +100,10 @@ The TokenList supports indexing, so you can get the first token, represented by 
 ```python
 >>> token = sentence[0]
 >>> token
-{
-    'id': 1,
-    'form': 'The',
-    'lemma': 'the',
-    ...
-}
+{'id': 1,
+     'form': 'The',
+     'lemma': 'the',
+     ...}
 >>> token["form"]
 'The'
 ```
@@ -202,7 +200,7 @@ Each sentence can also have metadata in the form of comments before the sentence
 If you ever want to get your CoNLL-U formated text back (maybe after changing something?), use the `serialize()` method:
 
 ```python
->>> sentence.serialize()
+>>> print(sentence.serialize())
 # text = The quick brown fox jumps over the lazy dog.
 1   The     the     DET    DT   Definite=Def|PronType=Art   4   det    _   _
 2   quick   quick   ADJ    JJ   Degree=Pos                  4   amod   _   _
@@ -311,7 +309,7 @@ Just like with `parse()`, if a sentence has metadata it is available in a proper
 If you ever want to get your CoNLL-U formated text back (maybe after changing something?), use the `serialize()` method:
 
 ```python
->>> root.serialize()
+>>> print(root.serialize())
 # text = The quick brown fox jumps over the lazy dog.
 1   The     the    DET    DT   Definite=Def|PronType=Art   4   det     _   _
 2   quick   quick  ADJ    JJ   Degree=Pos                  4   amod    _   _
@@ -338,13 +336,13 @@ A normal CoNLL-U file consists of a specific set of fields (id, form, lemma, and
 
 ```python
 >>> data = """
-# tagset = TAG1|TAG2|TAG3|TAG4
-# sentence-123
-1   My       TAG1|TAG2
-2   custom   TAG3
-3   format   TAG4
-
-"""
+... # tagset = TAG1|TAG2|TAG3|TAG4
+... # sentence-123
+... 1   My       TAG1|TAG2
+... 2   custom   TAG3
+... 3   format   TAG4
+...
+... """
 ```
 
 Now, let's parse this with the the default settings, and look specifically at the first token to see how it was parsed.
@@ -381,12 +379,9 @@ In our case, we return `line[i].split("|")`, which returns a list like we want.
 
 Let's look at the metadata in this example.
 
-```python
-"""
+```text
 # tagset = TAG1|TAG2|TAG3|TAG4
 # sentence-123
-"""
-
 ```
 
 None of these values are valid in CoNLL-U, but since the first line follows the key-value format of other (valid) fields, conllu will parse it anyway:
@@ -427,12 +422,12 @@ Finally, consider an even trickier case.
 
 ```python
 >>> data = """
-# id=1-document_id=36:1047-span=1
-1   My       TAG1|TAG2
-2   custom   TAG3
-3   format   TAG4
-
-"""
+... # id=1-document_id=36:1047-span=1
+... 1   My       TAG1|TAG2
+... 2   custom   TAG3
+... 3   format   TAG4
+...
+... """
 ```
 
 This is actually three different comments, but somehow they are separated by "-" instead of on their own lines. To handle this, we get to use the ability of a metadata_parser to return multiple matches from a single line.
