@@ -4,6 +4,9 @@ from setuptools import setup  # type: ignore
 
 VERSION = '4.5'
 
+with open(os.path.join(os.path.dirname(__file__), 'README.md')) as f:
+    description = f.read()
+
 setup(
     name='conllu',
     packages=["conllu"],
@@ -14,7 +17,7 @@ setup(
     version=VERSION,
     license='MIT License',
     description='CoNLL-U Parser parses a CoNLL-U formatted string into a nested python dictionary',
-    long_description=open(os.path.join(os.path.dirname(__file__), 'README.md')).read(),
+    long_description=description,
     long_description_content_type="text/markdown",
     author=u'Emil Stenström',
     author_email="emil@emilstenstrom.se",
