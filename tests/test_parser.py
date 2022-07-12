@@ -751,6 +751,15 @@ class TestSerializeField(unittest.TestCase):
         data = [("nsubj", 2), ("nmod", 1)]
         self.assertEqual(serialize_field(data), "2:nsubj|1:nmod")
 
+    def test_blank_dict(self):
+        data = {}
+        self.assertEqual(serialize_field(data), "_")
+
+    def test_dict_with_blank_value(self):
+        data = {"key1": "value1", "key2": ""}
+        self.assertEqual(serialize_field(data), "key1=value1|key2")
+
+
 class TestSerialize(unittest.TestCase):
     def test_identity_unicode(self):
         data = "5\tlängtar\n\n"

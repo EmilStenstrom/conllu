@@ -11,10 +11,16 @@ def serialize_field(field: T.Any) -> str:
         return '_'
 
     if isinstance(field, dict):
+        if field == {}:
+            return '_'
+
         fields = []
         for key, value in field.items():
             if value is None:
                 value = "_"
+            if value == "":
+                fields.append(key)
+                continue
 
             fields.append('='.join((key, value)))
 
