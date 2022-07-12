@@ -326,6 +326,21 @@ class SentenceList(T.List[TokenList]):
     def __ne__(self, other: T.Any) -> bool:
         return not self == other
 
+    @T.overload
+    def __getitem__(self, key: 'SupportsIndex') -> TokenList: ...  # noqa, pragma: no cover
+
+    @T.overload
+    def __getitem__(self, key: slice) -> "SentenceList": ...  # noqa, pragma: no cover
+
+    def __getitem__(self, key):  # noqa: F811
+        if isinstance(key, slice):
+            return SentenceList(
+                sentences=super(SentenceList, self).__getitem__(key),
+                metadata=self.metadata
+            )
+        else:
+            return super(SentenceList, self).__getitem__(key)
+
     def clear(self) -> None:
         super(SentenceList, self).clear()
         self.metadata = Metadata()

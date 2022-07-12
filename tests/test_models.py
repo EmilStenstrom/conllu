@@ -564,6 +564,33 @@ class TestSentenceList(unittest.TestCase):
             )
         )
 
+    def test_slicing_sentencelist_works_and_retains_metadata(self):
+        sentences = SentenceList(
+            [
+                TokenList([{"id": 1}]),
+                TokenList([{"id": 2}]),
+                TokenList([{"id": 3}]),
+            ],
+            metadata={"a": 1}
+        )
+        self.assertEqual(sentences[1:2], SentenceList(
+            [
+                TokenList([{"id": 2}]),
+            ],
+            metadata={"a": 1}
+        ))
+
+    def test_slicing_with_single_int(self):
+        sentences = SentenceList(
+            [
+                TokenList([{"id": 1}]),
+                TokenList([{"id": 2}]),
+                TokenList([{"id": 3}]),
+            ],
+            metadata={"a": 1}
+        )
+        self.assertEqual(sentences[1], TokenList([{"id": 2}]))
+
 class TestSentenceGenerator(unittest.TestCase):
     def test_init_empty_sentences_should_not_raise(self):
         with self.assertRaises(TypeError):
