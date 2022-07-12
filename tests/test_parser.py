@@ -721,7 +721,7 @@ class TestHeadToToken(unittest.TestCase):
 class TestSerializeField(unittest.TestCase):
     def test_ordered_dict(self):
         data = Token()
-        self.assertEqual(serialize_field(data), "")
+        self.assertEqual(serialize_field(data), "_")
 
         data = Token([('SpaceAfter', 'No')])
         self.assertEqual(serialize_field(data), "SpaceAfter=No")
