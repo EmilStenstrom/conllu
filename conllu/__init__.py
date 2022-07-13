@@ -1,11 +1,16 @@
 import typing as T
 from io import StringIO
 
-from conllu.models import SentenceGenerator, SentenceList, TokenTree
+from conllu.models import Metadata, SentenceGenerator, SentenceList, Token, TokenList, TokenTree
 from conllu.parser import (
     _FieldParserType, _MetadataParserType, parse_conllu_plus_fields, parse_sentences, parse_token_and_metadata,
 )
 
+__all__ = [
+    "parse", "parse_incr", "parse_tree", "parse_tree_incr",
+    "SentenceGenerator", "SentenceList", "TokenList", "TokenTree", "Token", "Metadata",
+    "parse_conllu_plus_fields", "parse_sentences", "parse_token_and_metadata",
+]
 
 def parse(data: str, fields: T.Optional[T.Sequence[str]] = None,
           field_parsers: T.Dict[str, _FieldParserType] = None,
