@@ -2,7 +2,7 @@ import os
 
 from setuptools import setup  # type: ignore
 
-VERSION = '4.5.1'
+VERSION = '4.5.2'
 
 with open(os.path.join(os.path.dirname(__file__), 'README.md')) as f:
     description = f.read()
