@@ -209,7 +209,7 @@ def parse_id_value(value: str) -> T.Optional[_IdType]:
     elif re.fullmatch(ID_RANGE, value):
         from_str, to_str = value.split("-")
         from_, to = int(from_str), int(to_str)
-        if to > from_:
+        if to >= from_:
             return (int(from_), "-", int(to))
 
     elif re.fullmatch(ID_DOT_ID, value):
