@@ -10,7 +10,7 @@ bleach==5.0.1
     # via readme-renderer
 build==0.8.0
     # via pip-tools
-certifi==2022.6.15
+certifi==2022.12.7
     # via requests
 cffi==1.15.1
     # via cryptography
@@ -112,8 +112,6 @@ toml==0.10.2
     # via tox
 tomli==2.0.1
     # via
-    #   build
-    #   mypy
     #   pep517
     #   pytest
 tox==3.25.1
