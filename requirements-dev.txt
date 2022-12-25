@@ -22,7 +22,7 @@ commonmark==0.9.1
     # via rich
 coverage==6.4.2
     # via -r requirements-dev.in
-cryptography==37.0.4
+cryptography==38.0.3
     # via secretstorage
 distlib==0.3.4
     # via virtualenv
