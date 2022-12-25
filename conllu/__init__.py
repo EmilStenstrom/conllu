@@ -13,7 +13,7 @@ __all__ = [
 ]
 
 def parse(data: str, fields: T.Optional[T.Sequence[str]] = None,
-          field_parsers: T.Dict[str, _FieldParserType] = None,
+          field_parsers: T.Optional[T.Dict[str, _FieldParserType]] = None,
           metadata_parsers: T.Optional[T.Dict[str, _MetadataParserType]] = None
           ) -> SentenceList:
     return SentenceList(parse_incr(
@@ -24,7 +24,7 @@ def parse(data: str, fields: T.Optional[T.Sequence[str]] = None,
     ))
 
 def parse_incr(in_file: T.TextIO, fields: T.Optional[T.Sequence[str]] = None,
-               field_parsers: T.Dict[str, _FieldParserType] = None,
+               field_parsers: T.Optional[T.Dict[str, _FieldParserType]] = None,
                metadata_parsers: T.Optional[T.Dict[str, _MetadataParserType]] = None
                ) -> SentenceGenerator:
 

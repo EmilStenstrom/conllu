@@ -51,8 +51,8 @@ class Token(dict):
 class TokenList(T.List[Token]):
     def __init__(
         self,
-        tokens: T.Iterable[Token] = None,
-        metadata: Metadata = None,
+        tokens: T.Optional[T.Iterable[Token]] = None,
+        metadata: T.Optional[Metadata] = None,
         default_fields: T.Optional[T.Iterable[str]] = None,
     ):
         tokens = tokens or []
@@ -294,8 +294,8 @@ class TokenTree(object):
 class SentenceList(T.List[TokenList]):
     def __init__(
         self,
-        sentences: T.Iterable[TokenList] = None,
-        metadata: Metadata = None,
+        sentences: T.Optional[T.Iterable[TokenList]] = None,
+        metadata: T.Optional[Metadata] = None,
     ):
         sentences = sentences or []
 
@@ -349,7 +349,7 @@ class SentenceList(T.List[TokenList]):
         sentences_copy = super().copy()
         return SentenceList(sentences_copy, self.metadata)
 
-    def extend(self, iterable: T.Union['SentenceList', T.Iterable[TokenList], None]) -> None:
+    def extend(self, iterable: T.Union['SentenceList', T.Iterable[TokenList]]) -> None:
         if not isinstance(iterable, SentenceList):
             iterable = SentenceList(iterable)
 
@@ -362,7 +362,7 @@ class SentenceGenerator(T.Iterable[TokenList]):
     def __init__(
         self,
         sentences: T.Iterator[TokenList],
-        metadata: Metadata = None,
+        metadata: T.Optional[Metadata] = None,
     ):
         if isinstance(sentences, T.List):
             sentences = iter(sentences)
