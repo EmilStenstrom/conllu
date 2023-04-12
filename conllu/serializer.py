@@ -22,7 +22,7 @@ def serialize_field(field: T.Any) -> str:
                 fields.append(key)
                 continue
 
-            fields.append('='.join((key, value)))
+            fields.append(f'{key}={value}')
 
         return '|'.join(fields)
 
