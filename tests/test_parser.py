@@ -760,6 +760,18 @@ class TestSerializeField(unittest.TestCase):
         data = {"key1": "value1", "key2": ""}
         self.assertEqual(serialize_field(data), "key1=value1|key2")
 
+    def test_dict_with_int_value(self):
+        data = {"key1": -1, "key2": 2}
+        self.assertEqual(serialize_field(data), "key1=-1|key2=2")
+
+    def test_dict_with_float_value(self):
+        data = {"key1": 0.33, "key2": 3.142}
+        self.assertEqual(serialize_field(data), "key1=0.33|key2=3.142")
+
+    def test_dict_with_bool_value(self):
+        data = {"key1": True, "key2": False}
+        self.assertEqual(serialize_field(data), "key1=True|key2=False")
+
 
 class TestSerialize(unittest.TestCase):
     def test_identity_unicode(self):
