@@ -21,8 +21,9 @@ def serialize_field(field: T.Any) -> str:
             if value == "":
                 fields.append(key)
                 continue
-
-            fields.append(f'{key}={value}')
+            if any(isinstance(value, serializable_type) for serializable_type in (int, float, str, bool)):
+                fields.append(f'{key}={value}')
+                continue
 
         return '|'.join(fields)
 
