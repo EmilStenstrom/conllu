@@ -768,9 +768,19 @@ class TestSerializeField(unittest.TestCase):
         data = {"key1": 0.33, "key2": 3.142}
         self.assertEqual(serialize_field(data), "key1=0.33|key2=3.142")
 
+    def test_dict_with_str_value(self):
+        data = {"key1": "foo", "key2": "bar"}
+        self.assertEqual(serialize_field(data), "key1=foo|key2=bar")
+
     def test_dict_with_bool_value(self):
         data = {"key1": True, "key2": False}
         self.assertEqual(serialize_field(data), "key1=True|key2=False")
+
+    def test_dict_with_nonserializable_type0(self):
+        _object = object()
+        data = {"key1": _object}
+        with self.assertRaises(TypeError):
+            serialize_field(data)
 
 
 class TestSerialize(unittest.TestCase):

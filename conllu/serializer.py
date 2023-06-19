@@ -6,6 +6,9 @@ if T.TYPE_CHECKING:
     from conllu.models import TokenList
 
 
+SERIALIZABLE_TERMINAL_VALUE_TYPES = (int, float, bool, str)
+
+
 def serialize_field(field: T.Any) -> str:
     if field is None:
         return '_'
@@ -21,9 +24,12 @@ def serialize_field(field: T.Any) -> str:
             if value == "":
                 fields.append(key)
                 continue
-            if any(isinstance(value, serializable_type) for serializable_type in (int, float, str, bool)):
+            if isinstance(value, SERIALIZABLE_TERMINAL_VALUE_TYPES):
                 fields.append(f'{key}={value}')
                 continue
+            else:
+                value_type = type(value)
+                raise TypeError(f"Received non-serializable field value of type {value_type}:\n{value}")
 
         return '|'.join(fields)
 
