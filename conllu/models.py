@@ -247,23 +247,26 @@ class TokenTree(object):
                 and self.metadata == other.metadata
         return False
 
-    def serialize(self) -> str:
-        if not self.token or "id" not in self.token:
-            raise ParseException("Could not serialize tree, missing 'id' field.")
-
-        def flatten_tree(root_token: TokenTree, token_list: T.List[Token] = []) -> T.List[Token]:
+    def to_list(self):
+        def _to_list(root_token: TokenTree, token_list: T.List[Token] = []) -> T.List[Token]:
             token_list.append(root_token.token)
 
             for child_token in root_token.children:
-                flatten_tree(child_token, token_list)
+                _to_list(child_token, token_list)
 
             return token_list
 
-        tokens = flatten_tree(self)
-        tokens = sorted(tokens, key=lambda t: t['id'])
-        tokenlist = TokenList(tokens, self.metadata)
+        if not self.token or "id" not in self.token:
+            raise ParseException("Could not flatten tree; missing 'id' field.")
 
-        return serialize(tokenlist)
+        token_list = _to_list(self)
+        token_list = sorted(token_list, key=lambda t: t['id'])
+        token_list = TokenList(token_list, self.metadata)
+
+        return token_list
+
+    def serialize(self) -> str:
+        return serialize(self.to_list())
 
     def print_tree(self, depth: int = 0, indent: int = 4,
                    exclude_fields: T.Sequence[str] = DEFAULT_EXCLUDE_FIELDS) -> None:
