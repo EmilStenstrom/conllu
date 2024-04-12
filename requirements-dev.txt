@@ -40,7 +40,7 @@ filelock==3.8.2
     #   virtualenv
 flake8==6.0.0
     # via -r requirements-dev.in
-idna==3.4
+idna==3.7
     # via requests
 importlib-metadata==5.2.0
     # via
