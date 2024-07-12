@@ -36,6 +36,10 @@ include = ["conllu"]
 [tool.setuptools.package-data]
 "conllu" = ["py.typed"]
 
+[tool.pytest.ini_options]
+markers = [
+    "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
+]
 [tool.flake8]
 ignore = "E302, W503"
 max-line-length = 119
