@@ -1,5 +1,6 @@
 coverage
 flake8
+flake8-pyproject
 isort
 mypy
 pip-tools
