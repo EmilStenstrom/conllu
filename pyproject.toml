@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "conllu"
+version = "4.5.3"
+description = "CoNLL-U Parser parses a CoNLL-U formatted string into a nested python dictionary"
+readme = "README.md"
+requires-python = ">=3.6"
+authors = [{name = "Emil Stenström", email = "emil@emilstenstrom.se"}]
+license = {file = "LICENSE"}
+keywords = ["conllu", "conll", "conll-u", "parser", "nlp"]
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/EmilStenstrom/conllu/"
+
+[project.optional-dependencies]
+test = ["tox"]
+
+[tool.setuptools.packages.find]
+where = ["conllu"]
+include = ["conllu"]
+
+[tool.setuptools.package-data]
+"conllu" = ["py.typed"]
+
+[tool.flake8]
+ignore = "E302, W503"
+max-line-length = 119
+
+[tool.coverage.report]
+fail_under = 100
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    'if T\.TYPE_CHECKING',
+    'TT\.Protocol',
+]
+
+[tool.coverage.run]
+branch = true
+source = ["conllu"]
+omit = [
+    "conllu/__init__.py",
+]
+
+[tool.isort]
+line_length = 119
+multi_line_output = 5
+include_trailing_comma = true
+known_first_party = ["conllu", "tests"]
