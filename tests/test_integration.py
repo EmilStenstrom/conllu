@@ -3,13 +3,15 @@ import unittest
 from io import StringIO
 from textwrap import dedent
 
+import pytest
+
 from conllu import parse, parse_incr, parse_tree, parse_tree_incr
 from conllu.models import Token, TokenList
 from conllu.parser import parse_dict_value, parse_int_value
-from tests.helpers import capture_print, testlabel
+from tests.helpers import capture_print
 
 
-@testlabel("integration")
+@pytest.mark.integration
 class TestParse(unittest.TestCase):
     maxDiff = None
 
@@ -152,7 +154,7 @@ class TestParse(unittest.TestCase):
         self.assertEqual(parse_tree(self.data), list(parse_tree_incr(StringIO(self.data))))
 
 
-@testlabel("integration")
+@pytest.mark.integration
 class TestTrickyCases(unittest.TestCase):
     maxDiff = None
 
@@ -175,7 +177,7 @@ class TestTrickyCases(unittest.TestCase):
             self.assertEqual(parse_tree(testcase)[0].serialize(), testcase_without_range_and_elided.serialize())
 
 
-@testlabel("integration")
+@pytest.mark.integration
 class TestParseCoNLLUPlus(unittest.TestCase):
     def test_parse_conllu_plus(self):
         # Note: global.columns affects both sentences
@@ -241,7 +243,7 @@ class TestParseCoNLLUPlus(unittest.TestCase):
         })
 
 
-@testlabel("integration")
+@pytest.mark.integration
 class TestParseCoNLL2009(unittest.TestCase):
     def test_parse_CoNLL2009_1(self):
         data = dedent("""\
