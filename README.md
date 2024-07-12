@@ -13,7 +13,7 @@
 
 ## Installation
 
-Note: As of conllu 4.0, Python 3.6 is required to install conllu. See [Notes on updating from 3.0 to 4.0](#notes-on-updating-from-30-to-40)
+Note: As of conllu 5.0, Python 3.8 is required to install conllu. See [Notes on updating from 4.0 to 5.0](#notes-on-updating-from-40-to-50)
 
 ```bash
 pip install conllu
@@ -24,6 +24,10 @@ Or, if you are using [conda](https://conda.io/docs/):
 ```bash
 conda install -c conda-forge conllu
 ```
+
+## Notes on updating from 4.0 to 5.0
+
+Conllu version 5.0 drops support for Python 3.6 and 3.7 and requires Python 3.8 at a minimum. If you need support for older versions of python, you can always pin your install to an old version of conllu. You can install it with `pip install conllu==4.5.3`.
 
 ## Notes on updating from 3.0 to 4.0
 
@@ -472,7 +476,7 @@ And that's it! Using these tricks you should be able to parse all the strange fi
 4. (Alternative) If you just have one version of python installed, and don't want to go through the hassle of installing multiple version of python (hint: Install pyenv and pyenv-tox), **it's fine to run tox with just one version of python**:
 
     ```bash
-    tox -e py36
+    tox -e py38
     ```
 
 5. Make a pull request. Here's a [good guide on PRs from GitHub](https://help.github.com/articles/creating-a-pull-request-from-a-fork/).

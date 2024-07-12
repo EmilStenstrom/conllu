@@ -7,7 +7,7 @@ name = "conllu"
 version = "4.5.3"
 description = "CoNLL-U Parser parses a CoNLL-U formatted string into a nested python dictionary"
 readme = "README.md"
-requires-python = ">=3.6"
+requires-python = ">=3.8"
 authors = [{name = "Emil Stenström", email = "emil@emilstenstrom.se"}]
 license = {file = "LICENSE"}
 keywords = ["conllu", "conll", "conll-u", "parser", "nlp"]
@@ -15,11 +15,11 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Operating System :: OS Independent",
 ]
 
