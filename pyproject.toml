@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=42", "wheel"]
+requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -30,8 +30,9 @@ classifiers = [
 test = ["tox"]
 
 [tool.setuptools.packages.find]
-where = ["conllu"]
+where = ["."]
 include = ["conllu"]
+namespaces = false
 
 [tool.setuptools.package-data]
 "conllu" = ["py.typed"]
@@ -40,6 +41,7 @@ include = ["conllu"]
 markers = [
     "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
 ]
+
 [tool.flake8]
 ignore = "E302, W503"
 max-line-length = 119
