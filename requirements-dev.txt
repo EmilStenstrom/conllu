@@ -22,7 +22,7 @@ colorama==0.4.6
     # via tox
 coverage==7.6.0
     # via -r requirements-dev.in
-cryptography==42.0.8
+cryptography==43.0.1
     # via secretstorage
 distlib==0.3.8
     # via virtualenv
