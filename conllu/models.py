@@ -187,7 +187,7 @@ class TokenList(T.List[Token]):
         return root
 
     def filter(self, **kwargs: T.Any) -> 'TokenList':
-        tokens: T.Iterable[Token] = self.copy()
+        tokens = self.copy()
 
         for query, value in kwargs.items():
             filtered_tokens = []
@@ -198,9 +198,9 @@ class TokenList(T.List[Token]):
                     if traverse_dict(token, query) == value:
                         filtered_tokens.append(token)
 
-            tokens = filtered_tokens
+            tokens[:] = filtered_tokens
 
-        return TokenList(tokens)
+        return tokens
 
 
 _T = T.TypeVar("_T")

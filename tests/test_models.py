@@ -1,14 +1,7 @@
 import unittest
 from textwrap import dedent
 
-from conllu.models import (
-    Metadata,
-    SentenceGenerator,
-    SentenceList,
-    Token,
-    TokenList,
-    TokenTree,
-)
+from conllu.models import Metadata, SentenceGenerator, SentenceList, Token, TokenList, TokenTree
 from conllu.parser import ParseException, serialize
 from tests.helpers import capture_print
 
