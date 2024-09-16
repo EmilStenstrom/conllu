@@ -1,3 +1,5 @@
+import pickle
+import tempfile
 import unittest
 from textwrap import dedent
 
@@ -286,6 +288,21 @@ class TestSerialize(unittest.TestCase):
         tokenlist = TokenList([{"id": 1}])
         self.assertEqual(tokenlist.serialize(), serialize(tokenlist))
 
+    def test_pickling_tokenlist(self):
+        tokenlist = TokenList(
+            [
+                {"id": 1, "form": "a", "field": "x"},
+                {"id": 2, "form": "dog", "field": "x"},
+            ],
+            metadata={"text": "a dog"},
+        )
+        sink = tempfile.NamedTemporaryFile("wb", suffix=".pkl", delete=False)
+        pickle.dump(tokenlist, sink)
+        sink.close()
+        with open(sink.name, "rb") as source:
+            tokenlist_copy = pickle.load(source)
+        self.assertEqual(tokenlist, tokenlist_copy)
+
 
 class TestFilter(unittest.TestCase):
     def test_basic_filtering(self):
@@ -312,8 +329,7 @@ class TestFilter(unittest.TestCase):
             metadata={"text": "a dog"},
         )
         self.assertEqual(
-            tokenlist.filter().metadata,
-            tokenlist.metadata,
+            tokenlist.filter(), tokenlist
         )
 
     def test_and_filtering(self):

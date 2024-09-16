@@ -95,11 +95,11 @@ class TokenList(T.List[Token]):
         return TokenList(tokens_copy, self.metadata, self.default_fields)
 
     def extend(self, iterable: T.Union['TokenList', T.Iterable[Token]]) -> None:
+        if not hasattr(self, "metadata"):
+            self.metadata = Metadata()
         if not isinstance(iterable, TokenList):
             iterable = TokenList(iterable)
-
         super(TokenList, self).extend(iterable)
-
         self.metadata.update(iterable.metadata)
 
     def _dict_to_token_and_set_defaults(self, token: T.Union[dict, Token]) -> Token:
@@ -353,6 +353,8 @@ class SentenceList(T.List[TokenList]):
         return SentenceList(sentences_copy, self.metadata)
 
     def extend(self, iterable: T.Union['SentenceList', T.Iterable[TokenList]]) -> None:
+        if not hasattr(self, "metadata"):
+            self.metadata = Metadata()
         if not isinstance(iterable, SentenceList):
             iterable = SentenceList(iterable)
 
