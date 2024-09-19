@@ -95,11 +95,11 @@ class TokenList(T.List[Token]):
         return TokenList(tokens_copy, self.metadata, self.default_fields)
 
     def extend(self, iterable: T.Union['TokenList', T.Iterable[Token]]) -> None:
+        if not hasattr(self, "metadata"):
+            self.metadata = Metadata()
         if not isinstance(iterable, TokenList):
             iterable = TokenList(iterable)
-
         super(TokenList, self).extend(iterable)
-
         self.metadata.update(iterable.metadata)
 
     def _dict_to_token_and_set_defaults(self, token: T.Union[dict, Token]) -> Token:
@@ -187,7 +187,7 @@ class TokenList(T.List[Token]):
         return root
 
     def filter(self, **kwargs: T.Any) -> 'TokenList':
-        tokens: T.Iterable[Token] = self.copy()
+        tokens = self.copy()
 
         for query, value in kwargs.items():
             filtered_tokens = []
@@ -198,9 +198,9 @@ class TokenList(T.List[Token]):
                     if traverse_dict(token, query) == value:
                         filtered_tokens.append(token)
 
-            tokens = filtered_tokens
+            tokens[:] = filtered_tokens
 
-        return TokenList(tokens)
+        return tokens
 
 
 _T = T.TypeVar("_T")
@@ -353,6 +353,8 @@ class SentenceList(T.List[TokenList]):
         return SentenceList(sentences_copy, self.metadata)
 
     def extend(self, iterable: T.Union['SentenceList', T.Iterable[TokenList]]) -> None:
+        if not hasattr(self, "metadata"):
+            self.metadata = Metadata()
         if not isinstance(iterable, SentenceList):
             iterable = SentenceList(iterable)
 

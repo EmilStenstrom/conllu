@@ -1,3 +1,5 @@
+import pickle
+import tempfile
 import unittest
 from textwrap import dedent
 
@@ -252,10 +254,22 @@ class TestParsingTrickyTrees(unittest.TestCase):
 
 
 class TestSerialize(unittest.TestCase):
+
     def test_serialize_on_tokenlist(self):
         tokenlist = TokenList([{"id": 1}])
         self.assertEqual(tokenlist.serialize(), serialize(tokenlist))
 
+    def test_pickling_tokenlist(self):
+        tokenlist = TokenList([
+            {"id": 1, "form": "a", "field": "x"},
+            {"id": 2, "form": "dog", "field": "x"},
+        ], metadata={"text": "a dog"})
+        sink = tempfile.NamedTemporaryFile("wb", suffix=".pkl", delete=False)
+        pickle.dump(tokenlist, sink)
+        sink.close()
+        with open(sink.name, "rb") as source:
+            tokenlist_copy = pickle.load(source)
+        self.assertEqual(tokenlist, tokenlist_copy)
 
 class TestFilter(unittest.TestCase):
     def test_basic_filtering(self):
@@ -278,6 +292,16 @@ class TestFilter(unittest.TestCase):
         self.assertEqual(
             tokenlist.filter(field="x"),
             tokenlist
+        )
+
+    def test_metadata_propagates(self):
+        tokenlist = TokenList([
+            {"id": 1, "form": "a", "field": "x"},
+            {"id": 2, "form": "dog", "field": "x"},
+        ], metadata={"text": "a dog"})
+        self.assertEqual(
+            tokenlist.filter().metadata,
+            tokenlist.metadata,
         )
 
     def test_and_filtering(self):
@@ -520,6 +544,13 @@ class TestSentenceList(unittest.TestCase):
     def test_init_nonlist_raises(self):
         with self.assertRaises(ParseException):
             SentenceList((1, 2, 4))
+
+    def test_extend_with_no_metadata(self):
+        sl = SentenceList([TokenList([{"id": 1}])])
+        del sl.metadata
+        sl.extend(sl)
+        self.assertTrue(hasattr(sl, "metadata"))
+        self.assertIsNotNone(sl.metadata)
 
     def test_equals(self):
         tokenlists = [TokenList([{"id": 1}])]
