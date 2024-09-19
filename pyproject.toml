@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "conllu"
-version = "5.0.1"
+version = "5.0.2"
 description = "CoNLL-U Parser parses a CoNLL-U formatted string into a nested python dictionary"
 readme = "README.md"
 requires-python = ">=3.8"
