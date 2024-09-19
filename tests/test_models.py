@@ -549,7 +549,7 @@ class TestSentenceList(unittest.TestCase):
         sl = SentenceList([TokenList([{"id": 1}])])
         del sl.metadata
         sl.extend(sl)
-        self.assertTrue(hasattr(s1, "metadata"))
+        self.assertTrue(hasattr(sl, "metadata"))
         self.assertIsNotNone(sl.metadata)
 
     def test_equals(self):
