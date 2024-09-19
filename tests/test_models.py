@@ -545,6 +545,13 @@ class TestSentenceList(unittest.TestCase):
         with self.assertRaises(ParseException):
             SentenceList((1, 2, 4))
 
+    def test_extend_with_no_metadata(self):
+        sl = SentenceList([TokenList([{"id": 1}])])
+        del sl.metadata
+        sl.extend(sl)
+        self.assertTrue(hasattr(s1, "metadata"))
+        self.assertIsNotNone(sl.metadata)
+
     def test_equals(self):
         tokenlists = [TokenList([{"id": 1}])]
         self.assertEqual(SentenceList(tokenlists), SentenceList(tokenlists))
