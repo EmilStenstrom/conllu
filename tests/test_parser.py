@@ -4,33 +4,11 @@ from textwrap import dedent
 
 from conllu.models import Token, TokenList
 from conllu.parser import (
-    DEFAULT_FIELDS, ParseException, head_to_token, parse_comment_line, parse_conllu_plus_fields, parse_dict_value,
-    parse_id_value, parse_int_value, parse_line, parse_nullable_value, parse_paired_list_value, parse_sentences,
+    DEFAULT_FIELDS, ParseException, head_to_token, parse_comment_line, parse_dict_value, parse_id_value,
+    parse_int_value, parse_line, parse_nullable_value, parse_paired_list_value, parse_sentences,
     parse_token_and_metadata, serialize, serialize_field,
 )
 
-
-class TestParseConlluPlusFields(unittest.TestCase):
-    def test_empty(self):
-        self.assertEqual(parse_conllu_plus_fields(StringIO("")), None)
-        self.assertEqual(parse_conllu_plus_fields(StringIO(None)), None)
-
-    def test_simple(self):
-        data = dedent("""\
-            # global.columns = ID FORM UPOS HEAD DEPREL MISC PARSEME:MWE
-            1\tDer\tDET\t2\tdet\t_\t*
-        """)
-        self.assertEqual(
-            parse_conllu_plus_fields(StringIO(data)),
-            ["id", "form", "upos", "head", "deprel", "misc", "parseme:mwe"]
-        )
-
-    def test_empty_columns(self):
-        data = dedent("""\
-            # global.columns =
-            1\tDer\tDET\t2\tdet\t_\t*
-        """)
-        self.assertEqual(parse_conllu_plus_fields(StringIO(data)), None)
 
 class TestParseSentencesGenerator(unittest.TestCase):
     def test_empty(self):

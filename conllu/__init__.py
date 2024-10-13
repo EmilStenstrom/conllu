@@ -3,13 +3,13 @@ from io import StringIO
 
 from conllu.models import Metadata, SentenceGenerator, SentenceList, Token, TokenList, TokenTree
 from conllu.parser import (
-    _FieldParserType, _MetadataParserType, parse_conllu_plus_fields, parse_sentences, parse_token_and_metadata,
+    DEFAULT_FIELDS, _FieldParserType, _MetadataParserType, parse_sentences, parse_token_and_metadata,
 )
 
 __all__ = [
     "parse", "parse_incr", "parse_tree", "parse_tree_incr",
     "SentenceGenerator", "SentenceList", "TokenList", "TokenTree", "Token", "Metadata",
-    "parse_conllu_plus_fields", "parse_sentences", "parse_token_and_metadata",
+    "parse_sentences", "parse_token_and_metadata",
 ]
 
 def parse(data: str, fields: T.Optional[T.Sequence[str]] = None,
@@ -31,14 +31,26 @@ def parse_incr(in_file: T.TextIO, fields: T.Optional[T.Sequence[str]] = None,
     if not hasattr(in_file, 'read'):
         raise FileNotFoundError("Invalid file, 'parse_incr' needs an opened file as input")
 
-    if not fields:
-        fields = parse_conllu_plus_fields(in_file, metadata_parsers=metadata_parsers)
-
     def generator():
+        global_columns = None
+
         for sentence in parse_sentences(in_file):
+            lines = sentence.strip().split('\n')
+            current_metadata = [line for line in lines if line.startswith('#')]
+            current_sentence = [line for line in lines if not line.startswith('#')]
+
+            if any(line.startswith('# global.columns = ') for line in current_metadata):
+                global_columns = next(
+                    line.split('=', 1)[1].strip().split()
+                    for line in current_metadata if line.startswith('# global.columns = ')
+                )
+
+            used_fields = global_columns if global_columns else (fields if fields else DEFAULT_FIELDS)
+            used_fields = [field.lower() for field in used_fields]
+
             yield parse_token_and_metadata(
-                sentence,
-                fields=fields,
+                '\n'.join(current_metadata + current_sentence),
+                fields=used_fields,
                 field_parsers=field_parsers,
                 metadata_parsers=metadata_parsers
             )

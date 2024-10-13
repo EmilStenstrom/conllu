@@ -22,33 +22,6 @@ DEFAULT_METADATA_PARSERS: T.Dict[str, _MetadataParserType] = {
     "newdoc": lambda key, value: (key, value),
 }
 
-def parse_conllu_plus_fields(in_file: T.TextIO,
-                             metadata_parsers: T.Optional[T.Dict[str, _MetadataParserType]] = None
-                             ) -> T.Optional[T.Sequence[str]]:
-    pos = in_file.tell()
-
-    # Get first line
-    try:
-        first_sentence = next(parse_sentences(in_file))
-        first_line = first_sentence.split("\n")[0]
-    except StopIteration:
-        first_line = ""
-
-    # parse_sentences moves to file cursor, so reset it here
-    in_file.seek(pos)
-
-    if not first_line.startswith("#"):
-        return None
-
-    tokenlist = parse_token_and_metadata(first_line, metadata_parsers=metadata_parsers)
-    metadata = tokenlist.metadata
-
-    fields = None
-    if "global.columns" in metadata and metadata["global.columns"]:
-        fields = [value.lower() for value in metadata["global.columns"].split(" ")]
-
-    return fields
-
 def parse_sentences(in_file: T.TextIO) -> T.Iterator[str]:
     buf: T.List[str] = []
     for line in in_file:
