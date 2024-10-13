@@ -25,6 +25,10 @@ Or, if you are using [conda](https://conda.io/docs/):
 conda install -c conda-forge conllu
 ```
 
+## Notes on updating from 5.0 to 6.0
+
+Conllu version 6.0 drops support for one method from the public API: `parse_conllu_plus_fields`. This is no longer needed as we have refactored how fields are read. You likely didn't use this function, but this was part of the public API, so I'm releasing a new major version.
+
 ## Notes on updating from 4.0 to 5.0
 
 Conllu version 5.0 drops support for Python 3.6 and 3.7 and requires Python 3.8 at a minimum. If you need support for older versions of python, you can always pin your install to an old version of conllu. You can install it with `pip install conllu==4.5.3`.
