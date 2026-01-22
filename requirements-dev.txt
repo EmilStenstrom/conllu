@@ -87,6 +87,7 @@ packaging==24.1
     #   pyproject-api
     #   pytest
     #   tox
+    #   wheel
 pip-tools==7.4.1
     # via -r requirements-dev.in
 pkginfo==1.10.0
@@ -154,7 +155,7 @@ urllib3==2.6.3
     #   twine
 virtualenv==20.26.6
     # via tox
-wheel==0.43.0
+wheel==0.46.2
     # via
     #   -r requirements-dev.in
     #   pip-tools
