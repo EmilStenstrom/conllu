@@ -12,7 +12,7 @@ cachetools==5.3.3
     # via tox
 certifi==2024.7.4
     # via requests
-cffi==1.16.0
+cffi==2.0.0
     # via cryptography
 chardet==5.2.0
     # via tox
@@ -24,7 +24,7 @@ colorama==0.4.6
     # via tox
 coverage==7.6.0
     # via -r requirements-dev.in
-cryptography==44.0.1
+cryptography==46.0.5
     # via secretstorage
 distlib==0.3.8
     # via virtualenv
@@ -147,6 +147,7 @@ twine==5.1.1
     # via -r requirements-dev.in
 typing-extensions==4.15.0
     # via
+    #   cryptography
     #   exceptiongroup
     #   mypy
     #   virtualenv
