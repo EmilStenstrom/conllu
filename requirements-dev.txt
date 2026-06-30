@@ -32,7 +32,7 @@ docutils==0.21.2
     # via readme-renderer
 exceptiongroup==1.3.0
     # via pytest
-filelock==3.19.1
+filelock==3.20.3
     # via
     #   tox
     #   virtualenv
@@ -46,7 +46,6 @@ idna==3.7
     # via requests
 importlib-metadata==8.0.0
     # via
-    #   build
     #   keyring
     #   twine
 iniconfig==2.0.0
