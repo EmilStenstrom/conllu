@@ -8,14 +8,12 @@ backports-tarfile==1.2.0
     # via jaraco-context
 build==1.2.1
     # via pip-tools
-cachetools==5.3.3
+cachetools==7.1.4
     # via tox
 certifi==2024.7.4
     # via requests
 cffi==2.0.0
     # via cryptography
-chardet==5.2.0
-    # via tox
 charset-normalizer==3.3.2
     # via requests
 click==8.1.7
@@ -32,8 +30,9 @@ docutils==0.21.2
     # via readme-renderer
 exceptiongroup==1.3.0
     # via pytest
-filelock==3.20.3
+filelock==3.29.7
     # via
+    #   python-discovery
     #   tox
     #   virtualenv
 flake8==7.1.0
@@ -80,7 +79,7 @@ mypy-extensions==1.0.0
     # via mypy
 nh3==0.2.18
     # via readme-renderer
-packaging==24.1
+packaging==26.2
     # via
     #   build
     #   pyproject-api
@@ -91,11 +90,12 @@ pip-tools==7.4.1
     # via -r requirements-dev.in
 pkginfo==1.10.0
     # via twine
-platformdirs==4.2.2
+platformdirs==4.10.0
     # via
+    #   python-discovery
     #   tox
     #   virtualenv
-pluggy==1.5.0
+pluggy==1.6.0
     # via
     #   pytest
     #   tox
@@ -110,7 +110,7 @@ pygments==2.20.0
     #   pytest
     #   readme-renderer
     #   rich
-pyproject-api==1.7.1
+pyproject-api==1.10.1
     # via tox
 pyproject-hooks==1.1.0
     # via
@@ -118,6 +118,10 @@ pyproject-hooks==1.1.0
     #   pip-tools
 pytest==9.1.1
     # via -r requirements-dev.in
+python-discovery==1.4.4
+    # via
+    #   tox
+    #   virtualenv
 readme-renderer==44.0
     # via twine
 requests==2.33.0
@@ -132,7 +136,7 @@ rich==13.7.1
     # via twine
 secretstorage==3.3.3
     # via keyring
-tomli==2.2.1
+tomli==2.4.1
     # via
     #   build
     #   flake8-pyproject
@@ -141,7 +145,9 @@ tomli==2.2.1
     #   pyproject-api
     #   pytest
     #   tox
-tox==4.16.0
+tomli-w==1.2.0
+    # via tox
+tox==4.56.4
     # via -r requirements-dev.in
 twine==5.1.1
     # via -r requirements-dev.in
@@ -150,12 +156,13 @@ typing-extensions==4.15.0
     #   cryptography
     #   exceptiongroup
     #   mypy
+    #   tox
     #   virtualenv
 urllib3==2.7.0
     # via
     #   requests
     #   twine
-virtualenv==20.36.1
+virtualenv==21.6.1
     # via tox
 wheel==0.46.2
     # via
