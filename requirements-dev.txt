@@ -50,7 +50,7 @@ importlib-metadata==8.0.0
     #   twine
 iniconfig==2.0.0
     # via pytest
-isort==5.13.2
+isort==8.0.1
     # via -r requirements-dev.in
 jaraco-classes==3.4.0
     # via keyring
