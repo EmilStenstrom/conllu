@@ -158,6 +158,14 @@ class TestParse(unittest.TestCase):
 class TestTrickyCases(unittest.TestCase):
     maxDiff = None
 
+    def test_utf8_bom_at_file_start(self):
+        # https://github.com/EmilStenstrom/conllu/issues/132
+        # files saved with a UTF-8 BOM used to fail the comment check on the
+        # first line and raise a misleading ParseException
+        data = '\ufeff# text = The quick brown fox.\n1\tfox\tfox\tNOUN\tNN\tNumber=Sing\t0\troot\t_\t_'
+        clean = data.lstrip('\ufeff')
+        self.assertEqual(parse(data), parse(clean))
+
     def test_parse_and_serialize(self):
         from tests.fixtures import TESTCASES
 
