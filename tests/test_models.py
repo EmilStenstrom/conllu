@@ -252,6 +252,27 @@ class TestParsingTrickyTrees(unittest.TestCase):
         with self.assertRaises(ParseException):
             tokenlist.to_tree()
 
+    def test_explicit_root_row_is_excluded_from_the_tree(self):
+        # Some tools emit an explicit artificial-root row with ID 0; a word
+        # never has ID 0, and keeping the row made the tree walk recurse
+        # into the root's children forever.
+        tokenlist = TokenList([
+            Token([('id', 0), ('form', '<ROOT>'), ('head', 0)]),
+            Token([('id', 1), ('form', 'word'), ('head', 0)]),
+        ])
+        tree = TokenTree(
+            token=Token([("id", 1), ("form", "word"), ("head", 0)]),
+            children=[]
+        )
+        self.assertTreeEqual(tokenlist.to_tree(), tree)
+
+    def test_only_root_row_raises_no_head_node(self):
+        tokenlist = TokenList([
+            Token([('id', 0), ('form', '<ROOT>'), ('head', 0)]),
+        ])
+        with self.assertRaises(ParseException):
+            tokenlist.to_tree()
+
 
 class TestSerialize(unittest.TestCase):
 
