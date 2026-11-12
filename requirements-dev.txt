@@ -10,7 +10,7 @@ build==1.2.1
     # via pip-tools
 cachetools==7.1.4
     # via tox
-certifi==2024.7.4
+certifi==2026.10.18
     # via requests
 cffi==2.0.0
     # via cryptography
