@@ -22,7 +22,7 @@ click==8.1.7
     # via pip-tools
 colorama==0.4.6
     # via tox
-coverage==7.6.0
+coverage==7.15.1
     # via -r requirements-dev.in
 cryptography==48.0.1
     # via secretstorage
