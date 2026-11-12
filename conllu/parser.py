@@ -24,7 +24,14 @@ DEFAULT_METADATA_PARSERS: T.Dict[str, _MetadataParserType] = {
 
 def parse_sentences(in_file: T.TextIO) -> T.Iterator[str]:
     buf: T.List[str] = []
+    seen_first_line = False
     for line in in_file:
+        if not seen_first_line:
+            seen_first_line = True
+            # A UTF-8 byte order mark at the start of the file is an encoding
+            # artifact, not content: strip it so the first line parses like
+            # any other (files opened with encoding='utf-8' keep it).
+            line = line.lstrip('\ufeff')
         if line.strip() == "":
             if not buf:
                 continue
