@@ -20,7 +20,7 @@ click==8.1.7
     # via pip-tools
 colorama==0.4.6
     # via tox
-coverage==7.6.0
+coverage==7.15.1
     # via -r requirements-dev.in
 cryptography==48.0.1
     # via secretstorage
@@ -39,17 +39,17 @@ flake8==7.1.0
     # via
     #   -r requirements-dev.in
     #   flake8-pyproject
-flake8-pyproject==1.2.3
+flake8-pyproject==1.2.4
     # via -r requirements-dev.in
+id==1.6.1
+    # via twine
 idna==3.15
     # via requests
 importlib-metadata==8.0.0
-    # via
-    #   keyring
-    #   twine
+    # via keyring
 iniconfig==2.0.0
     # via pytest
-isort==5.13.2
+isort==8.0.1
     # via -r requirements-dev.in
 jaraco-classes==3.4.0
     # via keyring
@@ -85,11 +85,10 @@ packaging==26.2
     #   pyproject-api
     #   pytest
     #   tox
+    #   twine
     #   wheel
 pip-tools==7.4.1
     # via -r requirements-dev.in
-pkginfo==1.10.0
-    # via twine
 platformdirs==4.10.0
     # via
     #   python-discovery
@@ -149,7 +148,7 @@ tomli-w==1.2.0
     # via tox
 tox==4.56.4
     # via -r requirements-dev.in
-twine==5.1.1
+twine==6.2.0
     # via -r requirements-dev.in
 typing-extensions==4.15.0
     # via
@@ -160,6 +159,7 @@ typing-extensions==4.15.0
     #   virtualenv
 urllib3==2.7.0
     # via
+    #   id
     #   requests
     #   twine
 virtualenv==21.6.1
