@@ -31,6 +31,11 @@ class TestParseSentencesGenerator(unittest.TestCase):
             '1\thej\n2\tdå\n3\thej',
         ])
 
+    def test_utf8_bom_is_stripped(self):
+        data = '\ufeff1\thej\n2\tdå'
+        sentences = list(parse_sentences(StringIO(data)))
+        self.assertEqual(sentences, ['1\thej\n2\tdå'])
+
     def test_multiple_newlines(self):
         data = dedent("""\
             1\thej
