@@ -1,6 +1,14 @@
 name: Run tests for all supported python versions
 
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -22,3 +30,30 @@ jobs:
         python -m pip install tox tox-gh-actions
     - name: Run tests
       run: tox
+
+  development-dependencies:
+    runs-on: ubuntu-24.04
+    steps:
+    - uses: actions/checkout@v7
+    - uses: actions/setup-python@v6
+      with:
+        python-version: "3.12"
+        cache: pip
+    - name: Install pinned development dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install -r requirements-dev.txt
+        python -m pip check
+    - name: Check with pinned tools
+      run: |
+        python -m pytest
+        python -m coverage run --branch -m pytest -m "not integration"
+        python -m coverage report -m --fail-under=100
+        python -m flake8 conllu tests
+        python -m isort --check-only --diff conllu tests
+        python -m mypy .
+        python -m tox -e coverage,flake8,isort,mypy
+    - name: Check distribution metadata
+      run: |
+        python -m build
+        python -m twine check dist/*
