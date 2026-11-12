@@ -282,7 +282,17 @@ class TestParsingTrickyTrees(unittest.TestCase):
             Token([('id', 2), ('form', 'a'), ('head', 1)]),
             Token([('id', 2), ('form', 'b'), ('head', 2)]),
         ])
-        with self.assertRaises(ParseException):
+        with self.assertRaisesRegex(ParseException, "Found cyclic dependency, can't build tree"):
+            tokenlist.to_tree()
+
+    def test_indirect_cycle_raises_clean_error(self):
+        tokenlist = TokenList([
+            Token([('id', 1), ('form', 'r'), ('head', 0)]),
+            Token([('id', 2), ('form', 'a'), ('head', 1)]),
+            Token([('id', 3), ('form', 'b'), ('head', 2)]),
+            Token([('id', 2), ('form', 'c'), ('head', 3)]),
+        ])
+        with self.assertRaisesRegex(ParseException, "Found cyclic dependency, can't build tree"):
             tokenlist.to_tree()
 
     def test_duplicate_ids_without_a_cycle_still_build_a_tree(self):

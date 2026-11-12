@@ -173,8 +173,10 @@ class TokenList(T.List[Token]):
         return head_indexed
 
     def to_tree(self) -> 'TokenTree':
-        def _create_tree(head_to_token_mapping: T.Dict[int, T.List[Token]], id_: int = 0,
-                        seen: T.FrozenSet[int] = frozenset()) -> T.List['TokenTree']:
+        def _create_tree(
+            head_to_token_mapping: T.Dict[int, T.List[Token]], id_: int = 0,
+            seen: T.FrozenSet[int] = frozenset(),
+        ) -> T.List['TokenTree']:
             trees = []
             for child in head_to_token_mapping[id_]:
                 child_id = child["id"]
