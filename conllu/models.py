@@ -153,6 +153,12 @@ class TokenList(T.List[Token]):
             if "id" in token and not isinstance(token["id"], int):
                 continue
 
+            # An ID of 0 is the artificial root of the tree, not a word
+            # (CoNLL-U word IDs start at 1). Keeping such a token makes the
+            # tree walk re-enter the root through its own children forever.
+            if "id" in token and token["id"] == 0:
+                continue
+
             # Filter out tokens with negative head, they are sometimes used to
             # specify tokens which should not be included in tree
             # Also filter out those that have no head, just exclude them from the tree.
