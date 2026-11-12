@@ -7,7 +7,7 @@ import pytest
 
 from conllu import parse, parse_incr, parse_tree, parse_tree_incr
 from conllu.models import Token, TokenList
-from conllu.parser import parse_dict_value, parse_int_value
+from conllu.parser import ParseException, parse_dict_value, parse_int_value
 from tests.helpers import capture_print
 
 
@@ -145,6 +145,15 @@ class TestParse(unittest.TestCase):
 
     def test_parse_incr(self):
         self.assertEqual(parse(self.data), list(parse_incr(StringIO(self.data))))
+
+    def test_parse_tree_duplicate_id_self_ancestor(self):
+        # found by mutation fuzzing: parse_tree() used to die with
+        # RecursionError instead of a clean ParseException (issue #139)
+        data = "1\tr\t_\t_\t_\t_\t0\troot\t_\t_\n" \
+               "2\ta\t_\t_\t_\t_\t1\tdep\t_\t_\n" \
+               "2\tb\t_\t_\t_\t_\t2\tdep\t_\t_\n"
+        with self.assertRaises(ParseException):
+            parse_tree(data)
 
     def test_parse_incr_invalid_file(self):
         with self.assertRaises(FileNotFoundError):

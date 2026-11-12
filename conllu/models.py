@@ -173,11 +173,18 @@ class TokenList(T.List[Token]):
         return head_indexed
 
     def to_tree(self) -> 'TokenTree':
-        def _create_tree(head_to_token_mapping: T.Dict[int, T.List[Token]], id_: int = 0) -> T.List['TokenTree']:
-            return [
-                TokenTree(child, _create_tree(head_to_token_mapping, child["id"]))
-                for child in head_to_token_mapping[id_]
-            ]
+        def _create_tree(head_to_token_mapping: T.Dict[int, T.List[Token]], id_: int = 0,
+                        seen: T.FrozenSet[int] = frozenset()) -> T.List['TokenTree']:
+            trees = []
+            for child in head_to_token_mapping[id_]:
+                child_id = child["id"]
+                # A token whose ID already appears on the path from the root is
+                # its own ancestor (possible with duplicate IDs), so the walk
+                # would re-enter its own subtree forever.
+                if child_id in seen:
+                    raise ParseException("Found cyclic dependency, can't build tree")
+                trees.append(TokenTree(child, _create_tree(head_to_token_mapping, child_id, seen | {child_id})))
+            return trees
 
         head_indexed = self.head_to_token(self)
         if len(head_indexed[0]) > 1:
