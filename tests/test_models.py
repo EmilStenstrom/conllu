@@ -273,6 +273,39 @@ class TestParsingTrickyTrees(unittest.TestCase):
         with self.assertRaises(ParseException):
             tokenlist.to_tree()
 
+    def test_duplicate_id_self_ancestor_raises_clean_error(self):
+        # Duplicate IDs can make a token its own ancestor: token 2 points at
+        # head 2, so once the walk reaches it through its ID-2 sibling it
+        # re-enters its own subtree forever.
+        tokenlist = TokenList([
+            Token([('id', 1), ('form', 'r'), ('head', 0)]),
+            Token([('id', 2), ('form', 'a'), ('head', 1)]),
+            Token([('id', 2), ('form', 'b'), ('head', 2)]),
+        ])
+        with self.assertRaisesRegex(ParseException, "Found cyclic dependency, can't build tree"):
+            tokenlist.to_tree()
+
+    def test_indirect_cycle_raises_clean_error(self):
+        tokenlist = TokenList([
+            Token([('id', 1), ('form', 'r'), ('head', 0)]),
+            Token([('id', 2), ('form', 'a'), ('head', 1)]),
+            Token([('id', 3), ('form', 'b'), ('head', 2)]),
+            Token([('id', 2), ('form', 'c'), ('head', 3)]),
+        ])
+        with self.assertRaisesRegex(ParseException, "Found cyclic dependency, can't build tree"):
+            tokenlist.to_tree()
+
+    def test_duplicate_ids_without_a_cycle_still_build_a_tree(self):
+        # Two siblings sharing an ID are malformed data, but they are not a
+        # cycle: the guard must not mistake one for the other.
+        tokenlist = TokenList([
+            Token([('id', 1), ('form', 'r'), ('head', 0)]),
+            Token([('id', 2), ('form', 'a'), ('head', 1)]),
+            Token([('id', 2), ('form', 'b'), ('head', 1)]),
+        ])
+        tree = tokenlist.to_tree()
+        self.assertEqual(len(tree.children), 2)
+
 
 class TestSerialize(unittest.TestCase):
 
