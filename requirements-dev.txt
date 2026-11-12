@@ -22,7 +22,7 @@ colorama==0.4.6
     # via tox
 coverage==7.15.1
     # via -r requirements-dev.in
-cryptography==48.0.1
+cryptography==50.0.0
     # via secretstorage
 distlib==0.3.8
     # via virtualenv
@@ -157,7 +157,7 @@ typing-extensions==4.15.0
     #   mypy
     #   tox
     #   virtualenv
-urllib3==2.7.0
+urllib3==2.8.0
     # via
     #   id
     #   requests
