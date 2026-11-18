@@ -87,7 +87,7 @@ packaging==26.2
     #   tox
     #   twine
     #   wheel
-pip-tools==7.4.1
+pip-tools==7.6.2
     # via -r requirements-dev.in
 platformdirs==4.10.0
     # via
@@ -155,6 +155,7 @@ typing-extensions==4.15.0
     #   cryptography
     #   exceptiongroup
     #   mypy
+    #   pip-tools
     #   tox
     #   virtualenv
 urllib3==2.8.0
