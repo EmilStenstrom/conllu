@@ -35,7 +35,7 @@ filelock==3.29.7
     #   python-discovery
     #   tox
     #   virtualenv
-flake8==7.1.0
+flake8==7.1.2
     # via
     #   -r requirements-dev.in
     #   flake8-pyproject
