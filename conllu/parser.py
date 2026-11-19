@@ -215,10 +215,14 @@ def parse_dict_value(value: str) -> T.Optional[T.Dict[str, T.Optional[str]]]:
     if parse_nullable_value(value) is None:
         return None
 
-    return {
-        part.split("=")[0]: parse_nullable_value(part.split("=")[1]) if "=" in part else ""
-        for part in value.split("|") if parse_nullable_value(part.split("=")[0]) is not None
-    }
+    result: T.Dict[str, T.Optional[str]] = {}
+    for part in value.split("|"):
+        key, separator, part_value = part.partition("=")
+        if parse_nullable_value(key) is None:
+            continue
+        result[key] = parse_nullable_value(part_value) if separator else ""
+
+    return result
 
 def parse_nullable_value(value: str) -> T.Optional[str]:
     if not value or value == "_":
