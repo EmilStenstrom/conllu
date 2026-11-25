@@ -4,6 +4,8 @@
 #
 #    pip-compile requirements-dev.in
 #
+ast-serialize==0.13.1
+    # via mypy
 backports-tarfile==1.2.0
     # via jaraco-context
 build==1.2.1
@@ -63,6 +65,8 @@ jeepney==0.8.0
     #   secretstorage
 keyring==25.2.1
     # via twine
+librt==0.16.0
+    # via mypy
 markdown-it-py==3.0.0
     # via rich
 mccabe==0.7.0
@@ -73,7 +77,7 @@ more-itertools==10.3.0
     # via
     #   jaraco-classes
     #   jaraco-functools
-mypy==1.10.1
+mypy==2.4.1
     # via -r requirements-dev.in
 mypy-extensions==1.0.0
     # via mypy
@@ -87,6 +91,8 @@ packaging==26.2
     #   tox
     #   twine
     #   wheel
+pathspec==1.1.1
+    # via mypy
 pip-tools==7.7.0
     # via -r requirements-dev.in
 platformdirs==4.10.0
