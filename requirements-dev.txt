@@ -87,7 +87,7 @@ packaging==26.2
     #   tox
     #   twine
     #   wheel
-pip-tools==7.6.2
+pip-tools==7.7.0
     # via -r requirements-dev.in
 platformdirs==4.10.0
     # via
