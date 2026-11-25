@@ -131,7 +131,7 @@ requests-toolbelt==1.0.0
     # via twine
 rfc3986==2.0.0
     # via twine
-rich==13.7.1
+rich==15.0.0
     # via twine
 secretstorage==3.3.3
     # via keyring
@@ -148,7 +148,7 @@ tomli-w==1.2.0
     # via tox
 tox==4.56.4
     # via -r requirements-dev.in
-twine==6.2.0
+twine==7.0.0
     # via -r requirements-dev.in
 typing-extensions==4.15.0
     # via
