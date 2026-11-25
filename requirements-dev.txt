@@ -146,7 +146,7 @@ tomli==2.4.1
     #   tox
 tomli-w==1.2.0
     # via tox
-tox==4.56.4
+tox==4.65.0
     # via -r requirements-dev.in
 twine==7.0.0
     # via -r requirements-dev.in
