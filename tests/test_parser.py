@@ -606,6 +606,10 @@ class TestParseDictValue(unittest.TestCase):
             parse_dict_value("key1=_|_|_=val1"),
             Token([("key1", None)])
         )
+        self.assertEqual(
+            parse_dict_value("Gloss=a=b|SpaceAfter=No"),
+            Token([("Gloss", "a=b"), ("SpaceAfter", "No")])
+        )
         self.assertEqual(parse_dict_value(""), None)
         self.assertEqual(parse_dict_value("_"), None)
 
